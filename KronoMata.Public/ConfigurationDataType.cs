@@ -1,8 +1,9 @@
-﻿namespace KronoMata.Model
+﻿namespace KronoMata.Public
 {
     /// <summary>
     /// A ConfigurationDataType defines the data type of
-    /// a particular PluginConfiguration.
+    /// a particular PluginParameter that is persisted as
+    /// a PluginConfiguration.
     /// 
     /// The ConfigurationDataType is useful for determining
     /// the UI element to present when editing ConfigurationValues.

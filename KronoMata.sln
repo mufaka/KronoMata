@@ -5,6 +5,8 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Model", "KronoMata.Model\KronoMata.Model.csproj", "{40709496-4F6B-4567-8E0C-1FDDC7740E83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Public", "KronoMata.Public\KronoMata.Public.csproj", "{9BE0F1B1-9A7D-4745-B359-78B448AF7149}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{40709496-4F6B-4567-8E0C-1FDDC7740E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40709496-4F6B-4567-8E0C-1FDDC7740E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40709496-4F6B-4567-8E0C-1FDDC7740E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BE0F1B1-9A7D-4745-B359-78B448AF7149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BE0F1B1-9A7D-4745-B359-78B448AF7149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BE0F1B1-9A7D-4745-B359-78B448AF7149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BE0F1B1-9A7D-4745-B359-78B448AF7149}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

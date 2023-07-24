@@ -1,10 +1,14 @@
-﻿namespace KronoMata.Model
+﻿using KronoMata.Public;
+
+namespace KronoMata.Model
 {
     /// <summary>
     /// A PluginConfiguration contains the name and ConfigurationDataType
     /// for Plugin specific configuration.
     /// 
-    /// Implementations of IPlugin define their own list of PluginConfiguration. 
+    /// Implementations of IPlugin define their own list of PluginConfiguration
+    /// through the use of PluginParameter.
+    /// 
     /// ConfigurationValues are defined when creating a ScheduledJob.
     /// </summary>
     [Serializable]
