@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Model", "KronoMata.Model\KronoMata.Model.csproj", "{40709496-4F6B-4567-8E0C-1FDDC7740E83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{40709496-4F6B-4567-8E0C-1FDDC7740E83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40709496-4F6B-4567-8E0C-1FDDC7740E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40709496-4F6B-4567-8E0C-1FDDC7740E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40709496-4F6B-4567-8E0C-1FDDC7740E83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C1F71750-55B9-4AC3-B272-41842AAB1CAD}
+	EndGlobalSection
+EndGlobal
