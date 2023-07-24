@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="systemConfig">A Dictionary of IPlugin accessible system configuration values.</param>
         /// <param name="pluginConfig">A Dictionary of IPlugin-ScheduledJob specific configuration values.</param>
-        /// <returns></returns>
+        /// <returns>A list of PluginResult for logging information about the execution of the IPlugin.</returns>
         List<PluginResult> Execute(Dictionary<string, string> systemConfig, 
             Dictionary<string, string> pluginConfig);
     }
