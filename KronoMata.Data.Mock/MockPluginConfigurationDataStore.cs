@@ -4,29 +4,44 @@ namespace KronoMata.Data.Mock
 {
     public class MockPluginConfigurationDataStore : IPluginConfigurationDataStore
     {
+        private List<PluginConfiguration> _pluginConfigurations = new List<PluginConfiguration>();
+
         public PluginConfiguration Create(PluginConfiguration pluginConfiguration)
         {
-            throw new NotImplementedException();
+            pluginConfiguration.Id = _pluginConfigurations.Count == 0
+                ? 1
+                : _pluginConfigurations[_pluginConfigurations.Count - 1].Id + 1;
+
+            _pluginConfigurations.Add(pluginConfiguration);
+
+            return pluginConfiguration;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            _pluginConfigurations.RemoveAll(c => c.Id == id);
         }
 
         public PluginConfiguration GetById(int id)
         {
-            throw new NotImplementedException();
+#pragma warning disable CS8603 // Possible null reference return.
+            return _pluginConfigurations.Where(c => c.Id == id).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public List<PluginConfiguration> GetByPluginMetaData(int pluginMetaDataId)
         {
-            throw new NotImplementedException();
+            return _pluginConfigurations.Where(c => c.PluginMetaDataId == pluginMetaDataId).ToList();
         }
 
         public void Update(PluginConfiguration pluginConfiguration)
         {
-            throw new NotImplementedException();
+            var existing = _pluginConfigurations.Where(c => c.Id == pluginConfiguration.Id).FirstOrDefault();
+
+            if (existing != null)
+            {
+                existing = pluginConfiguration;
+            }
         }
     }
 }

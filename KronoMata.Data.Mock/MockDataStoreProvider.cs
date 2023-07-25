@@ -2,20 +2,21 @@
 {
     public class MockDataStoreProvider : IDataStoreProvider
     {
-        public IConfigurationValueDataStore ConfigurationValueDataStore => new MockConfigurationValueDataStore();
+        
+        public IConfigurationValueDataStore ConfigurationValueDataStore { get; } = new MockConfigurationValueDataStore();
 
-        public IGlobalConfigurationDataStore GlobalConfigurationDataStore => new MockGlobalConfigurationDataStore();
+        public IGlobalConfigurationDataStore GlobalConfigurationDataStore { get; } = new MockGlobalConfigurationDataStore();
 
-        public IHostDataStore HostDataStore => new MockHostDataStore();
+        public IHostDataStore HostDataStore { get; } = new MockHostDataStore();
 
-        public IJobHistoryDataStore JobHistoryDataStore => new MockJobHistoryDataStore();
+        public IJobHistoryDataStore JobHistoryDataStore { get; } = new MockJobHistoryDataStore();
 
-        public IPackageDataStore PackageDataStore => new MockPackageDataStore();
+        public IPackageDataStore PackageDataStore { get; } = new MockPackageDataStore();
 
-        public IPluginConfigurationDataStore PluginConfigurationDataStore => new MockPluginConfigurationDataStore();
+        public IPluginConfigurationDataStore PluginConfigurationDataStore { get; } = new MockPluginConfigurationDataStore();
 
-        public IPluginMetaDataDataStore PluginMetaDataDataStore => new MockPluginMetaDataDataStore();
+        public IPluginMetaDataDataStore PluginMetaDataDataStore { get; } = new MockPluginMetaDataDataStore();
 
-        public IScheduledJobDataStore ScheduledJobDataStore => new MockScheduledJobDataStore();
+        public IScheduledJobDataStore ScheduledJobDataStore { get; } = new MockScheduledJobDataStore();
     }
 }

@@ -4,29 +4,42 @@ namespace KronoMata.Data.Mock
 {
     public class MockHostDataStore : IHostDataStore
     {
+        private List<Host> _hosts = new List<Host>();
+
         public Host Create(Host host)
         {
-            throw new NotImplementedException();
+            host.Id = _hosts.Count == 0
+                ? 1
+                : _hosts[_hosts.Count - 1].Id + 1;
+
+            _hosts.Add(host);
+
+            return host;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            _hosts.RemoveAll(h => h.Id == id);
         }
 
         public List<Host> GetAll()
         {
-            throw new NotImplementedException();
+            return _hosts;
         }
 
         public List<Host> GetByMachineName(string machineName)
         {
-            throw new NotImplementedException();
+            return _hosts.Where(h => h.MachineName == machineName).ToList();
         }
 
         public void Update(Host host)
         {
-            throw new NotImplementedException();
+            var existing = _hosts.Where(h => h.Id == host.Id).FirstOrDefault();
+
+            if (existing != null)
+            {
+                existing = host;
+            }
         }
     }
 }

@@ -4,39 +4,54 @@ namespace KronoMata.Data.Mock
 {
     public class MockScheduledJobDataStore : IScheduledJobDataStore
     {
+        private List<ScheduledJob> _scheduledJobs = new List<ScheduledJob>();
+
         public ScheduledJob Create(ScheduledJob scheduledJob)
         {
-            throw new NotImplementedException();
+            scheduledJob.Id = _scheduledJobs.Count == 0
+                ? 1
+                : _scheduledJobs[_scheduledJobs.Count - 1].Id + 1;
+
+            _scheduledJobs.Add(scheduledJob);
+
+            return scheduledJob;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            _scheduledJobs.RemoveAll(s => s.Id == id);
         }
 
         public List<ScheduledJob> GetAll()
         {
-            throw new NotImplementedException();
+            return _scheduledJobs;
         }
 
         public List<ScheduledJob> GetByHost(int hostId)
         {
-            throw new NotImplementedException();
+            return _scheduledJobs.Where(s => s.HostId == hostId).ToList();
         }
 
         public ScheduledJob GetById(int id)
         {
-            throw new NotImplementedException();
+#pragma warning disable CS8603 // Possible null reference return.
+            return _scheduledJobs.Where(s => s.Id == id).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public List<ScheduledJob> GetByPluginMetaData(int pluginMetaDataId)
         {
-            throw new NotImplementedException();
+            return _scheduledJobs.Where(s => s.PluginMetaDataId == pluginMetaDataId).ToList();
         }
 
         public void Update(ScheduledJob scheduledJob)
         {
-            throw new NotImplementedException();
+            var existing = _scheduledJobs.Where(s => s.Id == scheduledJob.Id).FirstOrDefault();
+
+            if (existing != null)
+            {
+                existing = scheduledJob;
+            }
         }
     }
 }

@@ -4,34 +4,49 @@ namespace KronoMata.Data.Mock
 {
     public class MockGlobalConfigurationDataStore : IGlobalConfigurationDataStore
     {
+        private List<GlobalConfiguration> _globalConfigurations = new List<GlobalConfiguration>();
+
         public GlobalConfiguration Create(GlobalConfiguration globalConfiguration)
         {
-            throw new NotImplementedException();
+            globalConfiguration.Id = _globalConfigurations.Count == 0
+                ? 1
+                : _globalConfigurations[_globalConfigurations.Count - 1].Id + 1;
+
+            _globalConfigurations.Add(globalConfiguration);
+
+            return globalConfiguration;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            _globalConfigurations.RemoveAll(g => g.Id == id);
         }
 
         public List<GlobalConfiguration> GetAll()
         {
-            throw new NotImplementedException();
+            return _globalConfigurations;
         }
 
         public List<GlobalConfiguration> GetByCategory(string categoryName)
         {
-            throw new NotImplementedException();
+            return _globalConfigurations.Where(g => g.Category == categoryName).ToList();
         }
 
         public GlobalConfiguration GetByCategoryAndName(string category, string name)
         {
-            throw new NotImplementedException();
+#pragma warning disable CS8603 // Possible null reference return.
+            return _globalConfigurations.Where(g => g.Category == category).FirstOrDefault(g => g.Name == name);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public void Update(GlobalConfiguration globalConfiguration)
         {
-            throw new NotImplementedException();
+            var existing = _globalConfigurations.Where(g => g.Id == globalConfiguration.Id).FirstOrDefault();
+
+            if (existing != null)
+            {
+                existing = globalConfiguration;
+            }
         }
     }
 }

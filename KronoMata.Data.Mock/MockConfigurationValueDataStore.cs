@@ -4,24 +4,37 @@ namespace KronoMata.Data.Mock
 {
     public class MockConfigurationValueDataStore : IConfigurationValueDataStore
     {
+        private List<ConfigurationValue> _configurationValues = new List<ConfigurationValue>();
+
         public ConfigurationValue Create(ConfigurationValue configurationValue)
         {
-            throw new NotImplementedException();
+            configurationValue.Id = _configurationValues.Count == 0 
+                ? 1 
+                : _configurationValues[_configurationValues.Count - 1].Id + 1;
+
+            _configurationValues.Add(configurationValue);
+            
+            return configurationValue;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            _configurationValues.RemoveAll(v => v.Id == id);
         }
 
         public List<ConfigurationValue> GetByScheduledJob(int scheduledJobId)
         {
-            throw new NotImplementedException();
+            return _configurationValues.Where(v => v.ScheduledJobId == scheduledJobId).ToList();
         }
 
         public void Update(ConfigurationValue configurationValue)
         {
-            throw new NotImplementedException();
+            var existing = _configurationValues.Where(v => v.Id == configurationValue.Id).FirstOrDefault();
+
+            if (existing != null)
+            {
+                existing = configurationValue;
+            }
         }
     }
 }
