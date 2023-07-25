@@ -2,6 +2,9 @@
 
 namespace KronoMata.Data
 {
+    /// <summary>
+    /// Defines a DataStore for persisting ConfigurationValue.
+    /// </summary>
     public interface IConfigurationValueDataStore
     {
         ConfigurationValue Create(ConfigurationValue configurationValue);

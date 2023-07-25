@@ -2,6 +2,9 @@
 
 namespace KronoMata.Data
 {
+    /// <summary>
+    /// Defines a DataStore for persisting JobHistory.
+    /// </summary>
     public interface IJobHistoryDataStore
     {
         JobHistory Create(JobHistory jobHistory);

@@ -2,6 +2,9 @@
 
 namespace KronoMata.Data
 {
+    /// <summary>
+    /// Defines a DataStore for persisting Package.
+    /// </summary>
     public interface IPackageDataStore
     {
         Package Create(Package package);

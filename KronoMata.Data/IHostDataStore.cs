@@ -2,6 +2,9 @@
 
 namespace KronoMata.Data
 {
+    /// <summary>
+    /// Defines a DataStore for persisting Host.
+    /// </summary>
     public interface IHostDataStore
     {
         Host Create(Host host);
