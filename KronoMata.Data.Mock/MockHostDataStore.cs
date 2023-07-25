@@ -27,9 +27,11 @@ namespace KronoMata.Data.Mock
             return _hosts;
         }
 
-        public List<Host> GetByMachineName(string machineName)
+        public Host GetByMachineName(string machineName)
         {
-            return _hosts.Where(h => h.MachineName == machineName).ToList();
+#pragma warning disable CS8603 // Possible null reference return.
+            return _hosts.Where(h => h.MachineName == machineName).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public void Update(Host host)

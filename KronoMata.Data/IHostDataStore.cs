@@ -11,6 +11,6 @@ namespace KronoMata.Data
         void Update(Host host);
         void Delete(int id);
         List<Host> GetAll();
-        List<Host> GetByMachineName(string machineName);
+        Host GetByMachineName(string machineName);
     }
 }
