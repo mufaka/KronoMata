@@ -4,6 +4,7 @@ using KronoMata.Model;
 
 namespace Test.KronoMata.Data.Mock
 {
+    [TestFixture()]
     public class ConfigurationValueDataStoreTests
     {
         private IDataStoreProvider _provider;
@@ -48,6 +49,7 @@ namespace Test.KronoMata.Data.Mock
             };
 
             _provider.ConfigurationValueDataStore.Create(configurationValue);
+
             var existing = _provider.ConfigurationValueDataStore.GetByScheduledJob(1);
 
             Assert.IsTrue(1 == existing.Count);
