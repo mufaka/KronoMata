@@ -18,13 +18,47 @@ namespace Test.KronoMata.Data.Mock
         [Test()]
         public void Can_Create()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var jobHistory = new JobHistory()
+            {
+                ScheduledJobId = 1,
+                HostId = 1,
+                Status = ScheduledJobStatus.Success,
+                Message = "TestMessage",
+                Detail = "TestDetail",
+                RunTime = now
+            };
+
+            _provider.JobHistoryDataStore.Create(jobHistory);
+
+            Assert.IsTrue(1 == jobHistory.Id);
         }
 
         [Test()]
         public void Can_Delete()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var jobHistory = new JobHistory()
+            {
+                ScheduledJobId = 1,
+                HostId = 1,
+                Status = ScheduledJobStatus.Success,
+                Message = "TestMessage",
+                Detail = "TestDetail",
+                RunTime = now
+            };
+
+            _provider.JobHistoryDataStore.Create(jobHistory);
+
+            Assert.IsTrue(1 == jobHistory.Id);
+
+            _provider.JobHistoryDataStore.Delete(jobHistory.Id);
+
+            var existing = _provider.JobHistoryDataStore.GetByScheduledJob(1);
+            
+            Assert.That(existing.Count, Is.EqualTo(0));
         }
 
         [Test()]

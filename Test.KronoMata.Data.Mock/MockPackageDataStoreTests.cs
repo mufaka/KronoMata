@@ -18,13 +18,37 @@ namespace Test.KronoMata.Data.Mock
         [Test()]
         public void Can_Create()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var package = new Package()
+            {
+                FileName = "FileName"
+            };
+
+            _provider.PackageDataStore.Create(package);
+
+            Assert.IsTrue(1 == package.Id);
         }
 
         [Test()]
         public void Can_Delete()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var package = new Package()
+            {
+                FileName = "FileName"
+            };
+
+            _provider.PackageDataStore.Create(package);
+
+            Assert.IsTrue(1 == package.Id);
+
+            _provider.PackageDataStore.Delete(package.Id);
+
+            var existing = _provider.PackageDataStore.GetById(package.Id);
+
+            Assert.IsNull(existing);
         }
 
         [Test()]
@@ -42,7 +66,22 @@ namespace Test.KronoMata.Data.Mock
         [Test()]
         public void Can_Update()
         {
-            Assert.Fail();
+            var package = new Package()
+            {
+                FileName = "FileName"
+            };
+
+            _provider.PackageDataStore.Create(package);
+
+            Assert.IsTrue(1 == package.Id);
+
+            package.FileName = "UpdatedFileName";
+
+            _provider.PackageDataStore.Update(package);
+
+            var updated = _provider.PackageDataStore.GetById(package.Id);
+
+            Assert.That(updated.FileName, Is.EqualTo("UpdatedFileName"));
         }
     }
 }

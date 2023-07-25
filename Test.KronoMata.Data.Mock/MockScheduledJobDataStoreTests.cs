@@ -18,13 +18,56 @@ namespace Test.KronoMata.Data.Mock
         [Test()]
         public void Can_Create()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var scheduledJob = new ScheduledJob()
+            {
+                PluginMetaDataId = 1,
+                HostId = 1,
+                Name = "Name",
+                Description = "Description",
+                Interval = ScheduleInterval.Week,
+                Step = 2,
+                StartTime = now,
+                EndTime = now,
+                IsEnabled = true,
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            _provider.ScheduledJobDataStore.Create(scheduledJob);
+
+            Assert.IsTrue(1 == scheduledJob.Id);
         }
 
         [Test()]
         public void Can_Delete()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var scheduledJob = new ScheduledJob()
+            {
+                PluginMetaDataId = 1,
+                HostId = 1,
+                Name = "Name",
+                Description = "Description",
+                Interval = ScheduleInterval.Week,
+                Step = 2,
+                StartTime = now,
+                EndTime = now,
+                IsEnabled = true,
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            _provider.ScheduledJobDataStore.Create(scheduledJob);
+
+            Assert.IsTrue(1 == scheduledJob.Id);
+
+            _provider.ScheduledJobDataStore.Delete(scheduledJob.Id);
+
+            var existing = _provider.ScheduledJobDataStore.GetById(scheduledJob.Id);
+            Assert.IsNull(existing);
         }
 
         [Test()]
@@ -54,7 +97,34 @@ namespace Test.KronoMata.Data.Mock
         [Test()]
         public void Can_Update()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var scheduledJob = new ScheduledJob()
+            {
+                PluginMetaDataId = 1,
+                HostId = 1,
+                Name = "Name",
+                Description = "Description",
+                Interval = ScheduleInterval.Week,
+                Step = 2,
+                StartTime = now,
+                EndTime = now,
+                IsEnabled = true,
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            _provider.ScheduledJobDataStore.Create(scheduledJob);
+
+            Assert.IsTrue(1 == scheduledJob.Id);
+
+            scheduledJob.Description = "UpdatedDescription";
+
+            _provider.ScheduledJobDataStore.Update(scheduledJob);
+
+            var updated = _provider.ScheduledJobDataStore.GetById(scheduledJob.Id);
+
+            Assert.That(updated.Description, Is.EqualTo("UpdatedDescription"));
         }
     }
 }
