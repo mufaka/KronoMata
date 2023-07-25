@@ -15,12 +15,12 @@
         /// <summary>
         /// The name of the PluginParameter.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// The description of the PluginParameter.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = String.Empty;
 
         /// <summary>
         /// Whether or not a value is required to be set

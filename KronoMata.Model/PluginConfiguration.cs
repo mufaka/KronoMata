@@ -33,12 +33,12 @@ namespace KronoMata.Model
         /// <summary>
         /// The Name of this PluginConfiguration.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
 
         /// <summary>
         /// The Description of this PluginConfiguration.
         /// </summary>
-        public string Description { get; set; } 
+        public string Description { get; set; } = String.Empty;
 
         /// <summary>
         /// Whether or not a ConfigurationValue is required to 

@@ -21,7 +21,7 @@
         /// The Environment.MachineName value for the 
         /// host running the Agent.
         /// </summary>
-        public string MachineName { get; set; }
+        public string MachineName { get; set; } = String.Empty;
 
         /// <summary>
         /// Whether or not the Host is enabled to 
