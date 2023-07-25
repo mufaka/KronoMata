@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Public", "KronoMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Data", "KronoMata.Data\KronoMata.Data.csproj", "{0F4FA888-A925-4F49-A549-C578DCA52B08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Data.Mock", "KronoMata.Data.Mock\KronoMata.Data.Mock.csproj", "{7BD4F4D2-4D09-4FE4-AB47-C18B7FB5FE4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0F4FA888-A925-4F49-A549-C578DCA52B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F4FA888-A925-4F49-A549-C578DCA52B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F4FA888-A925-4F49-A549-C578DCA52B08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BD4F4D2-4D09-4FE4-AB47-C18B7FB5FE4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BD4F4D2-4D09-4FE4-AB47-C18B7FB5FE4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BD4F4D2-4D09-4FE4-AB47-C18B7FB5FE4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BD4F4D2-4D09-4FE4-AB47-C18B7FB5FE4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
