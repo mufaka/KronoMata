@@ -22,6 +22,6 @@
         /// own paths for Packages so only the FileName is
         /// required.
         /// </summary>
-        public string FileName { get; set; }
+        public string FileName { get; set; } = String.Empty;
     }
 }

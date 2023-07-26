@@ -58,7 +58,7 @@ namespace Test.KronoMata.Data.Mock
 
             var existing = _provider.JobHistoryDataStore.GetByScheduledJob(1);
             
-            Assert.That(existing.Count, Is.EqualTo(0));
+            Assert.That(existing, Is.Empty);
         }
 
         [Test()]

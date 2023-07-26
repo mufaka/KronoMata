@@ -31,13 +31,13 @@
         /// A summary message describing the result of the
         /// ScheduledJob execution.
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; set; } = String.Empty;
 
         /// <summary>
         /// A detailed message describing the result of the
         /// ScheduledJob execution.
         /// </summary>
-        public string Detail { get; set; }
+        public string? Detail { get; set; }
 
         /// <summary>
         /// The execution time of the ScheduledJob.

@@ -18,17 +18,17 @@
         /// well as to prevent ambiguity between values having the same 
         /// name.
         /// </summary>
-        public string Category { get; set; }
+        public string Category { get; set; } = String.Empty;
 
         /// <summary>
         /// The name of the GlobalConfiguration.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
 
         /// <summary>
         /// The value of the GlobalConfiguration.
         /// </summary>
-        public string Value { get; set; }
+        public string Value { get; set; } = String.Empty;
 
         /// <summary>
         /// Whether or not this GlobalConfiguration is accessible to all

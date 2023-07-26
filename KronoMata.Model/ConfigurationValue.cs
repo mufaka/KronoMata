@@ -29,7 +29,7 @@
         /// <summary>
         /// The value of the ConfigurationValue.
         /// </summary>
-        public string Value { get; set; }
+        public string Value { get; set; } = String.Empty;
 
         /// <summary>
         /// The date the ConfigurationValue was inserted.

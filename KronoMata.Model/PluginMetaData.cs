@@ -24,29 +24,29 @@
         /// <summary>
         /// The Name of the IPlugin implementation.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
 
         /// <summary>
         /// The Description of the IPlugin implementation.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = String.Empty;
 
         /// <summary>
         /// The Version of the IPlugin implementation.
         /// </summary>
-        public string Version { get; set; }
+        public string Version { get; set; } = String.Empty;
 
         /// <summary>
         /// The .NET Assembly Name that contains the
         /// IPlugin implementation.
         /// </summary>
-        public string AssemblyName { get; set; }
+        public string AssemblyName { get; set; } = String.Empty;
 
         /// <summary>
         /// The fully qualified Class name of the IPlugin
         /// implementation.
         /// </summary>
-        public string ClassName { get; set; }
+        public string ClassName { get; set; } = String.Empty;
 
         /// <summary>
         /// The date the PluginMetaData was inserted.

@@ -179,8 +179,11 @@ namespace Test.KronoMata.Data.Mock
             var one = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName3");
 
             Assert.That(one, Is.Not.Null);
-            Assert.That(one.Name, Is.EqualTo("TestName3"));
-            Assert.That(one.Value, Is.EqualTo("TestValue3"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(one.Name, Is.EqualTo("TestName3"));
+                Assert.That(one.Value, Is.EqualTo("TestValue3"));
+            });
         }
     }
 }

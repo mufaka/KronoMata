@@ -25,12 +25,12 @@
         /// <summary>
         /// The name of the ScheduledJob.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
 
         /// <summary>
         /// The Description of the ScheduledJob.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = String.Empty;
 
         /// <summary>
         /// The Interval in which to run.
