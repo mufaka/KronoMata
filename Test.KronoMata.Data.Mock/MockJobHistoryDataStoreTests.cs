@@ -32,7 +32,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.JobHistoryDataStore.Create(jobHistory);
 
-            Assert.IsTrue(1 == jobHistory.Id);
+            Assert.That(jobHistory.Id, Is.EqualTo(1));
         }
 
         [Test()]
@@ -52,7 +52,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.JobHistoryDataStore.Create(jobHistory);
 
-            Assert.IsTrue(1 == jobHistory.Id);
+            Assert.That(jobHistory.Id, Is.EqualTo(1));
 
             _provider.JobHistoryDataStore.Delete(jobHistory.Id);
 
@@ -64,19 +64,100 @@ namespace Test.KronoMata.Data.Mock
         [Test()]
         public void Can_GetAll()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            for (int x = 0; x < 10; x++)
+            {
+                var jobHistory = new JobHistory()
+                {
+                    ScheduledJobId = 1,
+                    HostId = 1,
+                    Status = ScheduledJobStatus.Success,
+                    Message = $"TestMessage{x + 1}",
+                    Detail = $"TestDetail{x + 1}",
+                    RunTime = now
+                };
+
+                _provider.JobHistoryDataStore.Create(jobHistory);
+            }
+
+            var all = _provider.JobHistoryDataStore.GetAll();
+
+            Assert.That(all, Has.Count.EqualTo(10));
         }
 
         [Test()]
         public void Can_GetByScheduledJob()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            for (int x = 1; x <= 10; x++)
+            {
+                var jobHistory1 = new JobHistory()
+                {
+                    ScheduledJobId = x,
+                    HostId = 1,
+                    Status = ScheduledJobStatus.Success,
+                    Message = $"TestMessage{x + 1}",
+                    Detail = $"TestDetail{x + 1}",
+                    RunTime = now
+                };
+
+                _provider.JobHistoryDataStore.Create(jobHistory1);
+
+                var jobHistory2 = new JobHistory()
+                {
+                    ScheduledJobId = x,
+                    HostId = 1,
+                    Status = ScheduledJobStatus.Success,
+                    Message = $"TestMessage{x + 1}",
+                    Detail = $"TestDetail{x + 1}",
+                    RunTime = now
+                };
+
+                _provider.JobHistoryDataStore.Create(jobHistory2);
+            }
+
+            var byJobList = _provider.JobHistoryDataStore.GetByScheduledJob(2);
+
+            Assert.That(byJobList, Has.Count.EqualTo(2));
         }
 
         [Test()]
         public void Can_GetTop()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            for (int x = 1; x <= 10; x++)
+            {
+                var jobHistory1 = new JobHistory()
+                {
+                    ScheduledJobId = x,
+                    HostId = 1,
+                    Status = ScheduledJobStatus.Success,
+                    Message = $"TestMessage{x + 1}",
+                    Detail = $"TestDetail{x + 1}",
+                    RunTime = now
+                };
+
+                _provider.JobHistoryDataStore.Create(jobHistory1);
+
+                var jobHistory2 = new JobHistory()
+                {
+                    ScheduledJobId = x,
+                    HostId = 1,
+                    Status = ScheduledJobStatus.Success,
+                    Message = $"TestMessage{x + 1}",
+                    Detail = $"TestDetail{x + 1}",
+                    RunTime = now
+                };
+
+                _provider.JobHistoryDataStore.Create(jobHistory2);
+            }
+
+            var byJobList = _provider.JobHistoryDataStore.GetTop(5);
+
+            Assert.That(byJobList, Has.Count.EqualTo(5));
         }
     }
 }

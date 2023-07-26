@@ -18,8 +18,6 @@ namespace Test.KronoMata.Data.Mock
         [Test()]
         public void Can_Create()
         {
-            var now = DateTime.Now;
-
             var package = new Package()
             {
                 FileName = "FileName"
@@ -27,14 +25,12 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.PackageDataStore.Create(package);
 
-            Assert.IsTrue(1 == package.Id);
+            Assert.That(package.Id, Is.EqualTo(1));
         }
 
         [Test()]
         public void Can_Delete()
         {
-            var now = DateTime.Now;
-
             var package = new Package()
             {
                 FileName = "FileName"
@@ -42,25 +38,48 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.PackageDataStore.Create(package);
 
-            Assert.IsTrue(1 == package.Id);
+            Assert.That(package.Id, Is.EqualTo(1));
 
             _provider.PackageDataStore.Delete(package.Id);
 
             var existing = _provider.PackageDataStore.GetById(package.Id);
 
-            Assert.IsNull(existing);
+            Assert.That(existing, Is.Null);
         }
 
         [Test()]
         public void Can_GetAll()
         {
-            Assert.Fail();
+            for (int x = 0; x < 10; x++)
+            {
+                var package = new Package()
+                {
+                    FileName = $"FileName{x + 1}"
+                };
+
+                _provider.PackageDataStore.Create(package);
+            }
+
+            var all = _provider.PackageDataStore.GetAll();
+            Assert.That(all, Has.Count.EqualTo(10));
         }
 
         [Test()]
         public void Can_GetById()
         {
-            Assert.Fail();
+            var package = new Package()
+            {
+                FileName = "FileName"
+            };
+
+            _provider.PackageDataStore.Create(package);
+
+            Assert.That(package.Id, Is.EqualTo(1));
+
+            var existing = _provider.PackageDataStore.GetById(1);
+
+            Assert.That(existing, Is.Not.Null);
+            Assert.That(existing.Id, Is.EqualTo(1));
         }
 
         [Test()]
@@ -73,7 +92,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.PackageDataStore.Create(package);
 
-            Assert.IsTrue(1 == package.Id);
+            Assert.That(package.Id, Is.EqualTo(1));
 
             package.FileName = "UpdatedFileName";
 

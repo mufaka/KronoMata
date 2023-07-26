@@ -4,13 +4,13 @@ namespace KronoMata.Data.Mock
 {
     public class MockHostDataStore : IHostDataStore
     {
-        private List<Host> _hosts = new List<Host>();
+        private readonly List<Host> _hosts = new();
 
         public Host Create(Host host)
         {
             host.Id = _hosts.Count == 0
                 ? 1
-                : _hosts[_hosts.Count - 1].Id + 1;
+                : _hosts[^1].Id + 1;
 
             _hosts.Add(host);
 

@@ -4,13 +4,13 @@ namespace KronoMata.Data.Mock
 {
     public class MockScheduledJobDataStore : IScheduledJobDataStore
     {
-        private List<ScheduledJob> _scheduledJobs = new List<ScheduledJob>();
+        private readonly List<ScheduledJob> _scheduledJobs = new();
 
         public ScheduledJob Create(ScheduledJob scheduledJob)
         {
             scheduledJob.Id = _scheduledJobs.Count == 0
                 ? 1
-                : _scheduledJobs[_scheduledJobs.Count - 1].Id + 1;
+                : _scheduledJobs[^1].Id + 1;
 
             _scheduledJobs.Add(scheduledJob);
 

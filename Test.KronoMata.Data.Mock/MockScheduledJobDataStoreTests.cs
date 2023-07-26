@@ -37,7 +37,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.ScheduledJobDataStore.Create(scheduledJob);
 
-            Assert.IsTrue(1 == scheduledJob.Id);
+            Assert.That(scheduledJob.Id, Is.EqualTo(1));
         }
 
         [Test()]
@@ -62,36 +62,165 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.ScheduledJobDataStore.Create(scheduledJob);
 
-            Assert.IsTrue(1 == scheduledJob.Id);
+            Assert.That(scheduledJob.Id, Is.EqualTo(1));
 
             _provider.ScheduledJobDataStore.Delete(scheduledJob.Id);
 
             var existing = _provider.ScheduledJobDataStore.GetById(scheduledJob.Id);
-            Assert.IsNull(existing);
+            Assert.That(existing, Is.Null);
         }
 
         [Test()]
         public void Can_GetAll()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            for (int x = 1; x <= 10; x++)
+            {
+                var scheduledJob = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = 1,
+                    Name = "Name",
+                    Description = "Description",
+                    Interval = ScheduleInterval.Week,
+                    Step = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob);
+            }
+
+            var all = _provider.ScheduledJobDataStore.GetAll();
+            Assert.That(all, Has.Count.EqualTo(10));
         }
 
         [Test()]
         public void Can_GetByHost()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            for (int x = 1; x <= 10; x++)
+            {
+                var scheduledJob1 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = 1,
+                    Name = "Name",
+                    Description = "Description",
+                    Interval = ScheduleInterval.Week,
+                    Step = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob1);
+
+                var scheduledJob2 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = 2,
+                    Name = "Name",
+                    Description = "Description",
+                    Interval = ScheduleInterval.Week,
+                    Step = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob2);
+            }
+
+            var byHostList = _provider.ScheduledJobDataStore.GetByHost(2);
+
+            Assert.That(byHostList, Has.Count.EqualTo(10));
         }
 
         [Test()]
         public void Can_GetById()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var scheduledJob = new ScheduledJob()
+            {
+                PluginMetaDataId = 1,
+                HostId = 1,
+                Name = "Name",
+                Description = "Description",
+                Interval = ScheduleInterval.Week,
+                Step = 2,
+                StartTime = now,
+                EndTime = now,
+                IsEnabled = true,
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            _provider.ScheduledJobDataStore.Create(scheduledJob);
+
+            Assert.That(scheduledJob.Id, Is.EqualTo(1));
+
+            var existing = _provider.ScheduledJobDataStore.GetById(1);
+
+            Assert.That(existing, Is.Not.Null);
+            Assert.That(existing.Id, Is.EqualTo(1));
         }
 
         [Test()]
         public void Can_GetByPluginMetaData()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            for (int x = 1; x <= 10; x++)
+            {
+                var scheduledJob1 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = 1,
+                    Name = "Name",
+                    Description = "Description",
+                    Interval = ScheduleInterval.Week,
+                    Step = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob1);
+
+                var scheduledJob2 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 2,
+                    HostId = 1,
+                    Name = "Name",
+                    Description = "Description",
+                    Interval = ScheduleInterval.Week,
+                    Step = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob2);
+            }
+
+            var byPluginMetaDataList = _provider.ScheduledJobDataStore.GetByPluginMetaData(2);
+
+            Assert.That(byPluginMetaDataList, Has.Count.EqualTo(10));
         }
 
         [Test()]
@@ -116,7 +245,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.ScheduledJobDataStore.Create(scheduledJob);
 
-            Assert.IsTrue(1 == scheduledJob.Id);
+            Assert.That(scheduledJob.Id, Is.EqualTo(1));
 
             scheduledJob.Description = "UpdatedDescription";
 

@@ -30,7 +30,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.HostDataStore.Create(host);
 
-            Assert.IsTrue(1 == host.Id);
+            Assert.That(host.Id, Is.EqualTo(1));
         }
 
         [Test()]
@@ -48,12 +48,12 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.HostDataStore.Create(host);
 
-            Assert.IsTrue(1 == host.Id);
+            Assert.That(host.Id, Is.EqualTo(1));
 
             _provider.HostDataStore.Delete(host.Id);
 
             var existing = _provider.HostDataStore.GetByMachineName("TestHost");
-            Assert.IsNull(existing);
+            Assert.That(existing, Is.Null);
         }
 
         [Test()]
@@ -76,7 +76,7 @@ namespace Test.KronoMata.Data.Mock
 
             var all = _provider.HostDataStore.GetAll();
 
-            Assert.That(all.Count, Is.EqualTo(10));
+            Assert.That(all, Has.Count.EqualTo(10));
         }
 
         [Test()]
@@ -94,10 +94,10 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.HostDataStore.Create(host);
 
-            Assert.IsTrue(1 == host.Id);
+            Assert.That(host.Id, Is.EqualTo(1));
 
             var existing = _provider.HostDataStore.GetByMachineName("TestHost");
-            Assert.IsNotNull(existing);
+            Assert.That(existing, Is.Not.Null);
         }
 
         [Test()]
@@ -115,7 +115,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.HostDataStore.Create(host);
 
-            Assert.IsTrue(1 == host.Id);
+            Assert.That(host.Id, Is.EqualTo(1));
 
             host.IsEnabled = false;
 
@@ -123,7 +123,7 @@ namespace Test.KronoMata.Data.Mock
 
             var existing = _provider.HostDataStore.GetByMachineName("TestHost");
 
-            Assert.IsNotNull(existing);
+            Assert.That(existing, Is.Not.Null);
             Assert.That(existing.IsEnabled, Is.False);
         }
     }

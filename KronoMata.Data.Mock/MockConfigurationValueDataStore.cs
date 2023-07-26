@@ -4,13 +4,13 @@ namespace KronoMata.Data.Mock
 {
     public class MockConfigurationValueDataStore : IConfigurationValueDataStore
     {
-        private List<ConfigurationValue> _configurationValues = new List<ConfigurationValue>();
+        private readonly List<ConfigurationValue> _configurationValues = new();
 
         public ConfigurationValue Create(ConfigurationValue configurationValue)
         {
             configurationValue.Id = _configurationValues.Count == 0 
                 ? 1 
-                : _configurationValues[_configurationValues.Count - 1].Id + 1;
+                : _configurationValues[^1].Id + 1;
 
             _configurationValues.Add(configurationValue);
             

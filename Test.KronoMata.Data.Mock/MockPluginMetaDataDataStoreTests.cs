@@ -34,7 +34,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.PluginMetaDataDataStore.Create(pluginMetaData);
 
-            Assert.IsTrue(1 == pluginMetaData.Id);
+            Assert.That(pluginMetaData.Id, Is.EqualTo(1));
         }
 
         [Test()]
@@ -56,24 +56,80 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.PluginMetaDataDataStore.Create(pluginMetaData);
 
-            Assert.IsTrue(1 == pluginMetaData.Id);
+            Assert.That(pluginMetaData.Id, Is.EqualTo(1));
 
             _provider.PluginMetaDataDataStore.Delete(pluginMetaData.Id);
 
             var existing = _provider.PluginMetaDataDataStore.GetById(pluginMetaData.Id);
-            Assert.IsNull(existing);
+            Assert.That(existing, Is.Null);
         }
 
         [Test()]
         public void Can_GetById()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            var pluginMetaData = new PluginMetaData()
+            {
+                PackageId = 1,
+                Name = "Name",
+                Description = "Description",
+                Version = "1.0",
+                AssemblyName = "System",
+                ClassName = "System.Object",
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            _provider.PluginMetaDataDataStore.Create(pluginMetaData);
+
+            Assert.That(pluginMetaData.Id, Is.EqualTo(1));
+
+            var existing = _provider.PluginMetaDataDataStore.GetById(1);
+
+            Assert.That(existing, Is.Not.Null);
+            Assert.That(existing.Id, Is.EqualTo(1));
         }
 
         [Test()]
         public void Can_GetByPackageId()
         {
-            Assert.Fail();
+            var now = DateTime.Now;
+
+            for (int x = 1; x <= 10; x++)
+            {
+                var pluginMetaData1 = new PluginMetaData()
+                {
+                    PackageId = 1,
+                    Name = "Name",
+                    Description = "Description",
+                    Version = "1.0",
+                    AssemblyName = "System",
+                    ClassName = "System.Object",
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.PluginMetaDataDataStore.Create(pluginMetaData1);
+
+                var pluginMetaData2 = new PluginMetaData()
+                {
+                    PackageId = 2,
+                    Name = "Name",
+                    Description = "Description",
+                    Version = "1.0",
+                    AssemblyName = "System",
+                    ClassName = "System.Object",
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.PluginMetaDataDataStore.Create(pluginMetaData2);
+            }
+
+            var byPackageIdList = _provider.PluginMetaDataDataStore.GetByPackageId(2);
+
+            Assert.That(byPackageIdList, Has.Count.EqualTo(10));
         }
 
         [Test()]
@@ -95,7 +151,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.PluginMetaDataDataStore.Create(pluginMetaData);
 
-            Assert.IsTrue(1 == pluginMetaData.Id);
+            Assert.That(pluginMetaData.Id, Is.EqualTo(1));
 
             pluginMetaData.Description = "UpdatedDescription";
 

@@ -4,13 +4,13 @@ namespace KronoMata.Data.Mock
 {
     public class MockPluginConfigurationDataStore : IPluginConfigurationDataStore
     {
-        private List<PluginConfiguration> _pluginConfigurations = new List<PluginConfiguration>();
+        private readonly List<PluginConfiguration> _pluginConfigurations = new();
 
         public PluginConfiguration Create(PluginConfiguration pluginConfiguration)
         {
             pluginConfiguration.Id = _pluginConfigurations.Count == 0
                 ? 1
-                : _pluginConfigurations[_pluginConfigurations.Count - 1].Id + 1;
+                : _pluginConfigurations[^1].Id + 1;
 
             _pluginConfigurations.Add(pluginConfiguration);
 

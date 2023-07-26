@@ -4,13 +4,13 @@ namespace KronoMata.Data.Mock
 {
     public class MockPackageDataStore : IPackageDataStore
     {
-        private List<Package> _packages = new List<Package>();
+        private readonly List<Package> _packages = new();
 
         public Package Create(Package package)
         {
             package.Id = _packages.Count == 0
                 ? 1
-                : _packages[_packages.Count - 1].Id + 1;
+                : _packages[^1].Id + 1;
 
             _packages.Add(package);
 

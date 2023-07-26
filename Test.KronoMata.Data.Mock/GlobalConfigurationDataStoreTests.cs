@@ -32,7 +32,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
 
-            Assert.IsTrue(1 == globalConfiguration.Id);
+            Assert.That(globalConfiguration.Id, Is.EqualTo(1));
         }
 
         [Test]
@@ -52,18 +52,18 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
 
-            Assert.IsTrue(1 == globalConfiguration.Id);
+            Assert.That(globalConfiguration.Id, Is.EqualTo(1));
 
             var existing = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName");
-            Assert.IsNotNull(existing);
+            Assert.That(existing, Is.Not.Null);
 
             existing.Category = "UpdatedCategory";
             _provider.GlobalConfigurationDataStore.Update(existing);
 
             existing = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("UpdatedCategory", "TestName");
-            Assert.IsNotNull(existing);
+            Assert.That(existing, Is.Not.Null);
 
-            Assert.IsTrue(existing.Category == "UpdatedCategory");
+            Assert.That(existing.Category, Is.EqualTo("UpdatedCategory"));
         }
 
         [Test]
@@ -83,12 +83,12 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
 
-            Assert.IsTrue(1 == globalConfiguration.Id);
+            Assert.That(globalConfiguration.Id, Is.EqualTo(1));
 
             _provider.GlobalConfigurationDataStore.Delete(globalConfiguration.Id);
 
             var existing = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName");
-            Assert.IsNull(existing);
+            Assert.That(existing, Is.Null);
         }
 
         [Test()]
@@ -113,7 +113,7 @@ namespace Test.KronoMata.Data.Mock
             }
 
             var all = _provider.GlobalConfigurationDataStore.GetAll();
-            Assert.That(all.Count, Is.EqualTo(count));
+            Assert.That(all, Has.Count.EqualTo(count));
         }
 
         [Test()]
@@ -152,7 +152,7 @@ namespace Test.KronoMata.Data.Mock
 
             var category1 = _provider.GlobalConfigurationDataStore.GetByCategory("TestCategory1");
 
-            Assert.That(category1.Count, Is.EqualTo(count));
+            Assert.That(category1, Has.Count.EqualTo(count));
         }
 
         [Test()]
@@ -178,7 +178,7 @@ namespace Test.KronoMata.Data.Mock
 
             var one = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName3");
 
-            Assert.IsNotNull(one);
+            Assert.That(one, Is.Not.Null);
             Assert.That(one.Name, Is.EqualTo("TestName3"));
             Assert.That(one.Value, Is.EqualTo("TestValue3"));
         }

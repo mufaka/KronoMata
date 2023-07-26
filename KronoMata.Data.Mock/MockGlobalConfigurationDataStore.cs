@@ -4,13 +4,13 @@ namespace KronoMata.Data.Mock
 {
     public class MockGlobalConfigurationDataStore : IGlobalConfigurationDataStore
     {
-        private List<GlobalConfiguration> _globalConfigurations = new List<GlobalConfiguration>();
+        private readonly List<GlobalConfiguration> _globalConfigurations = new();
 
         public GlobalConfiguration Create(GlobalConfiguration globalConfiguration)
         {
             globalConfiguration.Id = _globalConfigurations.Count == 0
                 ? 1
-                : _globalConfigurations[_globalConfigurations.Count - 1].Id + 1;
+                : _globalConfigurations[^1].Id + 1;
 
             _globalConfigurations.Add(globalConfiguration);
 

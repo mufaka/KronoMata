@@ -31,7 +31,7 @@ namespace Test.KronoMata.Data.Mock
 
             _provider.ConfigurationValueDataStore.Create(configurationValue);
 
-            Assert.IsTrue(1 == configurationValue.Id);
+            Assert.That(configurationValue.Id, Is.EqualTo(1));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Test.KronoMata.Data.Mock
 
             var existing = _provider.ConfigurationValueDataStore.GetByScheduledJob(1);
 
-            Assert.IsTrue(1 == existing.Count);
+            Assert.That(existing.Count, Is.EqualTo(1));
 
             configurationValue.Value = "Dummy Updated";
 
@@ -60,8 +60,8 @@ namespace Test.KronoMata.Data.Mock
 
             existing = _provider.ConfigurationValueDataStore.GetByScheduledJob(1);
 
-            Assert.IsTrue(1 == existing.Count);
-            Assert.IsTrue("Dummy Updated" == existing[0].Value);
+            Assert.That(existing.Count, Is.EqualTo(1));
+            Assert.That(existing[0].Value, Is.EqualTo("Dummy Updated"));
         }
 
         [Test]
@@ -81,12 +81,12 @@ namespace Test.KronoMata.Data.Mock
             _provider.ConfigurationValueDataStore.Create(configurationValue);
             var existing = _provider.ConfigurationValueDataStore.GetByScheduledJob(1);
 
-            Assert.IsTrue(1 == existing.Count);
+            Assert.That(existing.Count, Is.EqualTo(1));
 
             _provider.ConfigurationValueDataStore.Delete(configurationValue.Id);
             existing = _provider.ConfigurationValueDataStore.GetByScheduledJob(1);
 
-            Assert.IsTrue(0 == existing.Count);
+            Assert.That(existing.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -123,11 +123,11 @@ namespace Test.KronoMata.Data.Mock
 
             var byScheduledJob = _provider.ConfigurationValueDataStore.GetByScheduledJob(1);
 
-            Assert.IsTrue(byScheduledJob.Count == count);
+            Assert.That(byScheduledJob.Count, Is.EqualTo(count));
 
             foreach (var configurationValue in byScheduledJob)
             {
-                Assert.IsTrue(1 == configurationValue.ScheduledJobId);
+                Assert.That(configurationValue.ScheduledJobId, Is.EqualTo(1));
             }
         }
     }

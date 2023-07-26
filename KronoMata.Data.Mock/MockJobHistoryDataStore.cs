@@ -4,13 +4,13 @@ namespace KronoMata.Data.Mock
 {
     public class MockJobHistoryDataStore : IJobHistoryDataStore
     {
-        private List<JobHistory> _jobHistories = new List<JobHistory>();
+        private readonly List<JobHistory> _jobHistories = new();
 
         public JobHistory Create(JobHistory jobHistory)
         {
             jobHistory.Id = _jobHistories.Count == 0
                 ? 1
-                : _jobHistories[_jobHistories.Count - 1].Id + 1;
+                : _jobHistories[^1].Id + 1;
 
             _jobHistories.Add(jobHistory);
 
