@@ -1,6 +1,8 @@
 ﻿using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Prototyping;
+using System.IO.Compression;
+using System.Text.RegularExpressions;
 
 namespace KronoMata.ProtoTyping
 {
@@ -12,7 +14,6 @@ namespace KronoMata.ProtoTyping
         {
             try
             {
-                var pluginArchiveRoot = $"{Path.DirectorySeparatorChar}PackageRoot{Path.DirectorySeparatorChar}";
                 var machineName = Environment.MachineName;
 
                 // determine if we have initialized data.
@@ -48,25 +49,76 @@ namespace KronoMata.ProtoTyping
                 }
                 else
                 {
+                    var pluginArchiveRoot = $"PackageRoot{Path.DirectorySeparatorChar}";
+
                     foreach (ScheduledJob scheduledJob in scheduledJobs)
                     {
                         Console.WriteLine($"Found Scheduled Job {scheduledJob.Name}");
 
                         if (ShouldRun(scheduledJob))
                         {
-                            // TODO: Obtain plugin zip if not in PackageRoot.
+                            var pluginMetaData = dataStoreProvider.PluginMetaDataDataStore.GetById(scheduledJob.PluginMetaDataId);
+                            var package = dataStoreProvider.PackageDataStore.GetById(pluginMetaData.PackageId);
+                            var packageFolder = $"{pluginArchiveRoot}{GetPluginFolderName(pluginMetaData)}";
+                            var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
 
-                            // TODO: Extract plugin if not in PackageRoot/<plugin name>_<version>/.
+                            if (!Directory.Exists(packageFolder))
+                            {
+                                if (!File.Exists(packageArchivePath))
+                                {
+                                    // TODO: attempt to fetch from future API.
+                                    Console.WriteLine($"Could not find package path at {packageArchivePath}");
+                                }
+                                else
+                                {
+                                    // need to extract archive to packageFolder
+                                    Console.WriteLine($"Found package archive at {packageArchivePath}. Unzipping to {packageFolder}");
+                                    ZipFile.ExtractToDirectory(packageArchivePath, packageFolder);
+                                }
+                            }
 
-                            // TODO: Dynamically load plugin.
+                            // the work above should result in this folder now being available
+                            if (!Directory.Exists(packageFolder))
+                            {
+                                Console.WriteLine($"Unable to find package folder at {packageFolder}");
+                            }
+                            else
+                            {
+                                // now what? PluginLoadContext? Do we require the assembly file to be named
+                                // a certain way? eg: PluginMetaData.AssemblyName.dll? I think so ...
 
-                            // TODO: Execute plugin.
+                                // TODO: Map configuration values.
 
-                            // TODO: Log results.
+                                // TODO: Dynamically load plugin.
+
+                                // TODO: Execute plugin.
+
+                                // TODO: Log results.
+                            }
                         }
                     }
                 }
             }
+        }
+
+        private static string GetPluginFolderName(PluginMetaData metaData)
+        {
+            // NOTE: Not too worried about Regex performance here as it
+            // NOTE: isn't in a hot spot.
+
+            // only allow [0-9a-zA-Z-.] characters in the filename as they
+            // are safe on 'all' platforms (Windows, Mac, *nix)
+
+            // replace invalid characters with spaces
+            var folderName = Regex.Replace($"{metaData.Name}_{metaData.Version}", @"[^0-9a-zA-Z-.]", " ");
+
+            // replace multiple spaces with a single space
+            folderName = Regex.Replace(folderName, "[ ]{2,}", " ");
+
+            // replace single spaces with _
+            folderName = Regex.Replace(folderName, "[ ]", "_");
+
+            return folderName;
         }
 
         private static bool ShouldRun(ScheduledJob scheduledJob)
