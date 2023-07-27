@@ -42,15 +42,12 @@ namespace KronoMata.Samples
             {
                 if (parameter.IsRequired && !pluginConfig.ContainsKey(parameter.Name))
                 {
-                    if (missingRequiredParameterResult == null)
-                    {
-                        missingRequiredParameterResult = new PluginResult()
+                    missingRequiredParameterResult ??= new PluginResult()
                         {
                             IsError = true,
                             Message = "Missing required parameter(s).",
                             Detail = "The plugin configuration is missing the following parameters:"
                         };
-                    }
 
                     missingRequiredParameterResult.Detail = missingRequiredParameterResult.Detail + Environment.NewLine + parameter.Name;
                 }
