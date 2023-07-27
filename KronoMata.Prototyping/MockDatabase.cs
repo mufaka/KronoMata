@@ -1,11 +1,6 @@
 ﻿using KronoMata.Data;
 using KronoMata.Data.Mock;
 using KronoMata.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KronoMata.Prototyping
 {
