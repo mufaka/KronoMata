@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KronoMata.Data.Mock\KronoMata.Data.Mock.csproj" />
+    <ProjectReference Include="..\KronoMata.Data\KronoMata.Data.csproj" />
+    <ProjectReference Include="..\KronoMata.Model\KronoMata.Model.csproj" />
+    <ProjectReference Include="..\KronoMata.Public\KronoMata.Public.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="PackageRoot\KronoMata.Samples.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
