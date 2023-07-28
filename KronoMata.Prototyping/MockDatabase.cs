@@ -28,9 +28,14 @@ namespace KronoMata.Prototyping
             PluginConfiguration pluginConfiguration1 = CreatePluginConfiguration1(now, plugin);
             PluginConfiguration pluginConfiguration2 = CreatePluginConfiguration2(now, plugin);
             Host host = CreateHost(now);
-            ScheduledJob scheduledJob = CreateScheduledJob(now, plugin, host);
-            CreateConfigurationValue1(now, pluginConfiguration1, scheduledJob);
-            CreateConfigurationValue2(now, pluginConfiguration2, scheduledJob);
+
+            ScheduledJob scheduledJob1 = CreateScheduledJob(now, plugin, host);
+            CreateConfigurationValue1(now, pluginConfiguration1, scheduledJob1);
+            CreateConfigurationValue2(now, pluginConfiguration2, scheduledJob1);
+
+            ScheduledJob scheduledJob2 = CreateScheduledJob(now, plugin, host);
+            CreateConfigurationValue1(now, pluginConfiguration1, scheduledJob2);
+            CreateConfigurationValue2(now, pluginConfiguration2, scheduledJob2);
         }
 
         private Package CreatePackage()
@@ -136,7 +141,7 @@ namespace KronoMata.Prototyping
             {
                 PluginConfigurationId = pluginConfiguration1.Id,
                 ScheduledJobId = scheduledJob.Id,
-                Value = "Test Message",
+                Value = $"Test Message {scheduledJob.Id}",
                 InsertDate = now,
                 UpdateDate = now
             };
@@ -150,7 +155,7 @@ namespace KronoMata.Prototyping
             {
                 PluginConfigurationId = pluginConfiguration2.Id,
                 ScheduledJobId = scheduledJob.Id,
-                Value = "Test Detail",
+                Value = $"Test Detail {scheduledJob.Id}",
                 InsertDate = now,
                 UpdateDate = now
             };

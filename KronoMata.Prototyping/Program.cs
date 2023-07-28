@@ -53,90 +53,109 @@ namespace KronoMata.ProtoTyping
                 {
                     var pluginArchiveRoot = $"PackageRoot{Path.DirectorySeparatorChar}";
 
-                    foreach (ScheduledJob scheduledJob in scheduledJobs)
+                    for (int x = 0; x < 10; x++)
                     {
-                        Console.WriteLine($"Found Scheduled Job {scheduledJob.Name}");
-
-                        if (ShouldRun(scheduledJob))
+                        Parallel.ForEach(scheduledJobs, scheduledJob =>
                         {
-                            var pluginMetaData = dataStoreProvider.PluginMetaDataDataStore.GetById(scheduledJob.PluginMetaDataId);
-                            var package = dataStoreProvider.PackageDataStore.GetById(pluginMetaData.PackageId);
-                            var packageFolder = $"{pluginArchiveRoot}{GetPluginFolderName(pluginMetaData)}";
-                            var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
-
-                            if (!Directory.Exists(packageFolder))
+                            if (ShouldRun(scheduledJob))
                             {
-                                if (!File.Exists(packageArchivePath))
-                                {
-                                    // TODO: attempt to fetch from future API.
-                                    Console.WriteLine($"Could not find package path at {packageArchivePath}");
-                                }
-                                else
-                                {
-                                    // need to extract archive to packageFolder
-                                    Console.WriteLine($"Found package archive at {packageArchivePath}. Unzipping to {packageFolder}");
-                                    ZipFile.ExtractToDirectory(packageArchivePath, packageFolder);
-                                }
+                                ExecutePlugin(dataStoreProvider, pluginArchiveRoot, scheduledJob);
                             }
+                        });
 
-                            // the work above should result in this folder now being available
-                            if (!Directory.Exists(packageFolder))
+                        Thread.Sleep(4000);
+                    }
+                }
+            }
+        }
+
+        private static void ExecutePlugin(IDataStoreProvider dataStoreProvider, string pluginArchiveRoot, ScheduledJob scheduledJob)
+        {
+            var pluginMetaData = dataStoreProvider.PluginMetaDataDataStore.GetById(scheduledJob.PluginMetaDataId);
+            var package = dataStoreProvider.PackageDataStore.GetById(pluginMetaData.PackageId);
+            var packageFolder = $"{pluginArchiveRoot}{GetPluginFolderName(pluginMetaData)}";
+            var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
+
+            // create and extract plugin to package folder
+            CreatePackageFolder(packageFolder, packageArchivePath);
+
+            // the work above should result in this folder now being available
+            if (!Directory.Exists(packageFolder))
+            {
+                Console.WriteLine($"Unable to find package folder at {packageFolder}");
+            }
+            else
+            {
+                // Map configuration values.
+                var systemConfiguration = GetSystemConfiguration(dataStoreProvider);
+                var pluginConfiguration = GetScheduledJobConfiguration(dataStoreProvider, scheduledJob, pluginMetaData);
+
+                // Dynamically load plugin. Assembly file must match <AssemblyName>.dll
+                var assemblyPath = Path.GetFullPath($"{packageFolder}{Path.DirectorySeparatorChar}{pluginMetaData.AssemblyName}.dll");
+
+                if (!File.Exists(assemblyPath))
+                {
+                    Console.WriteLine($"Assembly file not found at {assemblyPath}");
+                }
+                else
+                {
+                    // McMaster.NETCore.Plugins handles sharing of types nicely.
+                    // In .NET Framework you could just do (IPlugin)Assembly.LoadFrom(path).CreateInstance(class name)
+                    // but in .NET Core the created instance wasn't assignable to IPlugin
+                    var pluginLoader = PluginLoader.CreateFromAssemblyFile(
+                        assemblyFile: assemblyPath,
+                        sharedTypes: new[] { typeof(IPlugin) },
+                        isUnloadable: true);
+
+                    var assembly = pluginLoader.LoadDefaultAssembly();
+
+                    if (assembly != null)
+                    {
+                        var plugin = assembly.CreateInstance(pluginMetaData.ClassName) as IPlugin;
+
+                        if (plugin != null)
+                        {
+                            var results = plugin.Execute(systemConfiguration, pluginConfiguration);
+
+                            // can we / should we call Dispose directly? This unloads the loaded assemblies
+                            plugin = null;
+                            pluginLoader.Dispose();
+
+                            foreach (var result in results)
                             {
-                                Console.WriteLine($"Unable to find package folder at {packageFolder}");
-                            }
-                            else
-                            {
-                                // Map configuration values.
-                                var systemConfiguration = GetSystemConfiguration(dataStoreProvider);
-                                var pluginConfiguration = GetScheduledJobConfiguration(dataStoreProvider, scheduledJob, pluginMetaData);
-
-                                // Dynamically load plugin. Assembly file must match <AssemblyName>.dll
-                                var assemblyPath = Path.GetFullPath($"{packageFolder}{Path.DirectorySeparatorChar}{pluginMetaData.AssemblyName}.dll");
-
-                                if (!File.Exists(assemblyPath))
-                                {
-                                    Console.WriteLine($"Assembly file not found at {assemblyPath}");
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"Assembly file found at {assemblyPath}");
-
-                                    var pluginLoader = PluginLoader.CreateFromAssemblyFile(
-                                        assemblyFile: assemblyPath,
-                                        sharedTypes: new[] { typeof(IPlugin) },
-                                        isUnloadable: true);
-
-
-                                    var assembly = pluginLoader.LoadDefaultAssembly();
-
-                                    if (assembly != null)
-                                    {
-                                        var plugin = assembly.CreateInstance(pluginMetaData.ClassName) as IPlugin;
-
-                                        if (plugin != null)
-                                        {
-                                            var results = plugin.Execute(systemConfiguration, pluginConfiguration);
-
-                                            foreach (var result in results)
-                                            { 
-                                                Console.WriteLine($"IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}"); 
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine($"Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine($"Unable to load assembly from {assemblyPath}");
-                                    }
-
-                                    // TODO: Log results.
-                                }
+                                Console.WriteLine($"IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}");
                             }
                         }
+                        else
+                        {
+                            Console.WriteLine($"Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}");
+                        }
                     }
+                    else
+                    {
+                        Console.WriteLine($"Unable to load assembly from {assemblyPath}");
+                    }
+
+
+                    // TODO: Log results.
+                }
+            }
+        }
+
+        private static void CreatePackageFolder(string packageFolder, string packageArchivePath)
+        {
+            if (!Directory.Exists(packageFolder))
+            {
+                if (!File.Exists(packageArchivePath))
+                {
+                    // TODO: attempt to fetch from future API.
+                    Console.WriteLine($"Could not find package path at {packageArchivePath}");
+                }
+                else
+                {
+                    // need to extract archive to packageFolder
+                    Console.WriteLine($"Found package archive at {packageArchivePath}. Unzipping to {packageFolder}");
+                    ZipFile.ExtractToDirectory(packageArchivePath, packageFolder);
                 }
             }
         }
