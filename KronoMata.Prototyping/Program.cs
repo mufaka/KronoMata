@@ -1,6 +1,8 @@
 ﻿using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Prototyping;
+using KronoMata.Public;
+using McMaster.NETCore.Plugins;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 
@@ -84,21 +86,101 @@ namespace KronoMata.ProtoTyping
                             }
                             else
                             {
-                                // now what? PluginLoadContext? Do we require the assembly file to be named
-                                // a certain way? eg: PluginMetaData.AssemblyName.dll? I think so ...
+                                // Map configuration values.
+                                var systemConfiguration = GetSystemConfiguration(dataStoreProvider);
+                                var pluginConfiguration = GetScheduledJobConfiguration(dataStoreProvider, scheduledJob, pluginMetaData);
 
-                                // TODO: Map configuration values.
+                                // Dynamically load plugin. Assembly file must match <AssemblyName>.dll
+                                var assemblyPath = Path.GetFullPath($"{packageFolder}{Path.DirectorySeparatorChar}{pluginMetaData.AssemblyName}.dll");
 
-                                // TODO: Dynamically load plugin.
+                                if (!File.Exists(assemblyPath))
+                                {
+                                    Console.WriteLine($"Assembly file not found at {assemblyPath}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Assembly file found at {assemblyPath}");
 
-                                // TODO: Execute plugin.
+                                    var pluginLoader = PluginLoader.CreateFromAssemblyFile(
+                                        assemblyFile: assemblyPath,
+                                        sharedTypes: new[] { typeof(IPlugin) },
+                                        isUnloadable: true);
 
-                                // TODO: Log results.
+
+                                    var assembly = pluginLoader.LoadDefaultAssembly();
+
+                                    if (assembly != null)
+                                    {
+                                        var plugin = assembly.CreateInstance(pluginMetaData.ClassName) as IPlugin;
+
+                                        if (plugin != null)
+                                        {
+                                            var results = plugin.Execute(systemConfiguration, pluginConfiguration);
+
+                                            foreach (var result in results)
+                                            { 
+                                                Console.WriteLine($"IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}"); 
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine($"Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"Unable to load assembly from {assemblyPath}");
+                                    }
+
+                                    // TODO: Log results.
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+
+        private static Dictionary<string, string> GetScheduledJobConfiguration(IDataStoreProvider dataStoreProvider, 
+            ScheduledJob scheduledJob, PluginMetaData pluginMetaData)
+        {
+            var pluginConfiguration = new Dictionary<string, string>();
+            var pluginConfigurationList = dataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(pluginMetaData.Id);
+            var scheduledJobConfigurationList = dataStoreProvider.ConfigurationValueDataStore.GetByScheduledJob(scheduledJob.Id);
+
+            foreach (PluginConfiguration configuration in pluginConfigurationList)
+            {
+                if (!pluginConfiguration.ContainsKey(configuration.Name))
+                {
+                    var configurationValue = scheduledJobConfigurationList.Where(c => c.PluginConfigurationId == configuration.Id).FirstOrDefault();
+
+                    if (configurationValue != null)
+                    {
+                        pluginConfiguration.Add(configuration.Name, configurationValue.Value);
+                    }
+                }
+            }
+
+            return pluginConfiguration;
+        }
+
+        private static Dictionary<string, string> GetSystemConfiguration(IDataStoreProvider dataStoreProvider)
+        {
+            var globalConfigurationList = dataStoreProvider.GlobalConfigurationDataStore.GetAll();
+            var systemConfiguration = new Dictionary<string, string>();
+
+            foreach (GlobalConfiguration globalConfiguration in globalConfigurationList)
+            {
+                if (globalConfiguration.IsAccessibleToPlugins)
+                {
+                    if (!systemConfiguration.ContainsKey(globalConfiguration.Name))
+                    {
+                        systemConfiguration.Add(globalConfiguration.Name, globalConfiguration.Value);
+                    }
+                }
+            }
+
+            return systemConfiguration;
         }
 
         private static string GetPluginFolderName(PluginMetaData metaData)
