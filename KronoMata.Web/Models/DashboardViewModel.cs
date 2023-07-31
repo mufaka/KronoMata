@@ -7,6 +7,8 @@ namespace KronoMata.Web.Models
         public List<Model.Host> Hosts { get; set; } = new List<Model.Host>();
 
         public List<ScheduledJob> ScheduledJobs { get; set; } = new List<ScheduledJob>();
+
+        public List<JobHistory> JobHistories { get; set; } = new List<JobHistory>();
        
     }
 }

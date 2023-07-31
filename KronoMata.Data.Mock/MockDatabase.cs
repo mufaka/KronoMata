@@ -36,6 +36,37 @@ namespace KronoMata.Data.Mock
             ScheduledJob scheduledJob2 = CreateScheduledJob(now, plugin, host);
             CreateConfigurationValue1(now, pluginConfiguration1, scheduledJob2);
             CreateConfigurationValue2(now, pluginConfiguration2, scheduledJob2);
+
+            CreateJobHistories(now, host);
+        }
+
+        private void CreateJobHistories(DateTime now, Host host)
+        {
+            var random = new Random();
+
+            foreach (ScheduledJob job in DataStoreProvider.ScheduledJobDataStore.GetAll())
+            {
+                var startDate = now.AddDays(-7d).Date;
+                var runTime = startDate;
+
+                for (int x = 0; x < 7 * 24 ; x++)
+                {
+                    runTime = runTime.AddMinutes(random.Next(60));
+
+                    var history = new JobHistory();
+                    history.HostId = host.Id;
+                    history.ScheduledJobId = job.Id;
+                    history.RunTime = runTime;
+                    history.Status = (ScheduledJobStatus)(random.Next(3));
+                    history.Message = $"{history.Status} Message {x + 1}";
+                    history.Detail = $"Detail {x + 1}";
+
+                    // step to the next hour
+                    runTime = new DateTime(runTime.Year, runTime.Month, runTime.Day, runTime.Hour, 0, 0).AddHours(1);
+
+                    DataStoreProvider.JobHistoryDataStore.Create(history);
+                }
+            }
         }
 
         private Package CreatePackage()

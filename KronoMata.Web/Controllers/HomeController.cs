@@ -23,6 +23,8 @@ namespace KronoMata.Web.Controllers
             {
                 model.Hosts = DataStoreProvider.HostDataStore.GetAll();
                 model.ScheduledJobs = DataStoreProvider.ScheduledJobDataStore.GetAll();
+                model.JobHistories = DataStoreProvider.JobHistoryDataStore.GetAll();
+
             }
             catch (Exception ex)
             {
