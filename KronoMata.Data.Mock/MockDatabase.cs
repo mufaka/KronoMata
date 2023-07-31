@@ -2,9 +2,9 @@
 using KronoMata.Data.Mock;
 using KronoMata.Model;
 
-namespace KronoMata.Prototyping
+namespace KronoMata.Data.Mock
 {
-    internal class MockDatabase
+    public class MockDatabase
     {
         public static readonly MockDatabase Instance = new();
         private readonly IDataStoreProvider _dataProvider;
