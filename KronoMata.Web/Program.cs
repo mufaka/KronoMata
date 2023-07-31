@@ -1,3 +1,6 @@
+using KronoMata.Data;
+using KronoMata.Data.Mock;
+
 namespace KronoMata.Web
 {
     public class Program
@@ -8,6 +11,7 @@ namespace KronoMata.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSingleton<IDataStoreProvider>(MockDatabase.Instance.DataStoreProvider);
 
             var app = builder.Build();
 
@@ -16,12 +20,10 @@ namespace KronoMata.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
