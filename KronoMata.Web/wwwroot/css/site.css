@@ -16,3 +16,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.bg-info-lt {
+    color: #7C9D96;
+    background-color: #A1CCD1;
+}

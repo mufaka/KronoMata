@@ -2,16 +2,60 @@
 
 <div class="container-fluid">
     <div class="row">
+        <div class="col-lg-3 col-6">
+            <!-- small card -->
+            <div class="small-box bg-info shadow-sm">
+                <div class="inner">
+                    <h3>@Model.Hosts.Count</h3>
+
+                    <p>Hosts</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <!-- small card -->
+            <div class="small-box bg-info shadow-sm">
+                <div class="inner">
+                    <h3>@Model.Plugins.Count</h3>
+
+                    <p>Plugins</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <!-- small card -->
+            <div class="small-box bg-info shadow-sm">
+                <div class="inner">
+                    <h3>@Model.ScheduledJobs.Count</h3>
+
+                    <p>Scheduled Jobs</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-stopwatch"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-12">
-            <div class="card card-primary">
+            <div class="card shadow-sm">
                 <div class="card-header">
                     <h3 class="card-title">Current Job History</h3>
-
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="chart">
@@ -103,12 +147,31 @@
             });
 
             for (series in data.seriesList) {
+                var color = '#28a745';
+                var border = '#28a745';
+                var seriesName = data.seriesList[series].name;
+
+                switch (seriesName) {
+                    case 'Failure':
+                        color = 'rgba(255, 99, 132, 0.6)';
+                        border = 'rgba(255, 99, 132, 0.2)';
+                        break;
+                    case 'Skipped':
+                        color = 'rgba(255, 205, 86, 0.6)';
+                        border = 'rgba(255, 205, 86, 0.2)';
+                        break;
+                    case 'Success':
+                        color = 'rgba(75, 192, 192, 0.6)';
+                        border = 'rgba(75, 192, 192, 0.2)';
+                        break;
+                }
+
                 var dataSet = {
-                    label: data.seriesList[series].name,
+                    label: seriesName,
                     data: [],
                     borderWidth: 2,
-                    backgroundColor: __colors[series],
-                    borderColor: __colors[series],
+                    backgroundColor: color,
+                    borderColor: border,
                     borderWidth: 2.0,
                     pointBackgroundColor: '#ffffff',
                     fill: false
