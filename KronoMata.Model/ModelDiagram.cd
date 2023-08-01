@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="KronoMata.Model.ConfigurationValue">
+    <Position X="3.75" Y="6" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQAAAQAAAAAAAAAAAAAAAAAAAAAgEAEAAAA=</HashCode>
+      <FileName>ConfigurationValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KronoMata.Model.GlobalConfiguration">
+    <Position X="9.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQgAAAAAAAAAAAQAAAAAAAAAAAAgAAEACAA=</HashCode>
+      <FileName>GlobalConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KronoMata.Model.Host">
+    <Position X="6.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQQAAAAAAAEAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Host.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KronoMata.Model.JobHistory">
+    <Position X="7.25" Y="3.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAAAAAQAAAAEAAAgAAAAAAAAAAAAAIAAACAA=</HashCode>
+      <FileName>JobHistory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KronoMata.Model.Package">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Package.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KronoMata.Model.PluginConfiguration">
+    <Position X="0.5" Y="5.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQIgAAAAAAAAAAQgAAAAAAAAAAAEAAEAAAA=</HashCode>
+      <FileName>PluginConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KronoMata.Model.PluginMetaData">
+    <Position X="0.5" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IACCAAAAAQCgAAAAAAAAAAQCAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>PluginMetaData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KronoMata.Model.ScheduledJob">
+    <Position X="3.75" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQAgAAAAAIEAAAQAIAAgAAAAIAAEAAEAAAA=</HashCode>
+      <FileName>ScheduledJob.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="JetBrains Mono" Size="10" />
+</ClassDiagram>

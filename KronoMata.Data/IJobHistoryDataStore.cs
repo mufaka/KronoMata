@@ -12,5 +12,7 @@ namespace KronoMata.Data
         List<JobHistory> GetAll();
         List<JobHistory> GetTop(int howMany);
         List<JobHistory> GetByScheduledJob(int scheduledJobId);
+
+        List<JobHistory> GetLastByDate(DateTime startDate);
     }
 }

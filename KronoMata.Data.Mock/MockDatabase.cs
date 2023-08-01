@@ -1,6 +1,4 @@
-﻿using KronoMata.Data;
-using KronoMata.Data.Mock;
-using KronoMata.Model;
+﻿using KronoMata.Model;
 
 namespace KronoMata.Data.Mock
 {

@@ -12,5 +12,7 @@ namespace KronoMata.Data
         void Delete(int id);
         PluginMetaData GetById(int id);
         List<PluginMetaData> GetByPackageId(int packageId);
+
+        List<PluginMetaData> GetAll();
     }
 }

@@ -36,5 +36,10 @@ namespace KronoMata.Data.Mock
         {
             return Enumerable.Reverse(_jobHistories).Take(howMany).ToList();
         }
+
+        public List<JobHistory> GetLastByDate(DateTime startDate)
+        {
+            return _jobHistories.Where(h => h.RunTime > startDate).OrderByDescending(h => h.RunTime).ToList();
+        }
     }
 }

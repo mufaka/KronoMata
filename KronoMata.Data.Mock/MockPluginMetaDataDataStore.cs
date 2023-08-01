@@ -43,5 +43,10 @@ namespace KronoMata.Data.Mock
                 existing = pluginMetaData;
             }
         }
+
+        public List<PluginMetaData> GetAll()
+        {
+            return _pluginMetaDatas;
+        }
     }
 }

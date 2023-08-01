@@ -21,10 +21,12 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                var now = DateTime.Now.Date;
+
+                model.Plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll();
                 model.Hosts = DataStoreProvider.HostDataStore.GetAll();
                 model.ScheduledJobs = DataStoreProvider.ScheduledJobDataStore.GetAll();
-                model.JobHistories = DataStoreProvider.JobHistoryDataStore.GetAll();
-
+                model.JobHistories = DataStoreProvider.JobHistoryDataStore.GetLastByDate(now.AddDays(-7));
             }
             catch (Exception ex)
             {
