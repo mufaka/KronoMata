@@ -3,30 +3,125 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <!-- Default box -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Title</h3>
+                    <h3 class="card-title">Current Job History</h3>
 
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                             <i class="fas fa-minus"></i>
                         </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
                 </div>
                 <div class="card-body">
-                    Main Layout for Admin Dashboard.
+                    <div class="chart">
+                        <!-- TODO: move styling to a reusable place -->
+                        <canvas id="jobHistoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
                 </div>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                    Footer
-                </div>
-                <!-- /.card-footer-->
             </div>
-            <!-- /.card -->
         </div>
     </div>
 </div>
+
+@section scripts 
+{
+    <script src="~/plugins/chart.js/Chart.min.js"></script>
+    <script src="~/js/colors.js"></script>
+
+    <script type="text/javascript">
+
+        function GetData(url) {
+            var resp = [];
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                contentType: "application/json",
+                success: function (data) {
+                    resp.push(data);
+                },
+                error: function (req, status, error) {
+                    // TODO: do something with error
+                    alert("error");
+                }
+            });
+            return resp;
+        }
+
+        $(function() {
+            populateJobHistorySummary();
+        });
+
+        function populateJobHistorySummary() {
+            var ctx = $('#jobHistoryChart').get(0).getContext('2d')
+            var data = GetData('@Url.Action("GetLastJobHistorySummary", "ChartData")')[0];
+            var labels = data.labels;
+
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: true
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: false,
+                                fontColor: "#77778e",
+                                callback: function (label, index, labels) {
+                                    return label;
+                                }
+                            },
+                            gridLines: {
+                                color: 'rgba(119, 119, 142, 0.2)'
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                display: true,
+                                fontColor: "#77778e"
+                            },
+                            gridLines: {
+                                display: true,
+                                color: 'rgba(119, 119, 142, 0.2)'
+                            }
+                        }]
+                    },
+                    legend: {
+                        labels: {
+                            fontColor: "#77778e"
+                        },
+                    },
+                }
+            });
+
+            for (series in data.seriesList) {
+                var dataSet = {
+                    label: data.seriesList[series].name,
+                    data: [],
+                    borderWidth: 2,
+                    backgroundColor: __colors[series],
+                    borderColor: __colors[series],
+                    borderWidth: 2.0,
+                    pointBackgroundColor: '#ffffff',
+                    fill: false
+                }
+
+                for (idx in data.seriesList[series].data) {
+                    dataSet.data.push(data.seriesList[series].data[idx]);
+                }
+
+                myChart.config.data.datasets.push(dataSet);
+            }
+
+            myChart.update();
+        }
+    </script>
+}
