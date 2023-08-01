@@ -2,8 +2,10 @@
 
 namespace KronoMata.Data.Mock
 {
-    public class MockGlobalConfigurationDataStore : IGlobalConfigurationDataStore
+    public class MockGlobalConfigurationDataStore : BaseMockDataStore, IGlobalConfigurationDataStore
     {
+        public MockGlobalConfigurationDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
+
         private readonly List<GlobalConfiguration> _globalConfigurations = new();
 
         public GlobalConfiguration Create(GlobalConfiguration globalConfiguration)

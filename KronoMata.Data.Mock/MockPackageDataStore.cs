@@ -2,8 +2,10 @@
 
 namespace KronoMata.Data.Mock
 {
-    public class MockPackageDataStore : IPackageDataStore
+    public class MockPackageDataStore : BaseMockDataStore, IPackageDataStore
     {
+        public MockPackageDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
+
         private readonly List<Package> _packages = new();
 
         public Package Create(Package package)

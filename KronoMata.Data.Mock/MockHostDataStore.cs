@@ -2,8 +2,10 @@
 
 namespace KronoMata.Data.Mock
 {
-    public class MockHostDataStore : IHostDataStore
+    public class MockHostDataStore : BaseMockDataStore, IHostDataStore
     {
+        public MockHostDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
+
         private readonly List<Host> _hosts = new();
 
         public Host Create(Host host)

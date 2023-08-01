@@ -52,6 +52,7 @@ namespace KronoMata.Data.Mock
                     runTime = runTime.AddMinutes(random.Next(60));
 
                     var history = new JobHistory();
+
                     history.HostId = host.Id;
                     history.ScheduledJobId = job.Id;
                     history.RunTime = runTime;

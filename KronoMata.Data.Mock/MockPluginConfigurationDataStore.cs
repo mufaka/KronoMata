@@ -2,8 +2,10 @@
 
 namespace KronoMata.Data.Mock
 {
-    public class MockPluginConfigurationDataStore : IPluginConfigurationDataStore
+    public class MockPluginConfigurationDataStore : BaseMockDataStore, IPluginConfigurationDataStore
     {
+        public MockPluginConfigurationDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
+
         private readonly List<PluginConfiguration> _pluginConfigurations = new();
 
         public PluginConfiguration Create(PluginConfiguration pluginConfiguration)

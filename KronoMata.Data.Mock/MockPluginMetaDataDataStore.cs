@@ -2,8 +2,10 @@
 
 namespace KronoMata.Data.Mock
 {
-    public class MockPluginMetaDataDataStore : IPluginMetaDataDataStore
+    public class MockPluginMetaDataDataStore : BaseMockDataStore, IPluginMetaDataDataStore
     {
+        public MockPluginMetaDataDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
+
         private readonly List<PluginMetaData> _pluginMetaDatas = new();
 
         public PluginMetaData Create(PluginMetaData pluginMetaData)

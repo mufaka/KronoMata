@@ -2,8 +2,10 @@
 
 namespace KronoMata.Data.Mock
 {
-    public class MockScheduledJobDataStore : IScheduledJobDataStore
+    public class MockScheduledJobDataStore : BaseMockDataStore, IScheduledJobDataStore
     {
+        public MockScheduledJobDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
+
         private readonly List<ScheduledJob> _scheduledJobs = new();
 
         public ScheduledJob Create(ScheduledJob scheduledJob)

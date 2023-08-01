@@ -2,8 +2,10 @@
 
 namespace KronoMata.Data.Mock
 {
-    public class MockJobHistoryDataStore : IJobHistoryDataStore
+    public class MockJobHistoryDataStore : BaseMockDataStore, IJobHistoryDataStore
     {
+        public MockJobHistoryDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
+
         private readonly List<JobHistory> _jobHistories = new();
 
         public JobHistory Create(JobHistory jobHistory)
