@@ -18,6 +18,7 @@ namespace KronoMata.Web.Controllers
         public IActionResult Index()
         {
             var model = new DashboardViewModel();
+            model.ViewName = "Dashboard";
 
             try
             {

@@ -17,6 +17,7 @@ namespace KronoMata.Web.Controllers
         public IActionResult Index()
         {
             var model = new GlobalSettingsViewModel();
+            model.ViewName = "Settings";
 
             try
             {

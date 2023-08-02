@@ -2,12 +2,14 @@
 
 namespace KronoMata.Web.Models
 {
-    public class BaseViewModel
+    public abstract class BaseViewModel
     {
         public BaseViewModel()
         {
             Messages = new List<NotificationMessage>();
         }
+
+        public string ViewName { get; set; } = "KronoMata View";
 
         public List<NotificationMessage> Messages { get; set; }
 
