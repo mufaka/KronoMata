@@ -37,6 +37,12 @@
         public bool IsAccessibleToPlugins { get; set; }
 
         /// <summary>
+        /// Whether or not this GlobalConfiguration should be masked when
+        /// displayed in the UI.
+        /// </summary>
+        public bool IsMasked { get; set; }
+
+        /// <summary>
         /// The date the GlobalConfiguration was inserted.
         /// </summary>
         public DateTime InsertDate { get; set; }

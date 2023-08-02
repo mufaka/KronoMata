@@ -27,6 +27,12 @@ namespace KronoMata.Web.Controllers
                 model.Hosts = DataStoreProvider.HostDataStore.GetAll();
                 model.ScheduledJobs = DataStoreProvider.ScheduledJobDataStore.GetAll();
                 model.JobHistories = DataStoreProvider.JobHistoryDataStore.GetLastByDate(now.AddDays(-7));
+
+                LogMessage(model, NotificationMessageType.Error, "Test Error", "This is only a test");
+                LogMessage(model, NotificationMessageType.Exception, "Test Exception", "This is only a test");
+                LogMessage(model, NotificationMessageType.Information, "Test Information", "This is only a test");
+                LogMessage(model, NotificationMessageType.Success, "Test Success", "This is only a test");
+                LogMessage(model, NotificationMessageType.Warning, "Test Warning", "This is only a test");
             }
             catch (Exception ex)
             {

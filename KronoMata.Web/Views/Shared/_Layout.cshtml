@@ -76,6 +76,15 @@
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>
+                                    Settings
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-server"></i>
                                 <p>
                                     Hosts
@@ -121,6 +130,37 @@
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <section class="content-header">
+                @foreach (KronoMata.Web.Models.NotificationMessage message in Model.Messages)
+                {
+                    switch (message.MessageType)
+                    {
+                        case KronoMata.Web.Models.NotificationMessageType.Exception:
+                        case KronoMata.Web.Models.NotificationMessageType.Error:
+                            <div class="alert alert-danger">
+                                <i class="fa fa-exclamation-circle"></i>
+                                @message.Message
+                            </div>
+                            break;
+                        case KronoMata.Web.Models.NotificationMessageType.Warning:
+                            <div class="alert alert-warning">
+                                <i class="fa fa-exclamation-triangle"></i>
+                                @message.Message
+                            </div>
+                            break;
+                        case KronoMata.Web.Models.NotificationMessageType.Information:
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle"></i>
+                                @message.Message
+                            </div>
+                            break;
+                        case KronoMata.Web.Models.NotificationMessageType.Success:
+                            <div class="alert alert-success">
+                                <i class="fa fa-thumbs-up"></i>
+                                @message.Message
+                            </div>
+                            break;
+                    }
+                }
             </section>
 
             <!-- Main content -->
