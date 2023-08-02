@@ -217,10 +217,27 @@
 
                 data: db.histories,
 
+                rowClass: function(item, ndx) {
+                    let retVal = 'row-status-success';
+
+                    switch (item.status) {
+                        case 1:
+                            retVal = 'row-status-skip';
+                            break;
+                        case 2:
+                            retVal = 'row-status-fail';
+                            break;
+                    }
+
+                    return retVal;
+                },
+
                 fields: [
-                    { name: "runTime", type: "text", width: 150 },
-                    { name: "hostId", type: "select", items: db.hosts, valueField: "id", textField: "machineName" },
-                    { name: "message", type: "text", width: 200 }
+                    { name: "runTime", title: "Run Time", type: "text", width: 75},
+                    { name: "scheduledJobId", title: "Job", type: "select", items: db.jobs, valueField: "id", textField: "name", width: 75, headercss: "text-start" },
+                    { name: "hostId", title: "Host", type: "select", items: db.hosts, valueField: "id", textField: "machineName", width: 75 },
+                    { name: "message", title: "Message", type: "text", width: 150 },
+                    { name: "detail", title: "Detail", type: "text" }
                 ]
             });
         }

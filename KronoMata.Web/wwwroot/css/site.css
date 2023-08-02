@@ -21,3 +21,15 @@ body {
     color: #7C9D96;
     background-color: #A1CCD1;
 }
+
+.row-status-fail td {
+    background-color:rgba(255, 99, 132, 0.6) !important;
+}
+
+.row-status-success td {
+    background-color:rgba(75, 192, 192, 0.6) !important;
+}
+
+.row-status-skip td {
+    background-color:rgba(255, 205, 86, 0.6) !important;
+}
