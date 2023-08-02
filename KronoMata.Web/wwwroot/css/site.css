@@ -23,13 +23,17 @@ body {
 }
 
 .row-status-fail td {
-    background-color:rgba(255, 99, 132, 0.6) !important;
+    color: rgba(255, 99, 132, 1.0) !important;
+    font-weight: bold;
 }
 
 .row-status-success td {
-    background-color:rgba(75, 192, 192, 0.6) !important;
+    /*border-color: rgba(75, 192, 192, 1.0) !important;*/
 }
 
 .row-status-skip td {
-    background-color:rgba(255, 205, 86, 0.6) !important;
+    /*border-color: rgba(255, 205, 86, 1.0) !important;*/
+    color: rgba(255, 205, 86, 1.0) !important;
+    font-weight: bold;
+    font-style: italic;
 }

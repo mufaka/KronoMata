@@ -214,6 +214,7 @@
                 width: "100%",
                 sorting: true,
                 paging: true,
+                pageSize: 20,
 
                 data: db.histories,
 
@@ -233,7 +234,11 @@
                 },
 
                 fields: [
-                    { name: "runTime", title: "Run Time", type: "text", width: 75},
+                    { name: "runTime", title: "Run Time", type: "text", width: 75, 
+                        itemTemplate: function(value, item) {
+                            return new Date(value).toLocaleString('en-US');
+                        }
+                    },
                     { name: "scheduledJobId", title: "Job", type: "select", items: db.jobs, valueField: "id", textField: "name", width: 75, headercss: "text-start" },
                     { name: "hostId", title: "Host", type: "select", items: db.hosts, valueField: "id", textField: "machineName", width: 75 },
                     { name: "message", title: "Message", type: "text", width: 150 },

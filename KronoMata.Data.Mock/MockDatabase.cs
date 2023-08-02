@@ -49,7 +49,7 @@ namespace KronoMata.Data.Mock
 
                 for (int x = 0; x < 7 * 24 ; x++)
                 {
-                    runTime = runTime.AddMinutes(random.Next(60));
+                    runTime = runTime.AddMinutes(random.Next(60)).AddSeconds(random.Next(60));
 
                     var history = new JobHistory();
 
