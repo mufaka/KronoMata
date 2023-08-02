@@ -1,4 +1,5 @@
 ﻿using KronoMata.Model;
+using System.Net.WebSockets;
 
 namespace KronoMata.Data.Mock
 {
@@ -19,8 +20,7 @@ namespace KronoMata.Data.Mock
         {
             var now = DateTime.Now;
 
-            // TODO: global configuration
-
+            CreateGlobalConfigurations();
             Package package = CreatePackage();
             PluginMetaData plugin = CreatePlugin(now, package);
             PluginConfiguration pluginConfiguration1 = CreatePluginConfiguration1(now, plugin);
@@ -36,6 +36,33 @@ namespace KronoMata.Data.Mock
             CreateConfigurationValue2(now, pluginConfiguration2, scheduledJob2);
 
             CreateJobHistories(now, host);
+        }
+
+        private void CreateGlobalConfigurations()
+        {
+            var now = DateTime.Now;
+
+            for (int x = 0; x < 5; x++)
+            {
+                var config = new GlobalConfiguration()
+                {
+                    Category = "System",
+                    Name = $"Config Name {x + 1}",
+                    Value = $"Config Value {x + 1}",
+                    IsAccessibleToPlugins = true,
+                    IsMasked = false,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                if (x % 2 == 0)
+                {
+                    config.IsAccessibleToPlugins = false;
+                    config.IsMasked = true;
+                }
+
+                _dataProvider.GlobalConfigurationDataStore.Create(config);
+            }
         }
 
         private void CreateJobHistories(DateTime now, Host host)
