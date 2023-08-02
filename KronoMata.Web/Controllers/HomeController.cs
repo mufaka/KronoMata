@@ -31,6 +31,7 @@ namespace KronoMata.Web.Controllers
             catch (Exception ex)
             {
                 LogException(model, ex);
+                _logger.LogError(ex, ex.Message);
             }
 
             return View(model);

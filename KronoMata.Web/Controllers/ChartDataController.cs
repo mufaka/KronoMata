@@ -67,5 +67,26 @@ namespace KronoMata.Web.Controllers
             return result;
         }
 
+        public ActionResult GetLastJobHistoryDetail()
+        {
+            // TODO: accept a start date parameter
+            var now = DateTime.Now;
+            var startDate = now.Date.AddDays(-7);
+            var histories = DataStoreProvider.JobHistoryDataStore.GetLastByDate(startDate);
+            var hosts = DataStoreProvider.HostDataStore.GetAll();
+            var plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll();
+            var jobs = DataStoreProvider.ScheduledJobDataStore.GetAll();
+
+            var result = Json(new
+            {
+                histories = histories,
+                hosts = hosts,
+                plugins = plugins,
+                jobs = jobs
+            });
+
+            return result;
+        }
+
     }
 }

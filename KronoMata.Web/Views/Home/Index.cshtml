@@ -55,7 +55,7 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h3 class="card-title">Current Job History</h3>
+                    <h3 class="card-title">Last 7 Day Summary</h3>
                 </div>
                 <div class="card-body">
                     <div class="chart">
@@ -66,12 +66,30 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h3 class="card-title">Last 7 Day Detail</h3>
+                </div>
+                <div class="card-body">
+                    <div id="history-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section styles
+{
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid.min.css">
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid-theme.min.css">
+}
 
 @section scripts 
 {
     <script src="~/plugins/chart.js/Chart.min.js"></script>
-    <script src="~/js/colors.js"></script>
+    <script src="~/plugins/jsgrid/jsgrid.min.js"></script>
 
     <script type="text/javascript">
 
@@ -95,6 +113,7 @@
 
         $(function() {
             populateJobHistorySummary();
+            populateJobHistoryDetail();
         });
 
         function populateJobHistorySummary() {
@@ -185,6 +204,25 @@
             }
 
             myChart.update();
+        }
+
+        function populateJobHistoryDetail() {
+            var db = GetData('@Url.Action("GetLastJobHistoryDetail", "ChartData")')[0];
+
+            $('#history-grid').jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+
+                data: db.histories,
+
+                fields: [
+                    { name: "runTime", type: "text", width: 150 },
+                    { name: "hostId", type: "select", items: db.hosts, valueField: "id", textField: "machineName" },
+                    { name: "message", type: "text", width: 200 }
+                ]
+            });
         }
     </script>
 }
