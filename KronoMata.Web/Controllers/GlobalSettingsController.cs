@@ -21,7 +21,8 @@ namespace KronoMata.Web.Controllers
 
             try
             {
-                model.GlobalConfigurations = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
+                // using ajax to get the data
+                // model.GlobalConfigurations = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
             }
             catch (Exception ex)
             {
@@ -30,6 +31,15 @@ namespace KronoMata.Web.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult GetGlobalSettingsData()
+        {
+            var settings = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
+
+            var result = Json(settings.ToArray());
+
+            return result;
         }
     }
 }

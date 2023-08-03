@@ -1,1 +1,95 @@
 ﻿@model KronoMata.Web.Models.GlobalSettingsViewModel
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h3 class="card-title">Global Configuration</h3>
+                </div>
+                <div class="card-body">
+                    <div id="settings-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid.min.css">
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid-theme.min.css">
+}
+
+@section scripts {
+    <script src="~/plugins/jsgrid/jsgrid.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            populateSettingsGrid();
+        });
+
+        function populateSettingsGrid() {
+            $("#settings-grid").jsGrid({
+                height: "400px",
+                width: "100%",
+
+                filtering: false,
+                inserting: true,
+                editing: true,
+                sorting: true,
+
+                paging: true,
+
+                autoload: true,
+
+                pageSize: 25,
+                pageButtonCount: 5,
+                pageLoading: false,
+
+
+
+                deleteConfirm: "Are you sure you want to delete this configuration?",
+
+                loadIndicator: function (config) {
+                    return {
+                        show: function () {
+                            console.log("loading started: " + config.message);
+                        },
+                        hide: function () {
+                            console.log("loading finished");
+                        }
+                    };
+                },
+
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            type: "GET",
+                            url: "@Url.Action("GetGlobalSettingsData", "GlobalSettings")",
+                            data: filter,
+                            dataType: "json"
+                        });
+                    },
+
+                    insertItem: function (item) {
+                    },
+
+                    updateItem: function (item) {
+                    },
+
+                    deleteItem: function (item) {
+                    }
+                },
+
+                fields: [
+                    { name: "category", title: "Category", type: "text", width: 150 },
+                    { name: "name", title: "Name", type: "text", width: 50, filtering: false },
+                    { name: "value", title: "Value", type: "text", width: 200 },
+                    { name: "isAccessibleToPlugins", title: "Accessible?", type: "checkbox" },
+                    { name: "isMasked", title: "Masked?", type: "checkbox" },
+                    { type: "control" }
+                ]
+            });
+        }
+    </script>
+}
