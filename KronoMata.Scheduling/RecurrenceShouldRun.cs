@@ -6,6 +6,7 @@ namespace KronoMata.Scheduling
     {
         public bool ShouldRun(DateTime currentDate, ScheduledJob scheduledJob)
         {
+            if (!scheduledJob.IsEnabled) return false;
             if (scheduledJob.StartTime > currentDate) return false;
 
             if (scheduledJob.EndTime.HasValue)

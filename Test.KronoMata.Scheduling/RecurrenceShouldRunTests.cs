@@ -33,8 +33,20 @@ namespace Test.KronoMata.Scheduling
             _recurrence = new RecurrenceShouldRun();
             _now = DateTime.Now;
             _job = new ScheduledJob();
+            _job.IsEnabled = true; // default to enabled
         }
 
-        // NOTE: Test cases should be grouped into separate files based on parameters. 
+        [Test]
+        public void ShouldNotRunIfDisabled()
+        {
+            _job.IsEnabled = false;
+
+            bool shouldRun = _recurrence.ShouldRun(_now, _job);
+
+            Assert.That(shouldRun, Is.False);
+        }
+
+
+        // NOTE: Additional test cases should be grouped into separate files based on parameters. 
     }
 }
