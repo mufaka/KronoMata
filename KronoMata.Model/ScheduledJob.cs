@@ -33,15 +33,33 @@
         public string Description { get; set; } = String.Empty;
 
         /// <summary>
-        /// The Interval in which to run.
+        /// The Frequency in which to run.
         /// </summary>
-        public ScheduleInterval Interval { get; set; }
+        public ScheduleFrequency Frequency { get; set; }
 
         /// <summary>
         /// The amount of intervals to skip before
         /// the next run.
         /// </summary>
-        public int Step { get; set; }
+        public int Interval { get; set; }
+
+        /// <summary>
+        /// A comma separated list of days to run on. Only
+        /// relevant for ScheduleFrequency.Month
+        /// </summary>
+        public string Days { get; set; }
+
+        /// <summary>
+        /// A comma separated list of hours to run on. Not
+        /// relevant for ScheduleFrequency.Hour or ScheduleFrequency.Minute
+        /// </summary>
+        public string Hours { get; set; }
+
+        /// <summary>
+        /// A comma separated list of minutes to run on. Not relevant
+        /// for ScheduleFrequency.Minute.
+        /// </summary>
+        public string Minutes { get; set; }
 
         /// <summary>
         /// The Date and Time in which to start considering this

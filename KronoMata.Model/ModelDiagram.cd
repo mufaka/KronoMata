@@ -10,7 +10,7 @@
   <Class Name="KronoMata.Model.GlobalConfiguration">
     <Position X="9.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAQgAAAAAAAAAAAQAAAAAAAAAAAAgAAEACAA=</HashCode>
+      <HashCode>AAACAAAAAQgAAAAAAAAIAAQAAAAAAAAAAAAgAAEACAA=</HashCode>
       <FileName>GlobalConfiguration.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -50,9 +50,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="KronoMata.Model.ScheduledJob">
-    <Position X="3.75" Y="2" Width="2.25" />
+    <Position X="3.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAQAgAAAAAIEAAAQAIAAgAAAAIAAEAAEAAAA=</HashCode>
+      <HashCode>AAACAAAAAQAgAAAAAIEAAAQAIIAgAAAAAAAEAAEAAAA=</HashCode>
       <FileName>ScheduledJob.cs</FileName>
     </TypeIdentifier>
   </Class>

@@ -181,8 +181,8 @@ namespace KronoMata.Data.Mock
                 Description = "Testing the plugin architecture.",
                 StartTime = now,
                 EndTime = null,
-                Interval = ScheduleInterval.Minute,
-                Step = 2,
+                Frequency = ScheduleFrequency.Minute,
+                Interval = 2,
                 IsEnabled = true,
                 InsertDate = now,
                 UpdateDate = now

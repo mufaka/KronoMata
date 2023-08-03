@@ -5,7 +5,7 @@
     /// at which a ScheduledJob should run.
     /// </summary>
     [Serializable]
-    public enum ScheduleInterval
+    public enum ScheduleFrequency
     {
         Minute,
         Hour,
