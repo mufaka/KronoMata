@@ -3,7 +3,8 @@ using KronoMata.Scheduling;
 
 namespace Test.KronoMata.Scheduling
 {
-    public class Tests
+    [TestFixture()]
+    public partial class RecurrenceShouldRunTests
     {
         /*
             Scheduling Parameters are the following:
@@ -23,26 +24,17 @@ namespace Test.KronoMata.Scheduling
         */
 
         private IShouldRun _recurrence;
+        private DateTime _now;
+        private ScheduledJob _job; 
 
         [SetUp]
         public void Setup()
         {
             _recurrence = new RecurrenceShouldRun();
+            _now = DateTime.Now;
+            _job = new ScheduledJob();
         }
 
-        [Test]
-        public void ShouldNotRunBeforeStartDate()
-        {
-            var now = DateTime.Now;
-
-            var job = new ScheduledJob()
-            {
-                StartTime = now.AddDays(1)
-            };
-
-            var shouldRun = _recurrence.ShouldRun(now, job);
-
-            Assert.That(shouldRun, Is.False);
-        }
+        // NOTE: Test cases should be grouped into separate files based on parameters. 
     }
 }
