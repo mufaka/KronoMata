@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KronoMata.Model\KronoMata.Model.csproj" />
     <ProjectReference Include="..\KronoMata.Scheduling\KronoMata.Scheduling.csproj" />
   </ItemGroup>
 

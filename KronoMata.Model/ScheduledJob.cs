@@ -47,19 +47,25 @@
         /// A comma separated list of days to run on. Only
         /// relevant for ScheduleFrequency.Month
         /// </summary>
-        public string Days { get; set; }
+        public string? Days { get; set; }
+
+        /// <summary>
+        /// A comma separated list of days of week to run on. Only
+        /// valid for ScheduleFrequency.Week or ScheduleFrequency.Month
+        /// </summary>
+        public string? DayOfWeeks { get; set; }
 
         /// <summary>
         /// A comma separated list of hours to run on. Not
         /// relevant for ScheduleFrequency.Hour or ScheduleFrequency.Minute
         /// </summary>
-        public string Hours { get; set; }
+        public string? Hours { get; set; }
 
         /// <summary>
         /// A comma separated list of minutes to run on. Not relevant
         /// for ScheduleFrequency.Minute.
         /// </summary>
-        public string Minutes { get; set; }
+        public string? Minutes { get; set; }
 
         /// <summary>
         /// The Date and Time in which to start considering this

@@ -13,7 +13,8 @@ namespace Test.KronoMata.Scheduling
             EndDate - Return false if run time would be after this date
             Frequency - Month, Week, Day, Hour, Minute
             Interval - How many of each frequency between runs
-            Days - A comma separated list of days by name (Monday, Tuesday, etc) to run on. Not always considered
+            Days - A comma separated list of days by number (1, 2, 5, 12, etc) to run on. Not always considered.
+            DayOfWeeks - A comma separated list of days by name (Monday, Tuesday, etc) to run on. Not always considered
             Hours - A comma separated list of hours (24 hour format) to run on. Not always considered.
             Minutes - A comma separated list of minutes to run on. Not always considered.
 
