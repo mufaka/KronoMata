@@ -43,5 +43,10 @@
         /// The execution time of the ScheduledJob.
         /// </summary>
         public DateTime RunTime { get; set; }
+
+        /// <summary>
+        /// The completion time of the ScheduledJob.
+        /// </summary>
+        public DateTime CompletionTime { get; set; }
     }
 }
