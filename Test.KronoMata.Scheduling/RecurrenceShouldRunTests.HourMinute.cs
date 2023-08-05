@@ -57,7 +57,6 @@ namespace Test.KronoMata.Scheduling
                 switch (currentDate.Minute)
                 {
                     case 7:
-                        shouldRun = _recurrence.ShouldRun(currentDate, _job);
                         Assert.That(shouldRun, Is.True);
                         break;
                     default:
@@ -94,7 +93,6 @@ namespace Test.KronoMata.Scheduling
                     case 23:
                     case 39:
                     case 57:
-                        shouldRun = _recurrence.ShouldRun(currentDate, _job);
                         Assert.That(shouldRun, Is.True);
                         break;
                     default:

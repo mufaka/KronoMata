@@ -44,6 +44,11 @@ namespace KronoMata.Scheduling
                 if (!shouldRunMinute) return false;
             }
 
+            return CheckValidIncrements(currentDate, scheduledJob);
+        }
+
+        private bool CheckValidIncrements(DateTime currentDate, ScheduledJob scheduledJob)
+        {
             var validIncrements = new ValidIncrements(scheduledJob);
 
             if (validIncrements.DayOfWeeks.Count > 0)
