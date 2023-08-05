@@ -47,6 +47,26 @@ namespace Test.KronoMata.Scheduling
             Assert.That(shouldRun, Is.False);
         }
 
+        [Test]
+        public void ShouldNotRunBeforeStartDate()
+        {
+            _job.StartTime = _now.AddDays(1);
+
+            var shouldRun = _recurrence.ShouldRun(_now, _job);
+
+            Assert.That(shouldRun, Is.False);
+        }
+
+        [Test]
+        public void ShouldNotRunAfterEndDate()
+        {
+            _job.StartTime = _now.AddDays(-7);
+            _job.EndTime = _now.AddDays(-1);
+
+            var shouldRun = _recurrence.ShouldRun(_now, _job);
+
+            Assert.That(shouldRun, Is.False);
+        }
 
         // NOTE: Additional test cases should be grouped into separate files based on parameters. 
     }

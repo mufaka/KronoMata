@@ -32,19 +32,52 @@ namespace KronoMata.Scheduling
                 if (!shouldRunDay) return false;
             }
 
+            if (scheduledJob.Frequency == ScheduleFrequency.Hour)
+            {
+                var shouldRunHour = CheckHourFrequency(currentDate, scheduledJob);
+                if (!shouldRunHour) return false;
+            }
+
+            if (scheduledJob.Frequency == ScheduleFrequency.Minute)
+            {
+                var shouldRunMinute = CheckMinuteFrequency(currentDate, scheduledJob);
+                if (!shouldRunMinute) return false;
+            }
+
             var validIncrements = new ValidIncrements(scheduledJob);
 
-            // Only check the Day if DayOfWeeks isn't defined.
-            if (validIncrements.DayOfWeeks.Count == 0)
+            if (validIncrements.DayOfWeeks.Count > 0)
+            {
+                if (!validIncrements.DayOfWeeks.Contains(currentDate.DayOfWeek.ToString())) return false;
+            }
+
+            if (!String.IsNullOrEmpty(scheduledJob.Days))
+            {
+                if (!validIncrements.Days.Contains(currentDate.Day)) return false;
+            }
+            else if (validIncrements.Days.Count > 0)
             {
                 if (!validIncrements.Days.Contains(currentDate.Day)) return false;
             }
 
-            if (!validIncrements.Hours.Contains(currentDate.Hour)) return false;
-            if (!validIncrements.Minutes.Contains(currentDate.Minute)) return false;
-            if (validIncrements.DayOfWeeks.Count > 0)
+            if (!String.IsNullOrEmpty(scheduledJob.Hours))
             {
-                if (!validIncrements.DayOfWeeks.Contains(currentDate.DayOfWeek.ToString())) return false;
+                if (!validIncrements.Hours.Contains(currentDate.Hour)) return false;
+            }
+
+            if (!String.IsNullOrEmpty(scheduledJob.Minutes))
+            {
+                if (!validIncrements.Minutes.Contains(currentDate.Minute)) return false;
+            }
+
+            if (validIncrements.Hours.Count > 0)
+            {
+                if (!validIncrements.Hours.Contains(currentDate.Hour)) return false;
+            }
+
+            if (validIncrements.Minutes.Count > 0)
+            {
+                if (!validIncrements.Minutes.Contains(currentDate.Minute)) return false;
             }
 
             return true;
@@ -87,6 +120,30 @@ namespace KronoMata.Scheduling
             return true;
         }
 
+        private bool CheckHourFrequency(DateTime currentDate, ScheduledJob scheduledJob)
+        {
+            var hoursBetween = (currentDate - scheduledJob.StartTime).Hours;
+
+            if (hoursBetween > 0)
+            {
+                if (hoursBetween % scheduledJob.Interval != 0) return false;
+            }
+
+            return true;
+        }
+
+        private bool CheckMinuteFrequency(DateTime currentDate, ScheduledJob scheduledJob)
+        {
+            var minutesBetween = (currentDate - scheduledJob.StartTime).Minutes;
+
+            if (minutesBetween > 0)
+            {
+                if (minutesBetween % scheduledJob.Interval != 0) return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Contains a list of valid values for the defined schedule.
         /// 
@@ -108,6 +165,11 @@ namespace KronoMata.Scheduling
                 if (!String.IsNullOrEmpty(scheduledJob.DayOfWeeks))
                 {
                     DayOfWeeks = scheduledJob.DayOfWeeks.Split(',').ToList();
+
+                    if (String.IsNullOrEmpty(scheduledJob.Days))
+                    {
+                        Days.Clear();
+                    }
                 }
 
                 if (!String.IsNullOrEmpty(scheduledJob.Hours))
@@ -118,6 +180,21 @@ namespace KronoMata.Scheduling
                 if (!String.IsNullOrEmpty(scheduledJob.Minutes))
                 {
                     Minutes = scheduledJob.Minutes.Split(',').Select(int.Parse).ToList();
+                }
+
+                // if frequency is minutes, hours and days don't matter
+                if (scheduledJob.Frequency == ScheduleFrequency.Minute)
+                {
+                    Hours.Clear();
+                    Days.Clear();
+                    Minutes.Clear();
+                }
+
+                // if frequency is hours, days don't matter
+                if (scheduledJob.Frequency == ScheduleFrequency.Hour)
+                {
+                    Days.Clear();
+                    Hours.Clear();
                 }
             }
 
