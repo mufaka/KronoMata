@@ -85,8 +85,26 @@
                             return '<i class="fa ' + icon + ' ' + iconClass + '"></i>' + date;
                         }
                     },
-                    { name: "scheduledJobId", title: "Job", type: "select", items: jobs, valueField: "id", textField: "name", width: 40, headercss: "text-start" },
-                    { name: "hostId", title: "Host", type: "select", items: hosts, valueField: "id", textField: "machineName", width: 40 },
+                    {
+                        name: "scheduledJobId", title: "Job", type: "select", items: jobs, valueField: "id", textField: "name", width: 40, headercss: "text-start", 
+                        filterTemplate: function () {
+                            var $select = jsGrid.fields.select.prototype.filterTemplate.call(this);
+                            $select.prepend($("<option>").prop("value", "-1").text("(All)"));
+                            $select.val('-1');
+                            return $select;
+
+                        }
+                    },
+                    {
+                        name: "hostId", title: "Host", type: "select", items: hosts, valueField: "id", textField: "machineName", width: 40,
+                        filterTemplate: function () {
+                            var $select = jsGrid.fields.select.prototype.filterTemplate.call(this);
+                            $select.prepend($("<option>").prop("value", "-1").text("(All)"));
+                            $select.val('-1');
+                            return $select;
+
+                        }
+                    },
                     { name: "message", title: "Message", type: "text", width: 60, filtering: false },
                     { name: "detail", title: "Detail", type: "text", filtering: false }
                 ]

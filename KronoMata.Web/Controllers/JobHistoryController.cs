@@ -22,16 +22,14 @@ namespace KronoMata.Web.Controllers
             return View(model);
         }
 
-        public ActionResult GetJobHistoryData(int pageIndex, int pageSize)
+        public ActionResult GetJobHistoryData(int pageIndex, int pageSize, int status = -1, int scheduledJobId = -1, int hostId = -1)
         {
             // jsGrid sends a parameter named pageIndex but it is a 1 based index.
-            var pagedList = DataStoreProvider.JobHistoryDataStore.GetAllPaged(pageIndex - 1, pageSize);
-
-            var histories = pagedList.List;
+            var pagedList = DataStoreProvider.JobHistoryDataStore.GetFilteredPaged(pageIndex - 1, pageSize, status, scheduledJobId, hostId);
 
             var result = Json(new
             {
-                data = histories,
+                data = pagedList.List,
                 itemsCount = pagedList.TotalRecords
             });
 

@@ -48,6 +48,23 @@ namespace KronoMata.Data.Mock
             };
         }
 
+        public PagedList<JobHistory> GetFilteredPaged(int pageIndex, int pageSize, int status = -1, int scheduledJobId = -1, int hostId = -1)
+        {
+            var filtered = _jobHistories.Where(h =>
+                (status == -1 || h.Status == (ScheduledJobStatus)status) &&
+                (scheduledJobId == -1 || h.ScheduledJobId == scheduledJobId) &&
+                (hostId == -1 || h.HostId == hostId))
+                .OrderByDescending(h => h.RunTime).ToList();
+
+            return new PagedList<JobHistory>()
+            {
+                TotalRecords = filtered.Count,
+                List = filtered.Skip(pageIndex * pageSize)
+                .Take(pageSize).ToList()
+
+            };
+        }
+
         public List<JobHistory> GetByScheduledJob(int scheduledJobId)
         {
             return _jobHistories.Where(j => j.ScheduledJobId == scheduledJobId).ToList();
