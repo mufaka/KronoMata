@@ -27,7 +27,6 @@ namespace KronoMata.Web.Controllers
                 model.Plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll();
                 model.Hosts = DataStoreProvider.HostDataStore.GetAll();
                 model.ScheduledJobs = DataStoreProvider.ScheduledJobDataStore.GetAll();
-                model.JobHistories = DataStoreProvider.JobHistoryDataStore.GetLastByDate(now.AddDays(-7));
             }
             catch (Exception ex)
             {

@@ -12,6 +12,8 @@ $(function () {
     jsGrid.ControlField.prototype.cancelEditButtonClass = "fa grid-button-cancel";
     jsGrid.ControlField.prototype.cancelInsertButtonClass = "fa grid-button-cancel";
 
+    jsGrid.Grid.prototype.cellClass = "compact-jsgrid-cell";
+
     // override the buttons; use <button type="reset" instead of input type="button" so we can use
     // a pseudo-element (::after) in the style sheet to set the icon.
     jsGrid.ControlField.prototype._createGridButton = function (cls, tooltip, clickHandler) {
@@ -28,3 +30,22 @@ $(function () {
             });
     }
 });
+
+// utility method for geting ajax data
+function GetData(url) {
+    var resp = [];
+    $.ajax({
+        type: "GET",
+        url: url,
+        async: false,
+        contentType: "application/json",
+        success: function (data) {
+            resp.push(data);
+        },
+        error: function (req, status, error) {
+            // TODO: do something with error
+            alert("error");
+        }
+    });
+    return resp;
+}

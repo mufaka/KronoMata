@@ -33,7 +33,7 @@ namespace KronoMata.Data.Mock
 
         public List<JobHistory> GetAll()
         {
-            return _jobHistories;
+            return _jobHistories.OrderByDescending(h => h.RunTime).ToList();
         }
 
         public PagedList<JobHistory> GetAllPaged(int pageIndex, int pageSize)
@@ -41,7 +41,10 @@ namespace KronoMata.Data.Mock
             return new PagedList<JobHistory>()
             {
                 TotalRecords = _jobHistories.Count,
-                List = _jobHistories.Skip(pageIndex * pageSize).Take(pageSize).ToList()
+                List = _jobHistories
+                    .OrderByDescending(h => h.RunTime)
+                    .Skip(pageIndex * pageSize)
+                    .Take(pageSize).ToList()
             };
         }
 

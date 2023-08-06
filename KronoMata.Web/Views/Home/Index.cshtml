@@ -93,24 +93,6 @@
 
     <script type="text/javascript">
 
-        function GetData(url) {
-            var resp = [];
-            $.ajax({
-                type: "GET",
-                url: url,
-                async: false,
-                contentType: "application/json",
-                success: function (data) {
-                    resp.push(data);
-                },
-                error: function (req, status, error) {
-                    // TODO: do something with error
-                    alert("error");
-                }
-            });
-            return resp;
-        }
-
         $(function() {
             populateJobHistorySummary();
             populateJobHistoryDetail();
@@ -241,7 +223,7 @@
                     }
                 },
                 fields: [
-                    { name: "runTime", title: "Run Time", type: "text", width: 75, 
+                    { name: "runTime", title: "Run Time", type: "text", width: 40, 
                         itemTemplate: function(value, item) {
                             let icon = 'fa-check-circle';
                             let iconClass = 'status-icon-success';
@@ -262,9 +244,9 @@
                             return '<i class="fa ' + icon + ' ' + iconClass + '"></i>' + date;
                         }
                     },
-                    { name: "scheduledJobId", title: "Job", type: "select", items: jobs, valueField: "id", textField: "name", width: 75, headercss: "text-start" },
-                    { name: "hostId", title: "Host", type: "select", items: hosts, valueField: "id", textField: "machineName", width: 75 },
-                    { name: "message", title: "Message", type: "text", width: 150 },
+                    { name: "scheduledJobId", title: "Job", type: "select", items: jobs, valueField: "id", textField: "name", width: 40, headercss: "text-start" },
+                    { name: "hostId", title: "Host", type: "select", items: hosts, valueField: "id", textField: "machineName", width: 40 },
+                    { name: "message", title: "Message", type: "text", width: 60 },
                     { name: "detail", title: "Detail", type: "text" }
                 ]
             });

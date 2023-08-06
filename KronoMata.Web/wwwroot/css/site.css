@@ -59,6 +59,12 @@ body {
     background-color: rgba(240, 247, 252, .8) !important;
 }
 
+.compact-jsgrid-cell {
+    border: #f1f1f1 1px solid;
+    font-family: "Roboto";
+    font-size: 0.9em !important;
+}
+
 .grid-button + .grid-button {
     margin-left: 5px;
 }
