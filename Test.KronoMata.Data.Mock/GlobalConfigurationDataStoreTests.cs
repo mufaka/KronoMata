@@ -54,13 +54,13 @@ namespace Test.KronoMata.Data.Mock
 
             Assert.That(globalConfiguration.Id, Is.EqualTo(1));
 
-            var existing = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName");
+            var existing = _provider.GlobalConfigurationDataStore.GetById(1);
             Assert.That(existing, Is.Not.Null);
 
             existing.Category = "UpdatedCategory";
             _provider.GlobalConfigurationDataStore.Update(existing);
 
-            existing = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("UpdatedCategory", "TestName");
+            existing = _provider.GlobalConfigurationDataStore.GetById(1);
             Assert.That(existing, Is.Not.Null);
 
             Assert.That(existing.Category, Is.EqualTo("UpdatedCategory"));

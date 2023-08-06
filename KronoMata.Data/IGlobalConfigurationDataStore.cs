@@ -10,6 +10,7 @@ namespace KronoMata.Data
         GlobalConfiguration Create(GlobalConfiguration globalConfiguration);
         void Update(GlobalConfiguration globalConfiguration);
         void Delete(int id);
+        GlobalConfiguration GetById(int id);
         List<GlobalConfiguration> GetAll();
         List<GlobalConfiguration> GetByCategory(string categoryName);
         GlobalConfiguration GetByCategoryAndName(string category, string name);

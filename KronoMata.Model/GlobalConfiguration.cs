@@ -8,6 +8,8 @@
     [Serializable]
     public class GlobalConfiguration
     {
+        public GlobalConfiguration() { }
+
         /// <summary>
         /// The primary key for the GlobalConfiguration.
         /// </summary>

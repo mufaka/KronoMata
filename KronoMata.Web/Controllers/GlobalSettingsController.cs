@@ -1,6 +1,8 @@
 ﻿using KronoMata.Data;
+using KronoMata.Model;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace KronoMata.Web.Controllers
 {
@@ -37,9 +39,64 @@ namespace KronoMata.Web.Controllers
         {
             var settings = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
 
-            var result = Json(settings.ToArray());
+            var serializerOptions = new JsonSerializerOptions();
+            serializerOptions.PropertyNameCaseInsensitive = true;
+            var result = Json(settings, serializerOptions);
 
             return result;
         }
+
+        [HttpPost]
+        public void SaveGlobalSettings(GlobalConfiguration data)
+        {
+            try
+            {
+                DataStoreProvider.GlobalConfigurationDataStore.Create(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public void UpdateGlobalSettings(GlobalConfiguration data)
+        {
+            try
+            {
+                var existing = DataStoreProvider.GlobalConfigurationDataStore.GetById(data.Id);
+
+                if (existing != null)
+                {
+                    data.InsertDate = existing.InsertDate;
+                    data.UpdateDate = DateTime.Now;
+
+                    DataStoreProvider.GlobalConfigurationDataStore.Update(data);
+                }
+                else
+                {
+                    // TODO: Should we create another one? Probably not.
+                    // TODO: return error
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public void DeleteGlobalSettings(GlobalConfiguration data)
+        {
+            try
+            {
+                DataStoreProvider.GlobalConfigurationDataStore.Delete(data.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        }
+
     }
 }

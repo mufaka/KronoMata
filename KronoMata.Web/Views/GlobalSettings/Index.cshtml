@@ -64,6 +64,7 @@
                 controller: {
                     loadData: function (filter) {
                         return $.ajax({
+                            cache: false,
                             type: "GET",
                             url: "@Url.Action("GetGlobalSettingsData", "GlobalSettings")",
                             data: filter,
@@ -72,22 +73,37 @@
                     },
 
                     insertItem: function (item) {
+                        return $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("SaveGlobalSettings", "GlobalSettings")",
+                            data: item
+                        });
                     },
 
                     updateItem: function (item) {
+                        return $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("UpdateGlobalSettings", "GlobalSettings")",
+                            data: item
+                        });
                     },
 
                     deleteItem: function (item) {
+                        return $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("DeleteGlobalSettings", "GlobalSettings")",
+                            data: item
+                        });
                     }
                 },
 
                 fields: [
-                    { name: "id", title: "ID", type: "text", visible: true },
-                    { name: "category", title: "Category", type: "text", width: 150 },
-                    { name: "name", title: "Name", type: "text", width: 50, filtering: false },
-                    { name: "value", title: "Value", type: "text", width: 200 },
-                    { name: "isAccessibleToPlugins", title: "Accessible?", type: "checkbox" },
-                    { name: "isMasked", title: "Masked?", type: "checkbox" },
+                    { name: "Id", title: "ID", type: "text", visible: true },
+                    { name: "Category", title: "Category", type: "text", width: 150 },
+                    { name: "Name", title: "Name", type: "text", width: 50, filtering: false },
+                    { name: "Value", title: "Value", type: "text", width: 200 },
+                    { name: "IsAccessibleToPlugins", title: "Accessible?", type: "checkbox" },
+                    { name: "IsMasked", title: "Masked?", type: "checkbox" },
                     { type: "control" }
                 ]
             });

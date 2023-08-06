@@ -21,12 +21,28 @@ namespace KronoMata.Data.Mock
 
         public void Delete(int id)
         {
-            _globalConfigurations.RemoveAll(g => g.Id == id);
+            // this is not working in ASP.NET contexte for some reason.
+            //_globalConfigurations.RemoveAll(g => g.Id == id);
+
+            var existingIndex = _globalConfigurations.FindIndex(g => g.Id == id);
+
+            if (existingIndex >= 0)
+            {
+                _globalConfigurations.RemoveAt(existingIndex);
+            }
+
+        }
+
+        public GlobalConfiguration GetById(int id)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return _globalConfigurations.Where(g => g.Id == id).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public List<GlobalConfiguration> GetAll()
         {
-            return _globalConfigurations;
+            return _globalConfigurations.OrderBy(g => g.Id).ToList();
         }
 
         public List<GlobalConfiguration> GetByCategory(string categoryName)
@@ -44,10 +60,18 @@ namespace KronoMata.Data.Mock
         public void Update(GlobalConfiguration globalConfiguration)
         {
             var existing = _globalConfigurations.Where(g => g.Id == globalConfiguration.Id).FirstOrDefault();
-
+            
             if (existing != null)
             {
-                existing = globalConfiguration;
+                // for some reason this is not working in the ASP.NET context
+                // existing = globalConfiguration;
+
+                var existingIndex = _globalConfigurations.FindIndex(g => g.Id == existing.Id);
+
+                if (existingIndex >= 0)
+                {
+                    _globalConfigurations[existingIndex] = globalConfiguration;
+                }
             }
         }
     }
