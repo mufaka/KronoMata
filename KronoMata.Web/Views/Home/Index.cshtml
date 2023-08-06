@@ -218,6 +218,7 @@
 
                 data: db.histories,
 
+                /*
                 rowClass: function(item, ndx) {
                     let retVal = 'row-status-success';
 
@@ -232,11 +233,27 @@
 
                     return retVal;
                 },
-
+                */
                 fields: [
                     { name: "runTime", title: "Run Time", type: "text", width: 75, 
                         itemTemplate: function(value, item) {
-                            return new Date(value).toLocaleString('en-US');
+                            let icon = 'fa-check-circle';
+                            let iconClass = 'status-icon-success';
+
+                            switch (item.status) {
+                                case 1:
+                                    icon = 'fa-pause-circle';
+                                    iconClass = 'status-icon-skip';
+                                    break;
+                                case 2:
+                                    icon = 'fa-exclamation-circle';
+                                    iconClass = 'status-icon-fail';
+                                    break;
+                            }
+
+                            let date = new Date(value).toLocaleString('en-US');
+
+                            return '<i class="fa ' + icon + ' ' + iconClass + '"></i>' + date;
                         }
                     },
                     { name: "scheduledJobId", title: "Job", type: "select", items: db.jobs, valueField: "id", textField: "name", width: 75, headercss: "text-start" },

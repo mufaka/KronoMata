@@ -24,13 +24,24 @@ body {
 }
 
 /* jsGrid styling and overrides */
+.status-icon-fail {
+    color: rgba(255, 99, 132, 1.0) !important;
+    padding-right: 5px;
+}
+
+.status-icon-skip {
+    color: rgba(255, 205, 86, 1.0) !important;
+    padding-right: 5px;
+}
+
+.status-icon-success {
+    color: rgba(75, 192, 192, 1.0) !important;
+    padding-right: 5px;
+}
+
 .row-status-fail td {
     color: rgba(255, 99, 132, 1.0) !important;
     font-weight: bold;
-}
-
-.row-status-success td {
-    /*border-color: rgba(75, 192, 192, 1.0) !important;*/
 }
 
 .row-status-skip td {
@@ -39,6 +50,11 @@ body {
     font-weight: bold;
     font-style: italic;
 }
+
+.row-status-success td {
+    /*border-color: rgba(75, 192, 192, 1.0) !important;*/
+}
+
 
 .grid-button + .grid-button {
     margin-left: 5px;
