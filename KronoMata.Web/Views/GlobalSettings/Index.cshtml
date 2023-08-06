@@ -97,15 +97,51 @@
                     }
                 },
 
+                rowClass: function (item, ndx) {
+                    return item.IsSystemConfiguration ? "row-system-configuration" : "";
+                },
+
                 fields: [
-                    { name: "Id", title: "ID", type: "text", visible: true },
-                    { name: "Category", title: "Category", type: "text", width: 150 },
-                    { name: "Name", title: "Name", type: "text", width: 50, filtering: false },
-                    { name: "Value", title: "Value", type: "text", width: 200 },
+                    { name: "Id", title: "ID", type: "text", visible: true, editing: false, inserting: false, sorter: "number" },
+                    { 
+                        name: "Category", 
+                        title: "Category", 
+                        type: "text", 
+                        width: 150,
+                        validate: "required"
+                    },
+                    { 
+                        name: "Name", 
+                        title: "Name", 
+                        type: "text", 
+                        width: 50, 
+                        filtering: false,
+                        validate: "required"
+                    },
+                    { 
+                        name: "Value", 
+                        title: "Value", 
+                        type: "text", 
+                        width: 200,
+                        itemTemplate: function(value, item) {
+                            return item.IsMasked ? item.Value.replace(/./g, '*') : item.Value;
+                        }
+                    },
                     { name: "IsAccessibleToPlugins", title: "Accessible?", type: "checkbox" },
                     { name: "IsMasked", title: "Masked?", type: "checkbox" },
                     { type: "control" }
                 ]
+            });
+
+            jsGrid.setDefaults("control", {
+                _createDeleteButton: function (item) {
+                    if (item.IsSystemConfiguration) return;
+
+                    return this._createGridButton(this.deleteButtonClass, this.deleteButtonTooltip, function (grid, e) {
+                        grid.deleteItem(item);
+                        e.stopPropagation();
+                    });
+                }
             });
         }
     </script>

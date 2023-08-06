@@ -42,15 +42,16 @@ namespace KronoMata.Data.Mock
         {
             var now = DateTime.Now;
 
-            for (int x = 0; x < 5; x++)
+            for (int x = 0; x < 4; x++)
             {
                 var config = new GlobalConfiguration()
                 {
                     Category = "System",
-                    Name = $"Config Name {x + 1}",
-                    Value = $"Config Value {x + 1}",
+                    Name = $"Name {x + 1}",
+                    Value = $"Value {x + 1}",
                     IsAccessibleToPlugins = true,
                     IsMasked = false,
+                    IsSystemConfiguration = true,
                     InsertDate = now,
                     UpdateDate = now
                 };
@@ -60,6 +61,22 @@ namespace KronoMata.Data.Mock
                     config.IsAccessibleToPlugins = false;
                     config.IsMasked = true;
                 }
+
+                _dataProvider.GlobalConfigurationDataStore.Create(config);
+            }
+
+            for (int x = 0; x < 10; x++)
+            {
+                var config = new GlobalConfiguration()
+                {
+                    Category = "Plugin",
+                    Name = $"Name {x + 1}",
+                    Value = $"Value {x + 1}",
+                    IsAccessibleToPlugins = true,
+                    IsMasked = false,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
 
                 _dataProvider.GlobalConfigurationDataStore.Create(config);
             }
