@@ -21,7 +21,14 @@ namespace KronoMata.Data.Mock
 
         public void Delete(int id)
         {
-            _hosts.RemoveAll(h => h.Id == id);
+            //_hosts.RemoveAll(h => h.Id == id);
+
+            var existingIndex = _hosts.FindIndex(g => g.Id == id);
+
+            if (existingIndex >= 0)
+            {
+                _hosts.RemoveAt(existingIndex);
+            }
         }
 
         public List<Host> GetAll()
@@ -42,7 +49,12 @@ namespace KronoMata.Data.Mock
 
             if (existing != null)
             {
-                existing = host;
+                var existingIndex = _hosts.FindIndex(g => g.Id == existing.Id);
+
+                if (existingIndex >= 0)
+                {
+                    _hosts[existingIndex] = host;
+                }
             }
         }
     }

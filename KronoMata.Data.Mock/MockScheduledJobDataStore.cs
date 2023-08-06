@@ -21,7 +21,15 @@ namespace KronoMata.Data.Mock
 
         public void Delete(int id)
         {
-            _scheduledJobs.RemoveAll(s => s.Id == id);
+            //_scheduledJobs.RemoveAll(s => s.Id == id);
+
+            var existingIndex = _scheduledJobs.FindIndex(g => g.Id == id);
+
+            if (existingIndex >= 0)
+            {
+                _scheduledJobs.RemoveAt(existingIndex);
+            }
+
         }
 
         public List<ScheduledJob> GetAll()
@@ -52,7 +60,12 @@ namespace KronoMata.Data.Mock
 
             if (existing != null)
             {
-                existing = scheduledJob;
+                var existingIndex = _scheduledJobs.FindIndex(g => g.Id == existing.Id);
+
+                if (existingIndex >= 0)
+                {
+                    _scheduledJobs[existingIndex] = scheduledJob;
+                }
             }
         }
     }

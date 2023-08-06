@@ -21,7 +21,14 @@ namespace KronoMata.Data.Mock
 
         public void Delete(int id)
         {
-            _packages.RemoveAll(p => p.Id == id);
+            //_packages.RemoveAll(p => p.Id == id);
+
+            var existingIndex = _packages.FindIndex(g => g.Id == id);
+
+            if (existingIndex >= 0)
+            {
+                _packages.RemoveAt(existingIndex);
+            }
         }
 
         public List<Package> GetAll()
@@ -42,7 +49,12 @@ namespace KronoMata.Data.Mock
 
             if (existing != null)
             {
-                existing = package;
+                var existingIndex = _packages.FindIndex(g => g.Id == existing.Id);
+
+                if (existingIndex >= 0)
+                {
+                    _packages[existingIndex] = package;
+                }
             }
         }
     }

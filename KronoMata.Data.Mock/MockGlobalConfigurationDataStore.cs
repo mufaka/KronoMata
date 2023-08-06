@@ -21,7 +21,7 @@ namespace KronoMata.Data.Mock
 
         public void Delete(int id)
         {
-            // this is not working in ASP.NET contexte for some reason.
+            // this is not working in ASP.NET context for some reason.
             //_globalConfigurations.RemoveAll(g => g.Id == id);
 
             var existingIndex = _globalConfigurations.FindIndex(g => g.Id == id);

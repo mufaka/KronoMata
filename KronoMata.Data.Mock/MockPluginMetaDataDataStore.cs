@@ -21,7 +21,14 @@ namespace KronoMata.Data.Mock
 
         public void Delete(int id)
         {
-            _pluginMetaDatas.RemoveAll(p => p.Id == id);
+            //_pluginMetaDatas.RemoveAll(p => p.Id == id);
+
+            var existingIndex = _pluginMetaDatas.FindIndex(g => g.Id == id);
+
+            if (existingIndex >= 0)
+            {
+                _pluginMetaDatas.RemoveAt(existingIndex);
+            }
         }
 
         public PluginMetaData GetById(int id)
@@ -42,7 +49,12 @@ namespace KronoMata.Data.Mock
 
             if (existing != null)
             {
-                existing = pluginMetaData;
+                var existingIndex = _pluginMetaDatas.FindIndex(g => g.Id == existing.Id);
+
+                if (existingIndex >= 0)
+                {
+                    _pluginMetaDatas[existingIndex] = pluginMetaData;
+                }
             }
         }
 

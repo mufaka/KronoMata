@@ -21,7 +21,14 @@ namespace KronoMata.Data.Mock
 
         public void Delete(int id)
         {
-            _jobHistories.RemoveAll(j => j.Id == id);
+            //_jobHistories.RemoveAll(j => j.Id == id);
+
+            var existingIndex = _jobHistories.FindIndex(g => g.Id == id);
+
+            if (existingIndex >= 0)
+            {
+                _jobHistories.RemoveAt(existingIndex);
+            }
         }
 
         public List<JobHistory> GetAll()
