@@ -25,17 +25,18 @@ namespace KronoMata.Data.Mock
             PluginMetaData plugin = CreatePlugin(now, package);
             PluginConfiguration pluginConfiguration1 = CreatePluginConfiguration1(now, plugin);
             PluginConfiguration pluginConfiguration2 = CreatePluginConfiguration2(now, plugin);
-            Host host = CreateHost(now);
+            Host host1 = CreateHost(now, Environment.MachineName);
+            Host host2 = CreateHost(now, "APP_SERVER_02");
 
-            ScheduledJob scheduledJob1 = CreateScheduledJob(now, plugin, host);
+            ScheduledJob scheduledJob1 = CreateScheduledJob(now, plugin, host1, "Echo Test 1");
             CreateConfigurationValue1(now, pluginConfiguration1, scheduledJob1);
             CreateConfigurationValue2(now, pluginConfiguration2, scheduledJob1);
 
-            ScheduledJob scheduledJob2 = CreateScheduledJob(now, plugin, host);
+            ScheduledJob scheduledJob2 = CreateScheduledJob(now, plugin, host2, "Echo Test 2");
             CreateConfigurationValue1(now, pluginConfiguration1, scheduledJob2);
             CreateConfigurationValue2(now, pluginConfiguration2, scheduledJob2);
 
-            CreateJobHistories(now, host);
+            CreateJobHistories(now, host1, host2);
         }
 
         private void CreateGlobalConfigurations()
@@ -82,7 +83,7 @@ namespace KronoMata.Data.Mock
             }
         }
 
-        private void CreateJobHistories(DateTime now, Host host)
+        private void CreateJobHistories(DateTime now, Host host1, Host host2)
         {
             var random = new Random();
             int counter = 0;
@@ -103,9 +104,9 @@ namespace KronoMata.Data.Mock
 
                     var history = new JobHistory();
 
-                    history.HostId = host.Id;
+                    history.HostId = counter % 2 == 0 ? host1.Id : host2.Id;
                     history.ScheduledJobId = job.Id;
-                    history.RunTime = counter % 2 == 0 ? runTime : runTime2;
+                    history.RunTime = counter % 2 == 0 ? runTime2 : runTime;
                     history.Status = (ScheduledJobStatus)(random.Next(3));
                     history.Message = $"{history.Status} Message {counter}";
                     history.Detail = $"Detail {job.Name} {job.Id} {counter}";
@@ -146,11 +147,11 @@ namespace KronoMata.Data.Mock
             return plugin;
         }
 
-        private Host CreateHost(DateTime now)
+        private Host CreateHost(DateTime now, string name)
         {
             var host = new Host
             {
-                MachineName = Environment.MachineName,
+                MachineName = name,
                 IsEnabled = true,
                 InsertDate = now,
                 UpdateDate = now
@@ -194,13 +195,13 @@ namespace KronoMata.Data.Mock
             return pluginConfiguration2;
         }
 
-        private ScheduledJob CreateScheduledJob(DateTime now, PluginMetaData plugin, Host host)
+        private ScheduledJob CreateScheduledJob(DateTime now, PluginMetaData plugin, Host host, string name)
         {
             var scheduledJob = new ScheduledJob
             {
                 PluginMetaDataId = plugin.Id,
                 HostId = host.Id,
-                Name = $"{plugin.Name} Testing",
+                Name = name,
                 Description = "Testing the plugin architecture.",
                 StartTime = now,
                 EndTime = null,
