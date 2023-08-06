@@ -185,5 +185,31 @@ namespace Test.KronoMata.Data.Mock
                 Assert.That(one.Value, Is.EqualTo("TestValue3"));
             });
         }
+
+        [Test()]
+        public void Cannot_DeleteSystemConfiguration()
+        {
+            var now = DateTime.Now;
+
+            var globalConfiguration = new GlobalConfiguration()
+            {
+                Category = "System",
+                Name = $"SomeImportantConfig",
+                Value = $"SomeImportantValue",
+                IsAccessibleToPlugins = true,
+                IsSystemConfiguration = true,
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
+
+            Assert.That(globalConfiguration.Id, Is.EqualTo(1));
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                _provider.GlobalConfigurationDataStore.Delete(1);
+            });
+        }
     }
 }

@@ -45,6 +45,12 @@
         public bool IsMasked { get; set; }
 
         /// <summary>
+        /// Whether or not this GlobalConfiguration is a system configuration
+        /// that cannot be deleted. 
+        /// </summary>
+        public bool IsSystemConfiguration { get; set; }
+
+        /// <summary>
         /// The date the GlobalConfiguration was inserted.
         /// </summary>
         public DateTime InsertDate { get; set; }

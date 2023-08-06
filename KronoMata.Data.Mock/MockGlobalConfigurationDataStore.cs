@@ -24,13 +24,23 @@ namespace KronoMata.Data.Mock
             // this is not working in ASP.NET context for some reason.
             //_globalConfigurations.RemoveAll(g => g.Id == id);
 
-            var existingIndex = _globalConfigurations.FindIndex(g => g.Id == id);
+            // protect against system configuration deletion
+            var existing = _globalConfigurations.Where(g => g.Id == id).FirstOrDefault();
 
-            if (existingIndex >= 0)
+            if (existing != null)
             {
-                _globalConfigurations.RemoveAt(existingIndex);
-            }
+                if (existing.IsSystemConfiguration)
+                {
+                    throw new InvalidOperationException("Deletion of system configuration is not allowed.");
+                }
 
+                var existingIndex = _globalConfigurations.FindIndex(g => g.Id == id);
+
+                if (existingIndex >= 0)
+                {
+                    _globalConfigurations.RemoveAt(existingIndex);
+                }
+            }
         }
 
         public GlobalConfiguration GetById(int id)
