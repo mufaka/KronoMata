@@ -85,30 +85,36 @@ namespace KronoMata.Data.Mock
         private void CreateJobHistories(DateTime now, Host host)
         {
             var random = new Random();
+            int counter = 0;
 
-            foreach (ScheduledJob job in DataStoreProvider.ScheduledJobDataStore.GetAll())
+            var startDate = now.AddMonths(-6);
+            var runTime = startDate;
+
+            var days = (DateTime.Now - startDate).Days;
+
+            for (int x = 0; x < days * 24; x++)
             {
-                var startDate = now.AddDays(-7d).Date;
-                var runTime = startDate;
+                runTime = runTime.AddMinutes(random.Next(30)).AddSeconds(random.Next(30));
+                var runTime2 = runTime.AddMinutes(random.Next(30)).AddSeconds(random.Next(30));
 
-                for (int x = 0; x < 7 * 24 ; x++)
+                foreach (ScheduledJob job in DataStoreProvider.ScheduledJobDataStore.GetAll())
                 {
-                    runTime = runTime.AddMinutes(random.Next(60)).AddSeconds(random.Next(60));
+                    counter++;
 
                     var history = new JobHistory();
 
                     history.HostId = host.Id;
                     history.ScheduledJobId = job.Id;
-                    history.RunTime = runTime;
+                    history.RunTime = counter % 2 == 0 ? runTime : runTime2;
                     history.Status = (ScheduledJobStatus)(random.Next(3));
-                    history.Message = $"{history.Status} Message {x + 1}";
-                    history.Detail = $"Detail {x + 1}";
-
-                    // step to the next hour
-                    runTime = new DateTime(runTime.Year, runTime.Month, runTime.Day, runTime.Hour, 0, 0).AddHours(1);
+                    history.Message = $"{history.Status} Message {counter}";
+                    history.Detail = $"Detail {job.Name} {job.Id} {counter}";
 
                     DataStoreProvider.JobHistoryDataStore.Create(history);
                 }
+
+                // step to the next hour
+                runTime = new DateTime(runTime.Year, runTime.Month, runTime.Day, runTime.Hour, 0, 0).AddHours(1);
             }
         }
 
