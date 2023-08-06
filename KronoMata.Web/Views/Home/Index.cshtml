@@ -207,33 +207,39 @@
         }
 
         function populateJobHistoryDetail() {
-            var db = GetData('@Url.Action("GetLastJobHistoryDetail", "ChartData")')[0];
+            var db = GetData('@Url.Action("GetLastJobHistoryRelatedData", "ChartData")')[0];
+            var jobs = db.data.value.jobs;
+            var hosts = db.data.value.hosts;
 
             $('#history-grid').jsGrid({
-                height: "100%",
+                height: "500px",
                 width: "100%",
-                sorting: true,
+                sorting: false,
                 paging: true,
-                pageSize: 10,
+                pageLoading: true,
+                pageSize: 40,
+                autoload: true,
 
-                data: db.histories,
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            cache: false,
+                            type: "GET",
+                            url: "@Url.Action("GetLastJobHistoryDetail", "ChartData")",
+                            data: filter,
+                            dataType: "json"
+                        });
+                    },
 
-                /*
-                rowClass: function(item, ndx) {
-                    let retVal = 'row-status-success';
+                    insertItem: function (item) {
+                    },
 
-                    switch (item.status) {
-                        case 1:
-                            retVal = 'row-status-skip';
-                            break;
-                        case 2:
-                            retVal = 'row-status-fail';
-                            break;
+                    updateItem: function (item) {
+                    },
+
+                    deleteItem: function (item) {
                     }
-
-                    return retVal;
                 },
-                */
                 fields: [
                     { name: "runTime", title: "Run Time", type: "text", width: 75, 
                         itemTemplate: function(value, item) {
@@ -256,8 +262,8 @@
                             return '<i class="fa ' + icon + ' ' + iconClass + '"></i>' + date;
                         }
                     },
-                    { name: "scheduledJobId", title: "Job", type: "select", items: db.jobs, valueField: "id", textField: "name", width: 75, headercss: "text-start" },
-                    { name: "hostId", title: "Host", type: "select", items: db.hosts, valueField: "id", textField: "machineName", width: 75 },
+                    { name: "scheduledJobId", title: "Job", type: "select", items: jobs, valueField: "id", textField: "name", width: 75, headercss: "text-start" },
+                    { name: "hostId", title: "Host", type: "select", items: hosts, valueField: "id", textField: "machineName", width: 75 },
                     { name: "message", title: "Message", type: "text", width: 150 },
                     { name: "detail", title: "Detail", type: "text" }
                 ]

@@ -10,9 +10,10 @@ namespace KronoMata.Data
         JobHistory Create(JobHistory jobHistory);
         void Delete(int id);
         List<JobHistory> GetAll();
+        PagedList<JobHistory> GetAllPaged(int pageIndex, int pageSize);
         List<JobHistory> GetTop(int howMany);
         List<JobHistory> GetByScheduledJob(int scheduledJobId);
-
         List<JobHistory> GetLastByDate(DateTime startDate);
+        PagedList<JobHistory> GetLastByDatePaged(DateTime startDate, int pageIndex, int pageSize);
     }
 }

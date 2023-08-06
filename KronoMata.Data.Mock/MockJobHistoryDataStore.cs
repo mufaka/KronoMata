@@ -36,6 +36,15 @@ namespace KronoMata.Data.Mock
             return _jobHistories;
         }
 
+        public PagedList<JobHistory> GetAllPaged(int pageIndex, int pageSize)
+        {
+            return new PagedList<JobHistory>()
+            {
+                TotalRecords = _jobHistories.Count,
+                List = _jobHistories.Skip(pageIndex * pageSize).Take(pageSize).ToList()
+            };
+        }
+
         public List<JobHistory> GetByScheduledJob(int scheduledJobId)
         {
             return _jobHistories.Where(j => j.ScheduledJobId == scheduledJobId).ToList();
@@ -49,6 +58,17 @@ namespace KronoMata.Data.Mock
         public List<JobHistory> GetLastByDate(DateTime startDate)
         {
             return _jobHistories.Where(h => h.RunTime > startDate).OrderByDescending(h => h.RunTime).ToList();
+        }
+
+        public PagedList<JobHistory> GetLastByDatePaged(DateTime startDate, int pageIndex, int pageSize)
+        {
+            var all = _jobHistories.Where(h => h.RunTime > startDate).OrderByDescending(h => h.RunTime).ToList();
+
+            return new PagedList<JobHistory>()
+            {
+                TotalRecords = all.Count,
+                List = all.Skip(pageIndex * pageSize).Take(pageSize).ToList()
+            };
         }
     }
 }

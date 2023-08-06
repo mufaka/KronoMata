@@ -67,26 +67,46 @@ namespace KronoMata.Web.Controllers
             return result;
         }
 
-        public ActionResult GetLastJobHistoryDetail()
+        public ActionResult GetLastJobHistoryDetail(int pageIndex, int pageSize)
         {
             // TODO: accept a start date parameter
             var now = DateTime.Now;
             var startDate = now.Date.AddDays(-7);
-            var histories = DataStoreProvider.JobHistoryDataStore.GetLastByDate(startDate);
-            var hosts = DataStoreProvider.HostDataStore.GetAll();
-            var plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll();
-            var jobs = DataStoreProvider.ScheduledJobDataStore.GetAll();
+
+            // jsGrid sends a parameter named pageIndex but it is a 1 based index.
+            var pagedList = DataStoreProvider.JobHistoryDataStore.GetLastByDatePaged(startDate, pageIndex - 1, pageSize);
+
+            var histories = pagedList.List;
 
             var result = Json(new
             {
-                histories = histories,
-                hosts = hosts,
-                plugins = plugins,
-                jobs = jobs
+                data = histories,
+                itemsCount = pagedList.TotalRecords
             });
 
             return result;
         }
 
+        public ActionResult GetLastJobHistoryRelatedData()
+        {
+            var now = DateTime.Now;
+            var startDate = now.Date.AddDays(-7);
+
+            var hosts = DataStoreProvider.HostDataStore.GetAll();
+            var plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll();
+            var jobs = DataStoreProvider.ScheduledJobDataStore.GetAll();
+
+            var db = Json(new
+            {
+                hosts = hosts,
+                plugins = plugins,
+                jobs = jobs
+            });
+
+            return Json(new
+            {
+                data = db
+            });
+        }
     }
 }
