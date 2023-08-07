@@ -16,6 +16,7 @@
     <ProjectReference Include="..\KronoMata.Data\KronoMata.Data.csproj" />
     <ProjectReference Include="..\KronoMata.Model\KronoMata.Model.csproj" />
     <ProjectReference Include="..\KronoMata.Public\KronoMata.Public.csproj" />
+    <ProjectReference Include="..\KronoMata.Scheduling\KronoMata.Scheduling.csproj" />
   </ItemGroup>
 
   <ItemGroup>

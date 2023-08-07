@@ -2,6 +2,7 @@
 using KronoMata.Data.Mock;
 using KronoMata.Model;
 using KronoMata.Public;
+using KronoMata.Scheduling;
 using McMaster.NETCore.Plugins;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
@@ -21,8 +22,13 @@ namespace KronoMata.ProtoTyping
                 // determine if we have initialized data.
                 var dataStoreProvider = MockDatabase.Instance.DataStoreProvider;
 
-                // the service method that will run in a loop.
-                CheckForJobs(machineName, dataStoreProvider);
+                // run for 10 minutes
+                for (int x = 0; x < 10; x++)
+                {
+                    CheckForJobs(machineName, dataStoreProvider);
+
+                    Thread.Sleep(60 * 1000);
+                }
             }
             catch (Exception ex)
             {
@@ -34,6 +40,7 @@ namespace KronoMata.ProtoTyping
         {
             // is there a host for this system?
             var host = dataStoreProvider.HostDataStore.GetByMachineName(machineName);
+            var recurrence = new RecurrenceShouldRun();
 
             if (host == null)
             {
@@ -53,18 +60,13 @@ namespace KronoMata.ProtoTyping
                 {
                     var pluginArchiveRoot = $"PackageRoot{Path.DirectorySeparatorChar}";
 
-                    for (int x = 0; x < 10; x++)
+                    Parallel.ForEach(scheduledJobs, scheduledJob =>
                     {
-                        Parallel.ForEach(scheduledJobs, scheduledJob =>
+                        if (recurrence.ShouldRun(DateTime.Now, scheduledJob))
                         {
-                            if (ShouldRun(scheduledJob))
-                            {
-                                ExecutePlugin(dataStoreProvider, pluginArchiveRoot, scheduledJob);
-                            }
-                        });
-
-                        Thread.Sleep(4000);
-                    }
+                            ExecutePlugin(dataStoreProvider, pluginArchiveRoot, scheduledJob);
+                        }
+                    });
                 }
             }
         }
@@ -120,10 +122,11 @@ namespace KronoMata.ProtoTyping
                             // can we / should we call Dispose directly? This unloads the loaded assemblies
                             plugin = null;
                             pluginLoader.Dispose();
+                            var now = DateTime.Now;
 
                             foreach (var result in results)
                             {
-                                Console.WriteLine($"IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}");
+                                Console.WriteLine($"{now.ToShortDateString()} {now.ToShortTimeString()} IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}");
                             }
                         }
                         else
@@ -220,18 +223,6 @@ namespace KronoMata.ProtoTyping
             folderName = Regex.Replace(folderName, "[ ]", "_");
 
             return folderName;
-        }
-
-        private static bool ShouldRun(ScheduledJob scheduledJob)
-        {
-            var now = DateTime.Now;
-
-            if (!scheduledJob.IsEnabled) return false;
-            if (scheduledJob.EndTime.HasValue && now > scheduledJob.EndTime) return false;
-
-            // TODO: compare current time to job start time and see if any of the interval * step results match
-
-            return true;
         }
     }
 }

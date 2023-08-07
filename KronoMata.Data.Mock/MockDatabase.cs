@@ -206,7 +206,7 @@ namespace KronoMata.Data.Mock
                 StartTime = now,
                 EndTime = null,
                 Frequency = ScheduleFrequency.Minute,
-                Interval = 2,
+                Interval = 1,
                 IsEnabled = true,
                 InsertDate = now,
                 UpdateDate = now
