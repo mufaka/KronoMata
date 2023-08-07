@@ -13,14 +13,14 @@ namespace KronoMata.Prototyping
     public class AgentPrototype : IHostedService
     {
         private readonly ILogger<AgentPrototype> _logger;
-        private readonly IDataStoreProvider dataStoreProvider;
+        private readonly IDataStoreProvider _dataStoreProvider;
 
         private readonly PeriodicTimer _periodicTimer = new PeriodicTimer(TimeSpan.FromMinutes(1));
 
-        public AgentPrototype(ILogger<AgentPrototype> logger, IDataStoreProvider dsp)
+        public AgentPrototype(ILogger<AgentPrototype> logger, IDataStoreProvider dataStoreProvider)
         {
             _logger = logger;
-            dataStoreProvider = dsp;
+            _dataStoreProvider = dataStoreProvider;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -54,7 +54,7 @@ namespace KronoMata.Prototyping
         {
             // is there a host for this system?
             var machineName = Environment.MachineName;
-            var host = dataStoreProvider.HostDataStore.GetByMachineName(machineName);
+            var host = _dataStoreProvider.HostDataStore.GetByMachineName(machineName);
             var recurrence = new RecurrenceShouldRun();
 
             if (host == null)
@@ -65,7 +65,7 @@ namespace KronoMata.Prototyping
             else
             {
                 // are there any scheduled jobs defined for this system?
-                var scheduledJobs = dataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id);
+                var scheduledJobs = _dataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id);
 
                 if (scheduledJobs.Count == 0)
                 {
@@ -79,7 +79,7 @@ namespace KronoMata.Prototyping
                     {
                         if (recurrence.ShouldRun(DateTime.Now, scheduledJob))
                         {
-                            ExecutePlugin(dataStoreProvider, pluginArchiveRoot, scheduledJob);
+                            ExecutePlugin(_dataStoreProvider, pluginArchiveRoot, scheduledJob);
                         }
                     });
                 }
