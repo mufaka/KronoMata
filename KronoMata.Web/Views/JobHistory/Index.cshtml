@@ -25,8 +25,21 @@
 
     <script type="text/javascript">
         $(function () {
+            customizeGridLoadParams();
             populateJobHistoryGrid();
         });
+
+        // shenanigans with the load params.
+        function customizeGridLoadParams() {
+            jsGrid.loadStrategies.PageLoadingStrategy.prototype.loadParams = function () {
+                var grid = this._grid;
+                return {
+                    pageIndex: grid.option("pageIndex"),
+                    pageSize: grid.option("pageSize"),
+                    status: 2
+                };
+            }
+        }
 
         function populateJobHistoryGrid() {
             var db = GetData('@Url.Action("GetLastJobHistoryRelatedData", "ChartData")')[0];
