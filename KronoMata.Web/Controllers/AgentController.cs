@@ -40,5 +40,20 @@ namespace KronoMata.Web.Controllers
 
             return jobs;
         }
+
+        [HttpPost("history")]
+        public JobHistory Post([FromBody] JobHistory history)
+        {
+            try
+            {
+                DataStoreProvider.JobHistoryDataStore.Create(history);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+
+            return history;
+        }
     }
 }

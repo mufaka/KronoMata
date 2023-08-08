@@ -5,7 +5,10 @@ using KronoMata.Scheduling;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System.Diagnostics;
 using System.IO.Compression;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace KronoMata.Prototyping
@@ -65,7 +68,11 @@ namespace KronoMata.Prototyping
             else
             {
                 // are there any scheduled jobs defined for this system?
-                var scheduledJobs = _dataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id);
+                // replace with call to api (eg: http://10.10.11.3:5002/api/Agent/jobs/Bills-MacBook-Pro)
+
+                var endpoint = $"Agent/jobs/{machineName}";
+                //var scheduledJobs = _dataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id);
+                var scheduledJobs = Get<ScheduledJob>(endpoint);
 
                 if (scheduledJobs.Count == 0)
                 {
@@ -79,14 +86,15 @@ namespace KronoMata.Prototyping
                     {
                         if (recurrence.ShouldRun(DateTime.Now, scheduledJob))
                         {
-                            ExecutePlugin(_dataStoreProvider, pluginArchiveRoot, scheduledJob);
+                            ExecutePlugin(_dataStoreProvider, pluginArchiveRoot, scheduledJob, host);
                         }
                     });
                 }
             }
         }
 
-        private static void ExecutePlugin(IDataStoreProvider dataStoreProvider, string pluginArchiveRoot, ScheduledJob scheduledJob)
+        private void ExecutePlugin(IDataStoreProvider dataStoreProvider, string pluginArchiveRoot, ScheduledJob scheduledJob, 
+            KronoMata.Model.Host host)
         {
             var pluginMetaData = dataStoreProvider.PluginMetaDataDataStore.GetById(scheduledJob.PluginMetaDataId);
             var package = dataStoreProvider.PackageDataStore.GetById(pluginMetaData.PackageId);
@@ -132,7 +140,27 @@ namespace KronoMata.Prototyping
 
                         if (plugin != null)
                         {
+                            var runTime = DateTime.Now;
                             var results = plugin.Execute(systemConfiguration, pluginConfiguration);
+                            var completionTime = DateTime.Now;
+
+                            var endpoint = $"Agent/history";
+                            
+                            foreach (var result in results)
+                            {
+                                var history = new JobHistory()
+                                {
+                                    ScheduledJobId = scheduledJob.Id,
+                                    HostId = host.Id, // scheduledJob.HostId can be null with run everywhere jobs
+                                    Status = result.IsError ? ScheduledJobStatus.Failure : ScheduledJobStatus.Success,
+                                    Message = result.Message,
+                                    Detail = result.Detail,
+                                    RunTime = runTime,
+                                    CompletionTime = completionTime
+                                };
+
+                                Post<JobHistory>(endpoint, history);
+                            }
 
                             // can we / should we call Dispose directly? This unloads the loaded assemblies
                             plugin = null;
@@ -239,5 +267,59 @@ namespace KronoMata.Prototyping
 
             return folderName;
         }
+
+        public static string RootUrl = "http://localhost:5002/api/";
+
+        private string BuildUrl(string endPoint)
+        {
+            if (RootUrl.EndsWith("/") && !endPoint.StartsWith("/"))
+            {
+                return RootUrl + endPoint;
+            }
+            else if (!RootUrl.EndsWith("/") && endPoint.StartsWith("/"))
+            {
+                return RootUrl + endPoint;
+            }
+            else if (RootUrl.EndsWith("/") && endPoint.StartsWith("/"))
+            {
+                return RootUrl + endPoint.Substring(1);
+            }
+            else
+            {
+                return RootUrl + "/" + endPoint;
+            }
+        }
+
+        public List<T> Get<T>(string endPoint)
+        {
+            using (var client = new HttpClient())
+            {
+                // why is there no Get? have to use Async?
+                using (var response = client.GetAsync(BuildUrl(endPoint)))
+                {
+                    // synchronous hackery ... :(
+                    response.Wait();
+                    var content = response.Result.Content.ReadAsStringAsync();
+                    content.Wait();
+
+                    return JsonConvert.DeserializeObject<List<T>>(content.Result);
+                }
+            }
+        }
+
+        public T Post<T>(string endPoint, T t)
+        {
+            using (var client = new HttpClient())
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(t), Encoding.UTF8, "application/json");
+                var response = client.PostAsync(BuildUrl(endPoint), content);
+                response.Wait();
+                var responseContent = response.Result.Content.ReadAsStringAsync();
+                responseContent.Wait();
+
+                return JsonConvert.DeserializeObject<T>(responseContent.Result);
+            }
+        }
+
     }
 }

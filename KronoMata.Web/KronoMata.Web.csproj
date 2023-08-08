@@ -20,4 +20,8 @@
     <ProjectReference Include="..\KronoMata.Public\KronoMata.Public.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PackageRoot\" />
+  </ItemGroup>
+
 </Project>
