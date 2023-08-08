@@ -1,6 +1,8 @@
 ﻿using KronoMata.Data;
+using KronoMata.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace KronoMata.Web.Controllers
 {
@@ -17,6 +19,26 @@ namespace KronoMata.Web.Controllers
             DataStoreProvider = dataStoreProvider;
         }
 
+        [HttpGet("jobs/{name}")]
+        public IEnumerable<ScheduledJob> GetByHostName(string name)
+        {
+            var jobs = new List<ScheduledJob>();
 
+            try
+            {
+                var host = DataStoreProvider.HostDataStore.GetByMachineName(name);
+
+                if (host != null)
+                {
+                    jobs = DataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id).Where(h => h.IsEnabled).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+
+            return jobs;
+        }
     }
 }
