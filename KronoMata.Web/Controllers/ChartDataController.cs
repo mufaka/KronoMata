@@ -7,9 +7,9 @@ namespace KronoMata.Web.Controllers
 {
     public class ChartDataController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<ChartDataController> _logger;
 
-        public ChartDataController(ILogger<HomeController> logger, IDataStoreProvider dataStoreProvider)
+        public ChartDataController(ILogger<ChartDataController> logger, IDataStoreProvider dataStoreProvider)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;

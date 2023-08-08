@@ -6,9 +6,9 @@ namespace KronoMata.Web.Controllers
 {
     public class JobHistoryController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<JobHistoryController> _logger;
 
-        public JobHistoryController(ILogger<HomeController> logger, IDataStoreProvider dataStoreProvider)
+        public JobHistoryController(ILogger<JobHistoryController> logger, IDataStoreProvider dataStoreProvider)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;

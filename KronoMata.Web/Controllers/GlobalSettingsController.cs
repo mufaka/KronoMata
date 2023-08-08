@@ -8,9 +8,9 @@ namespace KronoMata.Web.Controllers
 {
     public class GlobalSettingsController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<GlobalSettingsController> _logger;
 
-        public GlobalSettingsController(ILogger<HomeController> logger, IDataStoreProvider dataStoreProvider)
+        public GlobalSettingsController(ILogger<GlobalSettingsController> logger, IDataStoreProvider dataStoreProvider)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;
