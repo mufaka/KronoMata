@@ -244,11 +244,11 @@
                             return '<i class="fa ' + icon + ' ' + iconClass + '"></i>' + date;
                         }
                     },
-                    { name: "duration", title: "Duration", type: "text", width: 60, filtering: false },
+                    { name: "duration", title: "Duration", type: "text", width: 40, filtering: false },
                     { name: "scheduledJobId", title: "Job", type: "select", items: jobs, valueField: "id", textField: "name", width: 40, headercss: "text-start" },
                     { name: "hostId", title: "Host", type: "select", items: hosts, valueField: "id", textField: "machineName", width: 40 },
-                    { name: "message", title: "Message", type: "text", width: 60 },
-                    { name: "detail", title: "Detail", type: "text" }
+                    { name: "message", title: "Message", type: "text" },
+                    { name: "detail", title: "Detail", type: "text", visible: false }
                 ]
             });
         }

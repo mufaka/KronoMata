@@ -62,7 +62,7 @@ body {
 .compact-jsgrid-cell {
     border: #f1f1f1 1px solid;
     font-family: "Roboto";
-    font-size: 0.9em !important;
+    font-size: 0.8em !important;
 }
 
 .grid-button + .grid-button {
