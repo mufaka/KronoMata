@@ -107,6 +107,8 @@ namespace KronoMata.Data.Mock
                     history.HostId = counter % 2 == 0 ? host1.Id : host2.Id;
                     history.ScheduledJobId = job.Id;
                     history.RunTime = counter % 2 == 0 ? runTime2 : runTime;
+                    history.CompletionTime = history.RunTime.AddMilliseconds(random.Next(1, 20000));
+
                     history.Status = (ScheduledJobStatus)(random.Next(3));
                     history.Message = $"{history.Status} Message {counter}";
                     history.Detail = $"Detail {job.Name} {job.Id} {counter}";

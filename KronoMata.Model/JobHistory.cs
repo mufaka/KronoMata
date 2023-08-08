@@ -48,5 +48,18 @@
         /// The completion time of the ScheduledJob.
         /// </summary>
         public DateTime CompletionTime { get; set; }
+
+        /// <summary>
+        /// Returns a string representation of the elapsed time
+        /// between the CompletionTime and RunTime using
+        /// TimeSpan.ToString("g").
+        /// </summary>
+        public string Duration
+        {
+            get
+            {
+                return (CompletionTime - RunTime).ToString("g");
+            }
+        }
     }
 }

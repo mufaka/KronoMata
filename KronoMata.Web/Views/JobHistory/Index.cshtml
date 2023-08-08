@@ -123,6 +123,7 @@
                             return '<i class="fa ' + icon + ' ' + iconClass + '"></i>' + date;
                         }
                     },
+                    { name: "duration", title: "Duration", type: "text", width: 60, filtering: false },
                     {
                         name: "scheduledJobId", title: "Job", type: "select", items: jobs, valueField: "id", textField: "name", width: 40, headercss: "text-start", 
                         filterTemplate: function () {
