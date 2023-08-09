@@ -23,5 +23,10 @@
         /// required.
         /// </summary>
         public string FileName { get; set; } = String.Empty;
+
+        /// <summary>
+        /// The date and time that the Package was uploaded.
+        /// </summary>
+        public DateTime UploadDate { get; set; }
     }
 }
