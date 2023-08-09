@@ -3,10 +3,10 @@ using KronoMata.Model;
 using KronoMata.Public;
 using KronoMata.Scheduling;
 using McMaster.NETCore.Plugins;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -17,13 +17,15 @@ namespace KronoMata.Prototyping
     {
         private readonly ILogger<AgentPrototype> _logger;
         private readonly IDataStoreProvider _dataStoreProvider;
+        private readonly IConfiguration _configuration;
 
         private readonly PeriodicTimer _periodicTimer = new PeriodicTimer(TimeSpan.FromMinutes(1));
 
-        public AgentPrototype(ILogger<AgentPrototype> logger, IDataStoreProvider dataStoreProvider)
+        public AgentPrototype(ILogger<AgentPrototype> logger, IDataStoreProvider dataStoreProvider, IConfiguration configuration)
         {
             _logger = logger;
             _dataStoreProvider = dataStoreProvider;
+            _configuration = configuration;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -63,20 +65,19 @@ namespace KronoMata.Prototyping
             if (host == null)
             {
                 // should self register the host? make configurable.
-                Console.WriteLine($"There is no Host defined for {machineName}");
+                _logger.LogWarning($"There is no Host defined for {machineName}");
             }
             else
             {
                 // are there any scheduled jobs defined for this system?
-                // replace with call to api (eg: http://10.10.11.3:5002/api/Agent/jobs/Bills-MacBook-Pro)
-
                 var endpoint = $"Agent/jobs/{machineName}";
-                //var scheduledJobs = _dataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id);
+
+                _logger.LogDebug($"Checking for jobs on {RootUrl} at endpoint {endpoint}");
                 var scheduledJobs = Get<ScheduledJob>(endpoint);
 
                 if (scheduledJobs.Count == 0)
                 {
-                    Console.WriteLine($"There are no scheduled jobs defined for {machineName}");
+                    _logger.LogWarning($"There are no scheduled jobs defined for {machineName}");
                 }
                 else
                 {
@@ -93,7 +94,7 @@ namespace KronoMata.Prototyping
             }
         }
 
-        private void ExecutePlugin(IDataStoreProvider dataStoreProvider, string pluginArchiveRoot, ScheduledJob scheduledJob, 
+        private void ExecutePlugin(IDataStoreProvider dataStoreProvider, string pluginArchiveRoot, ScheduledJob scheduledJob,
             KronoMata.Model.Host host)
         {
             var pluginMetaData = dataStoreProvider.PluginMetaDataDataStore.GetById(scheduledJob.PluginMetaDataId);
@@ -107,7 +108,7 @@ namespace KronoMata.Prototyping
             // the work above should result in this folder now being available
             if (!Directory.Exists(packageFolder))
             {
-                Console.WriteLine($"Unable to find package folder at {packageFolder}");
+                _logger.LogWarning($"Unable to find package folder at {packageFolder}");
             }
             else
             {
@@ -120,7 +121,7 @@ namespace KronoMata.Prototyping
 
                 if (!File.Exists(assemblyPath))
                 {
-                    Console.WriteLine($"Assembly file not found at {assemblyPath}");
+                    _logger.LogWarning($"Assembly file not found at {assemblyPath}");
                 }
                 else
                 {
@@ -132,20 +133,24 @@ namespace KronoMata.Prototyping
                         sharedTypes: new[] { typeof(IPlugin) },
                         isUnloadable: true);
 
+                    _logger.LogDebug($"Loading assembly {assemblyPath}");
                     var assembly = pluginLoader.LoadDefaultAssembly();
 
                     if (assembly != null)
                     {
+                        _logger.LogDebug($"Creating an instance of {pluginMetaData.ClassName}");
                         var plugin = assembly.CreateInstance(pluginMetaData.ClassName) as IPlugin;
 
                         if (plugin != null)
                         {
                             var runTime = DateTime.Now;
+
+                            _logger.LogDebug($"Executing plugin {pluginMetaData.ClassName}");
                             var results = plugin.Execute(systemConfiguration, pluginConfiguration);
                             var completionTime = DateTime.Now;
 
                             var endpoint = $"Agent/history";
-                            
+
                             foreach (var result in results)
                             {
                                 var history = new JobHistory()
@@ -169,33 +174,30 @@ namespace KronoMata.Prototyping
 
                             foreach (var result in results)
                             {
-                                Console.WriteLine($"{now.ToShortDateString()} {now.ToShortTimeString()} IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}");
+                                _logger.LogInformation($"{now.ToShortDateString()} {now.ToShortTimeString()} IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}");
                             }
                         }
                         else
                         {
-                            Console.WriteLine($"Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}");
+                            _logger.LogError($"Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}");
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"Unable to load assembly from {assemblyPath}");
+                        _logger.LogError($"Unable to load assembly from {assemblyPath}");
                     }
-
-
-                    // TODO: Log results.
                 }
             }
         }
 
-        private static void CreatePackageFolder(string packageFolder, string packageArchivePath)
+        private void CreatePackageFolder(string packageFolder, string packageArchivePath)
         {
             if (!Directory.Exists(packageFolder))
             {
                 if (!File.Exists(packageArchivePath))
                 {
                     // TODO: attempt to fetch from future API.
-                    Console.WriteLine($"Could not find package path at {packageArchivePath}");
+                    _logger.LogWarning($"Could not find package path at {packageArchivePath}");
                 }
                 else
                 {
@@ -206,7 +208,7 @@ namespace KronoMata.Prototyping
             }
         }
 
-        private static Dictionary<string, string> GetScheduledJobConfiguration(IDataStoreProvider dataStoreProvider,
+        private Dictionary<string, string> GetScheduledJobConfiguration(IDataStoreProvider dataStoreProvider,
             ScheduledJob scheduledJob, PluginMetaData pluginMetaData)
         {
             var pluginConfiguration = new Dictionary<string, string>();
@@ -268,7 +270,28 @@ namespace KronoMata.Prototyping
             return folderName;
         }
 
-        public static string RootUrl = "http://localhost:5002/api/";
+        private string RootUrl //= "http://localhost:5002/api/";
+        {
+            get
+            {
+                var configurationRoot = _configuration.GetSection("KronoMata");
+
+                if (configurationRoot != null)
+                {
+                    var apiRoot = configurationRoot.GetSection("APIRoot");
+
+                    if (apiRoot != null)
+                    {
+                        if (!String.IsNullOrEmpty(apiRoot.Value))
+                        {
+                            return apiRoot.Value;
+                        }
+                    }
+                }
+
+                throw new ArgumentNullException("APIRoot is not defined in appsettings.json [KronoMata:APIRoot]");
+            }
+        }
 
         private string BuildUrl(string endPoint)
         {
@@ -302,7 +325,9 @@ namespace KronoMata.Prototyping
                     var content = response.Result.Content.ReadAsStringAsync();
                     content.Wait();
 
+#pragma warning disable CS8603 // Possible null reference return.
                     return JsonConvert.DeserializeObject<List<T>>(content.Result);
+#pragma warning restore CS8603 // Possible null reference return.
                 }
             }
         }
@@ -317,7 +342,9 @@ namespace KronoMata.Prototyping
                 var responseContent = response.Result.Content.ReadAsStringAsync();
                 responseContent.Wait();
 
+#pragma warning disable CS8603 // Possible null reference return.
                 return JsonConvert.DeserializeObject<T>(responseContent.Result);
+#pragma warning restore CS8603 // Possible null reference return.
             }
         }
 
