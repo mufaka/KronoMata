@@ -6,6 +6,23 @@
     public interface IPlugin
     {
         /// <summary>
+        /// The name of the plugin
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// A description for the plugin
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
+        /// A version of the plugin. It is important to have
+        /// unique versions because of how the plugins are loaded
+        /// for specific jobs.
+        /// </summary>
+        string Version { get; }
+
+        /// <summary>
         /// A list of PluginParameter used for plugin specific configuration. The
         /// values for these will be passed to the Execute method at run time.
         /// </summary>
