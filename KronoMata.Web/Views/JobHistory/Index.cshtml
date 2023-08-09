@@ -28,41 +28,6 @@
     </div>
 </div>
 
-<div id="detailsDialog">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label>Run Time</label>
-                    <input id="jobhistory-runtime" type="text" class="form-control" disabled>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label>Duration</label>
-                    <input id="jobhistory-duration" type="text" class="form-control" disabled>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label>Message</label>
-                    <input id="jobhistory-message" type="text" class="form-control" disabled>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label>Detail</label>
-                    <textarea id="jobhistory-detail" rows="6" type="text" class="form-control" disabled></textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section styles {
     <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid.min.css">
     <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid-theme.min.css">
@@ -75,27 +40,9 @@
 
     <script type="text/javascript">
         $(function () {
-
-            $("#detailsDialog").dialog({
-                autoOpen: false,
-                width: 800,
-                close: function () {
-                }
-            });
-
             customizeGridLoadParams();
             populateJobHistoryGrid();
         });
-
-        var showDetailsDialog = function (dialogType, history) {
-            $("#jobhistory-runtime").val(history.runTime);
-            $("#jobhistory-duration").val(history.duration);
-            $("#jobhistory-message").val(history.message);
-            $("#jobhistory-detail").val(history.detail);
-
-            $("#detailsDialog").dialog("option", "title", "Job History Detail")
-                .dialog("open");
-        };
 
         // shenanigans with the load params.
         function customizeGridLoadParams() {
@@ -137,7 +84,7 @@
                 filtering: true,
 
                 rowClick: function (args) {
-                    showDetailsDialog("Edit", args.item);
+                    showDetailsDialog(args.item);
                 },
 
                 controller: {
@@ -209,4 +156,6 @@
             });
         }
     </script>
+
+    <partial name="~/Views/Partials/_JobHistoryDetailDialog.cshtml" />
 }

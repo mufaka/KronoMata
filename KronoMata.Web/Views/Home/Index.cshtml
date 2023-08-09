@@ -84,12 +84,14 @@
 {
     <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid.min.css">
     <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid-theme.min.css">
+    <link rel="stylesheet" href="~/plugins/jquery-ui/jquery-ui.css" />
 }
 
 @section scripts 
 {
     <script src="~/plugins/chart.js/Chart.min.js"></script>
     <script src="~/plugins/jsgrid/jsgrid.min.js"></script>
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
 
     <script type="text/javascript">
 
@@ -202,6 +204,10 @@
                 pageSize: 40,
                 autoload: true,
 
+                rowClick: function (args) {
+                    showDetailsDialog(args.item);
+                },
+
                 controller: {
                     loadData: function (filter) {
                         return $.ajax({
@@ -253,4 +259,6 @@
             });
         }
     </script>
+
+    <partial name="~/Views/Partials/_JobHistoryDetailDialog.cshtml" />
 }
