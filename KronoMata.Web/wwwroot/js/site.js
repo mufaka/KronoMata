@@ -1,6 +1,12 @@
 ﻿// Override the jsGrid buttons with Font Awesome Icons. Font Awesome and jQuery should
 // be included in styles and scripts.
 $(function () {
+    if (typeof jsGrid !== 'undefined') {
+        overrideJSGrid();
+    }
+});
+
+function overrideJSGrid() {
     // override the styles for the editing buttons. notice the 'fa' before the
     // custom classes.
     jsGrid.ControlField.prototype.buttonClass = "grid-button";
@@ -29,7 +35,7 @@ $(function () {
                 clickHandler(grid, e);
             });
     }
-});
+}
 
 // utility method for geting ajax data
 function GetData(url) {

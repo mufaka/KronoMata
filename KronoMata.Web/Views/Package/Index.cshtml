@@ -1,13 +1,11 @@
 ﻿@model KronoMata.Web.Models.PackageViewModel
 
-
 <div class="row">
-    <div class="col-12">
+    <div class="col-6">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Packages</h3>
             </div>
-            <!-- /.card-header -->
             <div class="card-body table-responsive p-0" style="height: 300px;">
                 <table class="table table-head-fixed text-nowrap">
                     <thead>
@@ -34,3 +32,32 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Upload Package</h3>
+            </div>
+            <form id="dropzone-form" action="@Url.Action("Index", "Package")">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="packageName">Name</label>
+                        <input type="text" class="form-control" id="packageName" name="packageName" />
+                    </div>
+                    <input type="file" id="packageFile" name="packageFile" accept="application/zip" />
+                    <div class="dropzone-package-drop">Drag and drop zip files here, or click to upload.</div>
+                    <div id="dropzone-status"></div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-secondary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section styles {
+}
+
+@section scripts {
+}
