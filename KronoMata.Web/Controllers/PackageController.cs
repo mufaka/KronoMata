@@ -11,6 +11,7 @@ namespace KronoMata.Web.Controllers
         public PackageController(ILogger<JobHistoryController> logger, IDataStoreProvider dataStoreProvider, 
             IConfiguration configuration)
         {
+            _logger = logger;
             DataStoreProvider = dataStoreProvider;
             Configuration = configuration;
         }
