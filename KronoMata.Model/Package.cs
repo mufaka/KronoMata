@@ -17,10 +17,13 @@
         public int Id { get; set; }
 
         /// <summary>
-        /// The name of the file containing the Package. It
-        /// is assumed that the API and Agent will manage their
-        /// own paths for Packages so only the FileName is
-        /// required.
+        /// A friendly name for the Package.
+        /// </summary>
+        public string Name { get; set; } = String.Empty; 
+
+        /// <summary>
+        /// The name of the zip file containing the Package. The
+        /// value should be unique.
         /// </summary>
         public string FileName { get; set; } = String.Empty;
 

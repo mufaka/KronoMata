@@ -146,9 +146,9 @@ namespace KronoMata.Prototyping
                             var runTime = DateTime.Now;
 
                             _logger.LogDebug($"Executing plugin {pluginMetaData.ClassName}");
+                            
                             var results = plugin.Execute(systemConfiguration, pluginConfiguration);
                             var completionTime = DateTime.Now;
-
                             var endpoint = $"Agent/history";
 
                             foreach (var result in results)
@@ -167,9 +167,14 @@ namespace KronoMata.Prototyping
                                 Post<JobHistory>(endpoint, history);
                             }
 
-                            // can we / should we call Dispose directly? This unloads the loaded assemblies
-                            plugin = null;
+                            if (plugin is IDisposable)
+                            {
+                                ((IDisposable)plugin).Dispose();
+                            }
+                            
+                            // should we call Dispose directly? This unloads the loaded assemblies
                             pluginLoader.Dispose();
+                            
                             var now = DateTime.Now;
 
                             foreach (var result in results)

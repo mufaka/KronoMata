@@ -1,0 +1,36 @@
+﻿@model KronoMata.Web.Models.PackageViewModel
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Packages</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0" style="height: 300px;">
+                <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Filename</th>
+                            <th>Upload Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var package in Model.Packages)
+                        {
+                            <tr>
+                                <td>@package.Id</td>
+                                <td>@package.Name</td>
+                                <td>@package.FileName</td>
+                                <td>@package.UploadDate.ToString("O")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

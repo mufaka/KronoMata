@@ -21,7 +21,7 @@ namespace KronoMata.Data.Mock
             var now = DateTime.Now;
 
             CreateGlobalConfigurations();
-            Package package = CreatePackage();
+            Package package = CreatePackage(now);
             PluginMetaData plugin = CreatePlugin(now, package);
             PluginConfiguration pluginConfiguration1 = CreatePluginConfiguration1(now, plugin);
             PluginConfiguration pluginConfiguration2 = CreatePluginConfiguration2(now, plugin);
@@ -121,11 +121,13 @@ namespace KronoMata.Data.Mock
             }
         }
 
-        private Package CreatePackage()
+        private Package CreatePackage(DateTime now)
         {
             var package = new Package
             {
-                FileName = "KronoMata.Samples.zip"
+                Name = "KronoMata Sample",
+                FileName = "KronoMata.Samples.zip",
+                UploadDate = now
             };
 
             _dataProvider.PackageDataStore.Create(package);
