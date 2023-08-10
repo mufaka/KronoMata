@@ -23,7 +23,8 @@ namespace KronoMata.Web.Controllers
 
             try
             {
-                model.Packages = DataStoreProvider.PackageDataStore.GetAll();
+                model.Packages = DataStoreProvider.PackageDataStore.GetAll()
+                    .OrderBy(x => x.Name).ToList(); ;
             }
             catch (Exception ex)
             {
@@ -32,6 +33,30 @@ namespace KronoMata.Web.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Index(string packageName, IFormFile file)
+        {
+            var model = new PackageViewModel();
+            model.ViewName = "Packages";
+
+            try
+            {
+                // lets see what we get here and when ....
+
+                model.Packages = DataStoreProvider.PackageDataStore.GetAll()
+                    .OrderBy(x => x.Name).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogException(model, ex);
+                _logger.LogError(ex, ex.Message);
+
+                return View(model);
+            }
+
+            return RedirectToAction("Index", "Package");
         }
     }
 }
