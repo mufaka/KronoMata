@@ -5,6 +5,7 @@ using KronoMata.Web.Models;
 using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -102,14 +103,17 @@ namespace KronoMata.Web.Controllers
 
             ZipFile.ExtractToDirectory(packagePath, extractionFolder);
 
-            var pluginFiles = Directory.GetFiles(extractionFolder);
+            var pluginFiles = Directory.GetFiles(extractionFolder, "*.dll");
 
             // The resolver needs runtime files included as well
             string[] runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
             var paths = new List<string>(runtimeAssemblies);
 
-            // need to add path to KronoMata.Public dll
-            paths.Add(typeof(IPlugin).Assembly.Location);
+            // need to ensure path to KronoMata.Public dll
+            if (!pluginFiles.Contains("KronoMata.Public.dll"))
+            {
+                //paths.Add(typeof(IPlugin).Assembly.Location);
+            }
 
             // need to add the packageFiles too
             paths.AddRange(pluginFiles);
@@ -121,26 +125,34 @@ namespace KronoMata.Web.Controllers
 
             foreach (var pluginFile in pluginFiles)
             {
-                var assembly = ctx.LoadFromAssemblyPath(pluginFile);
-
-                var assemblyTypes = assembly.GetTypes();
-
-                foreach (Type type in assemblyTypes)
+                try
                 {
-                    // type must be a class
-                    if (type.IsClass)
-                    {
-                        // are any of the interfaces IPlugin?
-                        var interfaces = type.GetInterfaces();
+                    var assembly = ctx.LoadFromAssemblyPath(pluginFile);
 
-                        foreach (Type faces in interfaces)
+                    var assemblyTypes = assembly.GetTypes();
+
+                    foreach (Type type in assemblyTypes)
+                    {
+                        // type must be a class
+                        if (type.IsClass)
                         {
-                            if (faces.FullName == "KronoMata.Public.IPlugin")
+                            // are any of the interfaces IPlugin?
+                            var interfaces = type.GetInterfaces();
+
+                            foreach (Type faces in interfaces)
                             {
-                                foundPluginTypes.Add(type);
+                                if (faces.FullName == "KronoMata.Public.IPlugin")
+                                {
+                                    foundPluginTypes.Add(type);
+                                }
                             }
                         }
                     }
+                } 
+                catch (Exception ex)
+                {
+                    // probably not a .net assembly file
+                    _logger.LogDebug($"Couldn't load {pluginFile}. {ex.Message}");
                 }
             }
 
