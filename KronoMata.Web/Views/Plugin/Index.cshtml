@@ -1,0 +1,36 @@
+﻿@model KronoMata.Web.Models.PluginViewModel 
+
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Plugins</h3>
+            </div>
+            <div class="card-body table-responsive p-0" style="height: 300px;">
+                <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Version</th>
+                            <th>Description</th>
+                            <th>Insert Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var plugin in Model.Plugins)
+                        {
+                            <tr>
+                                <td>@plugin.Id</td>
+                                <td>@plugin.Name</td>
+                                <td>@plugin.Version</td>
+                                <td>@plugin.Description</td>
+                                <td>@plugin.InsertDate.ToString("O")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

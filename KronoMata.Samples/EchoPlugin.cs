@@ -8,8 +8,8 @@ namespace KronoMata.Samples
         private const string DETAIL_PARAMETER_NAME = "EchoDetail";
 
         public string Name { get { return "Echo Plugin"; } }
-        public string Description { get { return "1.0";  } }
-        public string Version { get { return "A plugin that echos configured text."; } }
+        public string Version { get { return "1.0";  } }
+        public string Description { get { return "A plugin that echos configured text."; } }
 
         public List<PluginParameter> Parameters
         {
