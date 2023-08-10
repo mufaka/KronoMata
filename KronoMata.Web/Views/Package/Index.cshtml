@@ -72,6 +72,7 @@
 
             if (dropZoneUpload.getAcceptedFiles().length > 0) {
                 dropZoneUpload.processQueue();
+                // TODO: is there an onSuccess event handler for processQueue?
                 $("#packageName").val("");
             }
             else {

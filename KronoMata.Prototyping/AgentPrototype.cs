@@ -207,7 +207,7 @@ namespace KronoMata.Prototyping
                 else
                 {
                     // need to extract archive to packageFolder
-                    Console.WriteLine($"Found package archive at {packageArchivePath}. Unzipping to {packageFolder}");
+                    _logger.LogInformation($"Found package archive at {packageArchivePath}. Unzipping to {packageFolder}");
                     ZipFile.ExtractToDirectory(packageArchivePath, packageFolder);
                 }
             }
