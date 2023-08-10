@@ -2,6 +2,7 @@
 using KronoMata.Model;
 using KronoMata.Public;
 using KronoMata.Web.Models;
+using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
@@ -72,10 +73,8 @@ namespace KronoMata.Web.Controllers
                     file.CopyTo(fs);
                 }
 
-                DataStoreProvider.PackageDataStore.Create(package);
-
                 // need to extract the archive locally and find IPlugin implementations
-                ExtractAndDiscoverPlugins(packagePath);
+                ExtractAndDiscoverPlugins(package, packagePath);
 
                 // shouldn't need to do this here, should Redirect to Url.Xxx
                 model.Packages = DataStoreProvider.PackageDataStore.GetAll()
@@ -89,10 +88,14 @@ namespace KronoMata.Web.Controllers
                 return View(model);
             }
 
+            // TODO: This form submission is in the context of Dropzone so it doesn't really apply to the users experience :/ 
+            // TODO: Look at wrapping the Dropzone processQueue with some type of event handlers for success and fail ...
+            // TODO: Definitely need the fail parts visible to the end users ... right now fails go to a black hole.
+
             return View(model);
         }
 
-        private void ExtractAndDiscoverPlugins(string packagePath)
+        private void ExtractAndDiscoverPlugins(Package package, string packagePath)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
             var extractionFolder = Path.Combine(Path.GetDirectoryName(packagePath), Path.GetFileNameWithoutExtension(packagePath));
@@ -107,14 +110,15 @@ namespace KronoMata.Web.Controllers
             var paths = new List<string>(runtimeAssemblies);
 
             // need to add path to KronoMata.Public dll
-            var pluginType = typeof(IPlugin);
-            paths.Add(pluginType.Assembly.Location);
+            paths.Add(typeof(IPlugin).Assembly.Location);
 
             // need to add the packageFiles too
             paths.AddRange(pluginFiles);
 
             var resolver = new PathAssemblyResolver(paths);
             var ctx = new MetadataLoadContext(resolver);
+
+            List<Type> foundPluginTypes = new List<Type>();
 
             foreach (var pluginFile in pluginFiles)
             {
@@ -134,18 +138,77 @@ namespace KronoMata.Web.Controllers
                         {
                             if (faces.FullName == "KronoMata.Public.IPlugin")
                             {
-                                Console.WriteLine("Found a KronoMata IPlugin implementation");
-                                break;
+                                foundPluginTypes.Add(type);
                             }
                         }
                     }
                 }
-            } 
+            }
+
+            if (foundPluginTypes.Count > 0)
+            {
+                // create the Package
+                var createdPackage = DataStoreProvider.PackageDataStore.Create(package);
+
+                // create the plugins
+                foreach (Type pluginType in foundPluginTypes)
+                {
+                    CreatePlugin(createdPackage, pluginType);
+                }
+            }
         }
 
-        private void CreatePlugin()
+        private void CreatePlugin(Package package, Type pluginType)
         {
+            // need to be able to load the IPlugin and get it's name and parameters
+            var assemblyPath = pluginType.Assembly.Location;
+            var pluginLoader = PluginLoader.CreateFromAssemblyFile(
+                assemblyFile: assemblyPath,
+                sharedTypes: new[] { typeof(IPlugin) },
+                isUnloadable: true);
+            var assembly = pluginLoader.LoadDefaultAssembly();
 
+            if (assembly != null)
+            {
+#pragma warning disable CS8601 // Possible null reference argument.
+#pragma warning disable CS8602 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
+                var plugin = assembly.CreateInstance(pluginType.FullName) as IPlugin;
+
+                var now = DateTime.Now;
+
+                var pluginMetaData = new PluginMetaData();
+
+                pluginMetaData.Name = plugin.Name;
+                pluginMetaData.Description = plugin.Description;
+                pluginMetaData.Version = plugin.Version;
+                pluginMetaData.AssemblyName = assembly.FullName;
+                pluginMetaData.ClassName = pluginType.AssemblyQualifiedName;
+                pluginMetaData.PackageId = package.Id;
+                pluginMetaData.InsertDate = now;
+                pluginMetaData.UpdateDate = now;
+
+                var createdPluginMetaData = DataStoreProvider.PluginMetaDataDataStore.Create(pluginMetaData);
+
+                foreach (PluginParameter parameter in plugin.Parameters)
+                {
+                    var pluginConfig = new PluginConfiguration();
+
+                    pluginConfig.PluginMetaDataId = createdPluginMetaData.Id;
+                    pluginConfig.Name = parameter.Name;
+                    pluginConfig.Description = parameter.Description;
+                    pluginConfig.DataType = parameter.DataType;
+                    pluginConfig.IsRequired = parameter.IsRequired;
+                    pluginConfig.InsertDate = now;
+                    pluginConfig.UpdateDate = now;
+
+                    DataStoreProvider.PluginConfigurationDataStore.Create(pluginConfig);
+                }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Possible null reference argument.
+#pragma warning restore CS8601 // Possible null reference argument.
+
+            }
         }
     }
 }
