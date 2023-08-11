@@ -1,4 +1,5 @@
 ﻿using KronoMata.Data;
+using KronoMata.Model;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace KronoMata.Web.Controllers
         public IActionResult Index()
         {
             var model = new PluginViewModel();
+            model.ViewName = "Plugins";
 
             try
             {
@@ -33,6 +35,19 @@ namespace KronoMata.Web.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult GetPluginParameterData(int pageIndex, int pageSize, int plugin)
+        {
+            var parameters = DataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(plugin);
+
+            var result = Json(new
+            {
+                data = parameters,
+                itemsCount = parameters.Count
+            });
+
+            return result;
         }
     }
 }

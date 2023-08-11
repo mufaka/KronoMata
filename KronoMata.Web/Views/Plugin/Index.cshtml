@@ -1,19 +1,18 @@
 ﻿@model KronoMata.Web.Models.PluginViewModel 
 
 <div class="row">
-    <div class="col-6">
+    <div class="col-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Plugins</h3>
             </div>
             <div class="card-body table-responsive p-0" style="height: 300px;">
-                <table class="table table-head-fixed text-nowrap">
+                <table class="table table-head-fixed table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
                             <th>Version</th>
-                            <th>Description</th>
                             <th>Assembly</th>
                             <th>Class</th>
                             <th>Insert Date</th>
@@ -22,11 +21,10 @@
                     <tbody>
                         @foreach (var plugin in Model.Plugins)
                         {
-                            <tr>
+                            <tr onclick="showPluginDetail(@plugin.Id);">
                                 <td>@plugin.Id</td>
                                 <td>@plugin.Name</td>
                                 <td>@plugin.Version</td>
-                                <td>@plugin.Description</td>
                                 <td>@plugin.AssemblyName</td>
                                 <td>@plugin.ClassName</td>
                                 <td>@plugin.InsertDate.ToString("O")</td>
@@ -38,3 +36,112 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Plugin Parameters</h3>
+            </div>
+            <div class="card-body">
+                <div id="detail-panel"><i>Click a Plugin to view it's configuration parameters.</i></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="plugin-detail">
+    <div class="row">
+        <div class="col-6">
+            <div id="configuration-grid"></div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid.min.css">
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid-theme.min.css">
+}
+
+@section scripts {
+    <script src="~/plugins/jsgrid/jsgrid.min.js"></script>
+
+    <script type="text/javascript">
+        var _panelReplaced = false;
+        var _pluginId = -1;
+
+        $(function () {
+            customizeGridLoadParams();
+            $("#plugin-detail").hide();
+        });
+
+        function showPluginDetail(pluginId) {
+            _pluginId = pluginId;
+
+            if (!_panelReplaced) {
+                $("#detail-panel").replaceWith($("#plugin-detail"));
+                $("#plugin-detail").show();
+                _panelReplaced = true;
+
+                loadGrid();
+            }
+            else {
+                $("#configuration-grid").jsGrid("reset");
+                $('#configuration-grid').jsGrid("loadData");
+            }
+        }
+
+        function getSelectedPlugin() {
+            return _pluginId;
+        }
+
+        function customizeGridLoadParams() {
+            jsGrid.loadStrategies.PageLoadingStrategy.prototype.loadParams = function () {
+                var grid = this._grid;
+                return {
+                    pageIndex: grid.option("pageIndex"),
+                    pageSize: grid.option("pageSize"),
+                    plugin: getSelectedPlugin()
+                };
+            }
+        }
+
+        function loadGrid() {
+            $('#configuration-grid').jsGrid({
+                height: "350px",
+                width: "100%",
+                sorting: false,
+                paging: true,
+                pageLoading: true,
+                pageSize: 25,
+                autoload: true,
+                filtering: true,
+                editing: false,
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            cache: false,
+                            type: "GET",
+                            url: "@Url.Action("GetPluginParameterData", "Plugin")",
+                            data: filter,
+                            dataType: "json"
+                        });
+                    },
+
+                    insertItem: function (item) {
+                    },
+
+                    updateItem: function (item) {
+                    },
+
+                    deleteItem: function (item) {
+                    }
+                },
+                fields: [
+                    { name: "name", title: "Name", type: "text", width: 40, filtering: false, editing: false },
+                    { name: "description", title: "Description", type: "text", width: 40, filtering: false, editing: false },
+                    { name: "name", title: "Name", type: "text", width: 40, filtering: false, editing: false },
+                    { name: "isRequired", title: "Required?", type: "checkbox", filtering: false }
+                ]
+            });
+        }
+    </script>
+}

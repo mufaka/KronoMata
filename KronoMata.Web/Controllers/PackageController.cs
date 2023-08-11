@@ -92,7 +92,7 @@ namespace KronoMata.Web.Controllers
             // TODO: Look at wrapping the Dropzone processQueue with some type of event handlers for success and fail ...
             // TODO: Definitely need the fail parts visible to the end users ... right now fails go to a black hole.
 
-            return View(model);
+            return RedirectToAction("Index", "Plugin");
         }
 
         private void ExtractAndDiscoverPlugins(Package package, string packagePath)
