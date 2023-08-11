@@ -24,8 +24,10 @@ namespace KronoMata.Web.Controllers
 
         public IActionResult Index()
         {
-            var model = new PackageViewModel();
-            model.ViewName = "Packages";
+            var model = new PackageViewModel
+            {
+                ViewName = "Packages"
+            };
 
             try
             {
@@ -35,7 +37,7 @@ namespace KronoMata.Web.Controllers
             catch (Exception ex)
             {
                 LogException(model, ex);
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error loading data for View {viewname}", model.ViewName);
             }
 
             return View(model);
@@ -74,7 +76,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error creating plugins from Package upload.");
                 return BadRequest(ex.Message);
             }
 
@@ -107,7 +109,7 @@ namespace KronoMata.Web.Controllers
             var resolver = new PathAssemblyResolver(paths);
             var ctx = new MetadataLoadContext(resolver);
 
-            List<Type> foundPluginTypes = new List<Type>();
+            List<Type> foundPluginTypes = new();
 
             foreach (var pluginFile in pluginFiles)
             {
@@ -138,7 +140,7 @@ namespace KronoMata.Web.Controllers
                 catch (Exception ex)
                 {
                     // probably not a .net assembly file
-                    _logger.LogDebug($"Couldn't load {pluginFile}. {ex.Message}");
+                    _logger.LogDebug(ex, "Error discovering IPlugin implementations.");
                 }
             }
 
@@ -178,30 +180,32 @@ namespace KronoMata.Web.Controllers
 
                 var now = DateTime.Now;
 
-                var pluginMetaData = new PluginMetaData();
-
-                pluginMetaData.Name = plugin.Name;
-                pluginMetaData.Description = plugin.Description;
-                pluginMetaData.Version = plugin.Version;
-                pluginMetaData.AssemblyName = assembly.FullName;
-                pluginMetaData.ClassName = pluginType.AssemblyQualifiedName;
-                pluginMetaData.PackageId = package.Id;
-                pluginMetaData.InsertDate = now;
-                pluginMetaData.UpdateDate = now;
+                var pluginMetaData = new PluginMetaData
+                {
+                    Name = plugin.Name,
+                    Description = plugin.Description,
+                    Version = plugin.Version,
+                    AssemblyName = assembly.FullName,
+                    ClassName = pluginType.AssemblyQualifiedName,
+                    PackageId = package.Id,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
 
                 var createdPluginMetaData = DataStoreProvider.PluginMetaDataDataStore.Create(pluginMetaData);
 
                 foreach (PluginParameter parameter in plugin.Parameters)
                 {
-                    var pluginConfig = new PluginConfiguration();
-
-                    pluginConfig.PluginMetaDataId = createdPluginMetaData.Id;
-                    pluginConfig.Name = parameter.Name;
-                    pluginConfig.Description = parameter.Description;
-                    pluginConfig.DataType = parameter.DataType;
-                    pluginConfig.IsRequired = parameter.IsRequired;
-                    pluginConfig.InsertDate = now;
-                    pluginConfig.UpdateDate = now;
+                    var pluginConfig = new PluginConfiguration
+                    {
+                        PluginMetaDataId = createdPluginMetaData.Id,
+                        Name = parameter.Name,
+                        Description = parameter.Description,
+                        DataType = parameter.DataType,
+                        IsRequired = parameter.IsRequired,
+                        InsertDate = now,
+                        UpdateDate = now
+                    };
 
                     DataStoreProvider.PluginConfigurationDataStore.Create(pluginConfig);
                 }

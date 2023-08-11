@@ -47,7 +47,7 @@ namespace KronoMata.Scheduling
             return CheckValidIncrements(currentDate, scheduledJob);
         }
 
-        private bool CheckValidIncrements(DateTime currentDate, ScheduledJob scheduledJob)
+        private static bool CheckValidIncrements(DateTime currentDate, ScheduledJob scheduledJob)
         {
             var validIncrements = new ValidIncrements(scheduledJob);
 
@@ -88,7 +88,7 @@ namespace KronoMata.Scheduling
             return true;
         }
 
-        private bool CheckMonthFrequency(DateTime currentDate, ScheduledJob scheduledJob)
+        private static bool CheckMonthFrequency(DateTime currentDate, ScheduledJob scheduledJob)
         {
             // is this a valid month relative to StartTime and Interval of month?
             var monthsBetween = (currentDate.Month - scheduledJob.StartTime.Month) + 12 * (currentDate.Year - scheduledJob.StartTime.Year);
@@ -101,7 +101,7 @@ namespace KronoMata.Scheduling
             return true;
         }
 
-        private bool CheckWeekFrequency(DateTime currentDate, ScheduledJob scheduledJob)
+        private static bool CheckWeekFrequency(DateTime currentDate, ScheduledJob scheduledJob)
         {
             var weeksBetween = DateUtilities.GetWeeksBetween(scheduledJob.StartTime, currentDate);
 
@@ -113,7 +113,7 @@ namespace KronoMata.Scheduling
             return true;
         }
 
-        private bool CheckDayFrequency(DateTime currentDate, ScheduledJob scheduledJob)
+        private static bool CheckDayFrequency(DateTime currentDate, ScheduledJob scheduledJob)
         {
             var daysBetween = (currentDate - scheduledJob.StartTime).Days;
 
@@ -125,7 +125,7 @@ namespace KronoMata.Scheduling
             return true;
         }
 
-        private bool CheckHourFrequency(DateTime currentDate, ScheduledJob scheduledJob)
+        private static bool CheckHourFrequency(DateTime currentDate, ScheduledJob scheduledJob)
         {
             var hoursBetween = (currentDate - scheduledJob.StartTime).Hours;
 
@@ -137,7 +137,7 @@ namespace KronoMata.Scheduling
             return true;
         }
 
-        private bool CheckMinuteFrequency(DateTime currentDate, ScheduledJob scheduledJob)
+        private static bool CheckMinuteFrequency(DateTime currentDate, ScheduledJob scheduledJob)
         {
             var minutesBetween = (currentDate - scheduledJob.StartTime).Minutes;
 

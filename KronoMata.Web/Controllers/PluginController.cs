@@ -6,7 +6,7 @@ namespace KronoMata.Web.Controllers
 {
     public class PluginController : BaseController
     {
-        private ILogger<PluginController> _logger;
+        private readonly ILogger<PluginController> _logger;
 
         public PluginController(ILogger<PluginController> logger, IDataStoreProvider dataStoreProvider, 
             IConfiguration configuration)
@@ -18,8 +18,10 @@ namespace KronoMata.Web.Controllers
 
         public IActionResult Index()
         {
-            var model = new PluginViewModel();
-            model.ViewName = "Plugins";
+            var model = new PluginViewModel
+            {
+                ViewName = "Plugins"
+            };
 
             try
             {
@@ -30,7 +32,7 @@ namespace KronoMata.Web.Controllers
             catch (Exception ex)
             {
                 LogException(model, ex);
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error loading data for View {viewname}", model.ViewName);
             }
 
             return View(model);
@@ -54,7 +56,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error getting PluginConfiguration data.");
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }

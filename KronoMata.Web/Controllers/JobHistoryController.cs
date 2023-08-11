@@ -18,8 +18,10 @@ namespace KronoMata.Web.Controllers
 
         public IActionResult Index()
         {
-            var model = new JobHistoryViewModel();
-            model.ViewName = "Job History";
+            var model = new JobHistoryViewModel
+            {
+                ViewName = "Job History"
+            };
 
             return View(model);
         }
@@ -41,7 +43,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error getting JobHistory data.");
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }

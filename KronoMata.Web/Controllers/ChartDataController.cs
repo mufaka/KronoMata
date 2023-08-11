@@ -72,7 +72,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error getting last JobHistory");
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }
@@ -100,7 +100,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error getting JobHistory details.");
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }
@@ -117,9 +117,9 @@ namespace KronoMata.Web.Controllers
 
                 var db = Json(new
                 {
-                    hosts = hosts,
-                    plugins = plugins,
-                    jobs = jobs
+                    hosts,
+                    plugins,
+                    jobs
                 });
 
                 return Json(new
@@ -129,7 +129,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error getting JobHistory related data.");
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }

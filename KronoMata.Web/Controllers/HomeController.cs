@@ -19,8 +19,10 @@ namespace KronoMata.Web.Controllers
 
         public IActionResult Index()
         {
-            var model = new DashboardViewModel();
-            model.ViewName = "Dashboard";
+            var model = new DashboardViewModel
+            {
+                ViewName = "Dashboard"
+            };
 
             try
             {
@@ -33,7 +35,7 @@ namespace KronoMata.Web.Controllers
             catch (Exception ex)
             {
                 LogException(model, ex);
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error loading data for View {viewname}", model.ViewName);
             }
 
             return View(model);

@@ -10,6 +10,6 @@ namespace KronoMata.Model
     public class PagedList<T>
     {
         public int TotalRecords { get; set; }
-        public List<T> List { get; set; }
+        public List<T> List { get; set; } = new List<T>();
     }
 }

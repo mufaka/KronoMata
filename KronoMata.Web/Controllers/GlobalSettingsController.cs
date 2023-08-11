@@ -20,8 +20,10 @@ namespace KronoMata.Web.Controllers
 
         public IActionResult Index()
         {
-            var model = new GlobalSettingsViewModel();
-            model.ViewName = "Settings";
+            var model = new GlobalSettingsViewModel
+            {
+                ViewName = "Settings"
+            };
 
             try
             {
@@ -31,7 +33,7 @@ namespace KronoMata.Web.Controllers
             catch (Exception ex)
             {
                 LogException(model, ex);
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error loading data for View {viewname}", model.ViewName);
             }
 
             return View(model);
@@ -43,15 +45,17 @@ namespace KronoMata.Web.Controllers
             {
                 var settings = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
 
-                var serializerOptions = new JsonSerializerOptions();
-                serializerOptions.PropertyNameCaseInsensitive = true;
+                var serializerOptions = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
                 var result = Json(settings, serializerOptions);
 
                 return result;
             } 
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error getting GlobalConfiguration data.");
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }
@@ -65,7 +69,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error saving GlobalConfiguration data.");
             }
         }
 
@@ -86,7 +90,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error updating GlobalConfiguration data.");
             }
         }
 
@@ -99,7 +103,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error deleting GlobalConfiguration data.");
             }
         }
 

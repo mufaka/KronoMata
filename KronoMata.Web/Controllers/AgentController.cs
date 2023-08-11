@@ -11,7 +11,9 @@ namespace KronoMata.Web.Controllers
     public class AgentController : ControllerBase
     {
         private readonly ILogger<AgentController> _logger;
-        private IConfiguration _configuration;
+#pragma warning disable IDE0052 // Remove unread private members
+        private readonly IConfiguration _configuration;
+#pragma warning restore IDE0052 // Remove unread private members
         private IDataStoreProvider DataStoreProvider { get; set; }
 
         public AgentController(ILogger<AgentController> logger, IDataStoreProvider dataStoreProvider,
@@ -38,7 +40,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error getting host by name {name}", name);
             }
 
             return jobs;
@@ -53,7 +55,7 @@ namespace KronoMata.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Error creating JobHistory");
             }
 
             return history;
