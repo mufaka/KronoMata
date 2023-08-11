@@ -11,12 +11,15 @@ namespace KronoMata.Web.Controllers
     public class AgentController : ControllerBase
     {
         private readonly ILogger<AgentController> _logger;
+        private IConfiguration _configuration;
         private IDataStoreProvider DataStoreProvider { get; set; }
 
-        public AgentController(ILogger<AgentController> logger, IDataStoreProvider dataStoreProvider)
+        public AgentController(ILogger<AgentController> logger, IDataStoreProvider dataStoreProvider,
+            IConfiguration configuration)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;
+            _configuration = configuration;
         }
 
         [HttpGet("jobs/{name}")]

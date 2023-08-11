@@ -9,10 +9,12 @@ namespace KronoMata.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, IDataStoreProvider dataStoreProvider)
+        public HomeController(ILogger<HomeController> logger, IDataStoreProvider dataStoreProvider,
+            IConfiguration configuration)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;
+            Configuration = configuration;
         }
 
         public IActionResult Index()

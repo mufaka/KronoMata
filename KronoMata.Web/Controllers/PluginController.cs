@@ -1,5 +1,4 @@
 ﻿using KronoMata.Data;
-using KronoMata.Model;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,15 +38,23 @@ namespace KronoMata.Web.Controllers
 
         public ActionResult GetPluginParameterData(int pageIndex, int pageSize, int plugin)
         {
-            var parameters = DataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(plugin);
-
-            var result = Json(new
+            try
             {
-                data = parameters,
-                itemsCount = parameters.Count
-            });
+                var parameters = DataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(plugin);
 
-            return result;
+                var result = Json(new
+                {
+                    data = parameters,
+                    itemsCount = parameters.Count
+                });
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return new ObjectResult(ex.Message) { StatusCode = 500 };
+            }
         }
     }
 }

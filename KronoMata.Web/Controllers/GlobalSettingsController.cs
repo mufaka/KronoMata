@@ -10,10 +10,12 @@ namespace KronoMata.Web.Controllers
     {
         private readonly ILogger<GlobalSettingsController> _logger;
 
-        public GlobalSettingsController(ILogger<GlobalSettingsController> logger, IDataStoreProvider dataStoreProvider)
+        public GlobalSettingsController(ILogger<GlobalSettingsController> logger, IDataStoreProvider dataStoreProvider,
+            IConfiguration configuration)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;
+            Configuration = configuration;
         }
 
         public IActionResult Index()
@@ -37,13 +39,21 @@ namespace KronoMata.Web.Controllers
 
         public ActionResult GetGlobalSettingsData()
         {
-            var settings = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
+            try
+            {
+                var settings = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
 
-            var serializerOptions = new JsonSerializerOptions();
-            serializerOptions.PropertyNameCaseInsensitive = true;
-            var result = Json(settings, serializerOptions);
+                var serializerOptions = new JsonSerializerOptions();
+                serializerOptions.PropertyNameCaseInsensitive = true;
+                var result = Json(settings, serializerOptions);
 
-            return result;
+                return result;
+            } 
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return new ObjectResult(ex.Message) { StatusCode = 500 };
+            }
         }
 
         [HttpPost]
@@ -72,11 +82,6 @@ namespace KronoMata.Web.Controllers
                     data.UpdateDate = DateTime.Now;
 
                     DataStoreProvider.GlobalConfigurationDataStore.Update(data);
-                }
-                else
-                {
-                    // TODO: Should we create another one? Probably not.
-                    // TODO: return error
                 }
             }
             catch (Exception ex)
