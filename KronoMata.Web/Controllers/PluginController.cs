@@ -36,7 +36,9 @@ namespace KronoMata.Web.Controllers
             return View(model);
         }
 
+#pragma warning disable IDE0060 // Remove unused parameter
         public ActionResult GetPluginParameterData(int pageIndex, int pageSize, int plugin)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             try
             {

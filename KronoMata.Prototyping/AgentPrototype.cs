@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
+using System;
 
 namespace KronoMata.Prototyping
 {
@@ -19,7 +20,7 @@ namespace KronoMata.Prototyping
         private readonly IDataStoreProvider _dataStoreProvider;
         private readonly IConfiguration _configuration;
 
-        private readonly PeriodicTimer _periodicTimer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+        private readonly PeriodicTimer _periodicTimer = new(TimeSpan.FromMinutes(1));
 
         public AgentPrototype(ILogger<AgentPrototype> logger, IDataStoreProvider dataStoreProvider, IConfiguration configuration)
         {
@@ -65,19 +66,19 @@ namespace KronoMata.Prototyping
             if (host == null)
             {
                 // should self register the host? make configurable.
-                _logger.LogWarning($"There is no Host defined for {machineName}");
+                _logger.LogWarning("There is no Host defined for {machineName}", machineName);
             }
             else
             {
                 // are there any scheduled jobs defined for this system?
                 var endpoint = $"Agent/jobs/{machineName}";
 
-                _logger.LogDebug($"Checking for jobs on {RootUrl} at endpoint {endpoint}");
+                _logger.LogDebug("Checking for jobs on {RootUrl} at endpoint {endpoint}", RootUrl, endpoint);
                 var scheduledJobs = Get<ScheduledJob>(endpoint);
 
                 if (scheduledJobs.Count == 0)
                 {
-                    _logger.LogWarning($"There are no scheduled jobs defined for {machineName}");
+                    _logger.LogWarning("There are no scheduled jobs defined for {machineName}", machineName);
                 }
                 else
                 {
@@ -108,7 +109,7 @@ namespace KronoMata.Prototyping
             // the work above should result in this folder now being available
             if (!Directory.Exists(packageFolder))
             {
-                _logger.LogWarning($"Unable to find package folder at {packageFolder}");
+                _logger.LogWarning("Unable to find package folder at {packageFolder}", packageFolder);
             }
             else
             {
@@ -121,7 +122,7 @@ namespace KronoMata.Prototyping
 
                 if (!File.Exists(assemblyPath))
                 {
-                    _logger.LogWarning($"Assembly file not found at {assemblyPath}");
+                    _logger.LogWarning("Assembly file not found at {assemblyPath}", assemblyPath);
                 }
                 else
                 {
@@ -133,20 +134,19 @@ namespace KronoMata.Prototyping
                         sharedTypes: new[] { typeof(IPlugin) },
                         isUnloadable: true);
 
-                    _logger.LogDebug($"Loading assembly {assemblyPath}");
+                    _logger.LogDebug("Loading assembly {assemblyPath}", assemblyPath);
                     var assembly = pluginLoader.LoadDefaultAssembly();
 
                     if (assembly != null)
                     {
-                        _logger.LogDebug($"Creating an instance of {pluginMetaData.ClassName}");
-                        var plugin = assembly.CreateInstance(pluginMetaData.ClassName) as IPlugin;
+                        _logger.LogDebug("Creating an instance of {pluginMetaData.ClassName}", pluginMetaData.ClassName);
 
-                        if (plugin != null)
+                        if (assembly.CreateInstance(pluginMetaData.ClassName) is IPlugin plugin)
                         {
                             var runTime = DateTime.Now;
 
-                            _logger.LogDebug($"Executing plugin {pluginMetaData.ClassName}");
-                            
+                            _logger.LogDebug("Executing plugin {pluginMetaData.ClassName}", pluginMetaData.ClassName);
+
                             var results = plugin.Execute(systemConfiguration, pluginConfiguration);
                             var completionTime = DateTime.Now;
                             var endpoint = $"Agent/history";
@@ -167,29 +167,30 @@ namespace KronoMata.Prototyping
                                 Post<JobHistory>(endpoint, history);
                             }
 
-                            if (plugin is IDisposable)
+                            if (plugin is IDisposable disposable)
                             {
-                                ((IDisposable)plugin).Dispose();
+                                disposable.Dispose();
                             }
-                            
+
                             // should we call Dispose directly? This unloads the loaded assemblies
                             pluginLoader.Dispose();
-                            
+
                             var now = DateTime.Now;
 
                             foreach (var result in results)
                             {
-                                _logger.LogInformation($"{now.ToShortDateString()} {now.ToShortTimeString()} IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}");
+                                _logger.LogInformation("{now.ToShortDateString()} {now.ToShortTimeString()} IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}",
+                                    now.ToShortDateString(), now.ToShortTimeString(), result.IsError, result.Message, result.Detail);
                             }
                         }
                         else
                         {
-                            _logger.LogError($"Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}");
+                            _logger.LogError("Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}", pluginMetaData.ClassName, assemblyPath);
                         }
                     }
                     else
                     {
-                        _logger.LogError($"Unable to load assembly from {assemblyPath}");
+                        _logger.LogError("Unable to load assembly from {assemblyPath}", assemblyPath);
                     }
                 }
             }
@@ -202,18 +203,18 @@ namespace KronoMata.Prototyping
                 if (!File.Exists(packageArchivePath))
                 {
                     // TODO: attempt to fetch from future API.
-                    _logger.LogWarning($"Could not find package path at {packageArchivePath}");
+                    _logger.LogWarning("Could not find package path at {packageArchivePath}", packageArchivePath);
                 }
                 else
                 {
                     // need to extract archive to packageFolder
-                    _logger.LogInformation($"Found package archive at {packageArchivePath}. Unzipping to {packageFolder}");
+                    _logger.LogInformation("Found package archive at {packageArchivePath}. Unzipping to {packageFolder}", packageArchivePath, packageFolder);
                     ZipFile.ExtractToDirectory(packageArchivePath, packageFolder);
                 }
             }
         }
 
-        private Dictionary<string, string> GetScheduledJobConfiguration(IDataStoreProvider dataStoreProvider,
+        private static Dictionary<string, string> GetScheduledJobConfiguration(IDataStoreProvider dataStoreProvider,
             ScheduledJob scheduledJob, PluginMetaData pluginMetaData)
         {
             var pluginConfiguration = new Dictionary<string, string>();
@@ -310,7 +311,7 @@ namespace KronoMata.Prototyping
             }
             else if (RootUrl.EndsWith("/") && endPoint.StartsWith("/"))
             {
-                return RootUrl + endPoint.Substring(1);
+                return string.Concat(RootUrl, endPoint.AsSpan(1));
             }
             else
             {
