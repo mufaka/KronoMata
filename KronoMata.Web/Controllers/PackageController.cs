@@ -55,7 +55,7 @@ namespace KronoMata.Web.Controllers
                     Directory.CreateDirectory(packageRoot);
                 }
                 
-                var uniqueName = $"{Guid.NewGuid()}.{Path.GetExtension(file.FileName)}";
+                var uniqueName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
                 var package = new Package()
                 {
