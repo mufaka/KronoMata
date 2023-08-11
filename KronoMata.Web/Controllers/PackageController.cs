@@ -6,6 +6,7 @@ using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
 using System.Linq.Expressions;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -45,9 +46,6 @@ namespace KronoMata.Web.Controllers
         [HttpPost]
         public IActionResult Index(string packageName, IFormFile file)
         {
-            var model = new PackageViewModel();
-            model.ViewName = "Packages";
-
             try
             {
                 var packageRoot = Configuration.GetValue<string>("PackageRoot");
@@ -75,22 +73,12 @@ namespace KronoMata.Web.Controllers
 
                 // need to extract the archive locally and find IPlugin implementations
                 ExtractAndDiscoverPlugins(package, packagePath);
-
-                // shouldn't need to do this here, should Redirect to Url.Xxx
-                model.Packages = DataStoreProvider.PackageDataStore.GetAll()
-                    .OrderBy(x => x.Name).ToList();
             }
             catch (Exception ex)
             {
-                LogException(model, ex);
                 _logger.LogError(ex, ex.Message);
-
-                return View(model);
+                return BadRequest(ex.Message);
             }
-
-            // TODO: This form submission is in the context of Dropzone so it doesn't really apply to the users experience :/ 
-            // TODO: Look at wrapping the Dropzone processQueue with some type of event handlers for success and fail ...
-            // TODO: Definitely need the fail parts visible to the end users ... right now fails go to a black hole.
 
             return RedirectToAction("Index", "Plugin");
         }
@@ -166,6 +154,10 @@ namespace KronoMata.Web.Controllers
                 {
                     CreatePlugin(createdPackage, pluginType);
                 }
+            } 
+            else
+            {
+                throw new InvalidDataException("No implementations of IPlugin found in the package.");
             }
         }
 

@@ -72,11 +72,9 @@
 
             if (dropZoneUpload.getAcceptedFiles().length > 0) {
                 dropZoneUpload.processQueue();
-                // TODO: is there an onSuccess event handler for processQueue?
-                $("#packageName").val("");
+                //$("#packageName").val("");
             }
             else {
-                // TODO: Show a better warning....
                 alert('You must choose a file to upload.');
             }
         }
@@ -85,7 +83,18 @@
             dropZoneUpload = new Dropzone(".dropzone", {
                 init: function () {
                     this.on("complete", function (file) {
-                        this.removeFile(file);
+                        if (file.status == Dropzone.SUCCESS) {
+                            this.removeFile(file);
+                            if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                                window.location.href = '@Url.Action("Index", "Plugin")';
+                            }
+                        }
+                    });
+
+                    this.on("error", function (file, response) {
+                        if (typeof response == "object") {
+                            alert(response.error);
+                        }
                     });
                 },
                 url: "@Url.Action("Index", "Package")",

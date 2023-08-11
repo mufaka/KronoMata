@@ -3,7 +3,7 @@
     public class ChartDataSeries<T>
     {
         public string Name { get; set; } = String.Empty;
-        public List<T> Data { get; set; }
+        public List<T> Data { get; set; } = new List<T>();
 
     }
 }

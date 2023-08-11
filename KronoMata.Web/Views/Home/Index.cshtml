@@ -3,7 +3,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-3 col-6">
-            <!-- small card -->
             <div class="small-box bg-info shadow-sm">
                 <div class="inner">
                     <h3>@Model.Hosts.Count</h3>
@@ -19,7 +18,6 @@
             </div>
         </div>
         <div class="col-lg-3 col-6">
-            <!-- small card -->
             <div class="small-box bg-info shadow-sm">
                 <div class="inner">
                     <h3>@Model.Plugins.Count</h3>
@@ -29,13 +27,12 @@
                 <div class="icon">
                     <i class="fas fa-plug"></i>
                 </div>
-                <a href="#" class="small-box-footer">
+                <a href="@Url.Action("Index", "Plugin")" class="small-box-footer">
                     More info <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
         <div class="col-lg-3 col-6">
-            <!-- small card -->
             <div class="small-box bg-info shadow-sm">
                 <div class="inner">
                     <h3>@Model.ScheduledJobs.Count</h3>
@@ -59,7 +56,6 @@
                 </div>
                 <div class="card-body">
                     <div class="chart">
-                        <!-- TODO: move styling to a reusable place -->
                         <canvas id="jobHistoryChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                     </div>
                 </div>
