@@ -28,6 +28,8 @@ namespace KronoMata.Data.Mock
             Host host1 = CreateHost(now, Environment.MachineName);
             Host host2 = CreateHost(now, "APP_SERVER_02");
 
+            CreateAdditionalHosts(now, 30);
+
             ScheduledJob scheduledJob1 = CreateScheduledJob(now, plugin, host1, "Echo Test 1");
             CreateConfigurationValue1(now, pluginConfiguration1, scheduledJob1);
             CreateConfigurationValue2(now, pluginConfiguration2, scheduledJob1);
@@ -163,6 +165,22 @@ namespace KronoMata.Data.Mock
 
             _dataProvider.HostDataStore.Create(host);
             return host;
+        }
+
+        private void CreateAdditionalHosts(DateTime now, int count)
+        {
+            for (int x = 1; x <= count; x++)
+            {
+                var host = new Host
+                {
+                    MachineName = $"SERVER-{x.ToString().PadLeft(2, '0')}",
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _dataProvider.HostDataStore.Create(host);
+            }
         }
 
         private PluginConfiguration CreatePluginConfiguration1(DateTime now, PluginMetaData plugin)
