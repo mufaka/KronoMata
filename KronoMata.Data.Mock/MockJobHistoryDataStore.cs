@@ -64,10 +64,14 @@ namespace KronoMata.Data.Mock
 
             };
         }
-
-        public List<JobHistory> GetByScheduledJob(int scheduledJobId)
+        public PagedList<JobHistory> GetByScheduledJob(int scheduledJobId, int pageIndex, int pageSize)
         {
-            return _jobHistories.Where(j => j.ScheduledJobId == scheduledJobId).ToList();
+            return GetFilteredPaged(pageIndex, pageSize, -1, scheduledJobId, -1);
+        }
+
+        public PagedList<JobHistory> GetByHost(int hostId, int pageIndex, int pageSize)
+        {
+            return GetFilteredPaged(pageIndex, pageSize, -1, -1, hostId);
         }
 
         public List<JobHistory> GetTop(int howMany)
