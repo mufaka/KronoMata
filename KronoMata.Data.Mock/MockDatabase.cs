@@ -171,10 +171,11 @@ namespace KronoMata.Data.Mock
         {
             for (int x = 1; x <= count; x++)
             {
+                bool enabled = x % 12 != 0;
                 var host = new Host
                 {
                     MachineName = $"SERVER-{x.ToString().PadLeft(2, '0')}",
-                    IsEnabled = true,
+                    IsEnabled = enabled,
                     InsertDate = now,
                     UpdateDate = now
                 };

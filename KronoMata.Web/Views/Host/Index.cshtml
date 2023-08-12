@@ -6,11 +6,23 @@
             <div class="card-header">
                 <h3 class="card-title">Hosts</h3>
             </div>
-            <div class="card-body table-responsive p-0" style="height: 500px;">
+            <div class="card-body table-responsive p-0" style="height: @(Model.Hosts.Count > 10 ? "350" : "200")px;">
                 <div class="host-container">
                     @foreach(var host in Model.Hosts)
                     {
-                        <div class="host-item">@host.MachineName</div>
+                        var bgClass = host.IsEnabled ? "bg-info" : "bg-gray";
+
+                        <div class="host-item @bgClass">
+                            <div class="inner">
+                                <p>@host.MachineName</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <a href="@Url.Action("Index", "Plugin")" class="host-item-footer">
+                                More info <i class="fas fa-arrow-circle-right"></i>
+                            </a>
+                        </div>
                     }
                 </div>
             </div>
@@ -21,17 +33,69 @@
 @section styles {
     <style>
         .host-container {
-            padding: 3em;
+            padding: 1em;
             display: grid;
-            grid-gap: 2em;
+            grid-gap: .5em;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
 
         .host-item {
+            border-radius: 0.25rem;
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.125), 0 1px 3px rgba(0, 0, 0, 0.2);
+            display: block;
+            position: relative;
+
             font-size: .7em;
-            padding: 2em;
-            border-radius: .3em;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            /*padding: 2em;*/
+            /*height: 150px;*/
+        }
+
+        .host-item > .inner {
+            padding: 5px;
+        }
+
+        .host-item > .host-item-footer {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            display: block;
+            padding: 3px 0;
+            position: relative;
+            text-align: center;
+            text-decoration: none;
+            z-index: 10;
+        }
+
+        .host-item > .host-item-footer:hover {
+            background-color: rgba(0, 0, 0, 0.15);
+            color: #fff;
+        }
+
+        .host-item h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0 0 10px;
+            padding: 0;
+            white-space: nowrap;
+        }
+
+        .host-item .icon {
+            color: rgba(0, 0, 0, 0.15);
+            z-index: 0;
+        }
+
+        .host-item .icon > i {
+            font-size: 90px;
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            transition: -webkit-transform 0.3s linear;
+            transition: transform 0.3s linear;
+            transition: transform 0.3s linear, -webkit-transform 0.3s linear;
+        }
+
+        .host-item .icon > i.fa, .host-item .icon > i.fas, .host-item .icon > i.far, .host-item .icon > i.fab, .host-item .icon > i.fal, .host-item .icon > i.fad, .host-item .icon > i.ion {
+            font-size: 40px;
+            top: 20px;
         }
     </style>
 }

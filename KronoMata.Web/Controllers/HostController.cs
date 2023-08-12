@@ -25,7 +25,9 @@ namespace KronoMata.Web.Controllers
 
             try
             {
-                model.Hosts = DataStoreProvider.HostDataStore.GetAll();
+                model.Hosts = DataStoreProvider.HostDataStore.GetAll()
+                    .OrderBy(h => h.IsEnabled)
+                    .ThenBy(h => h.MachineName).ToList();
             }
             catch (Exception ex)
             {
