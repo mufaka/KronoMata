@@ -61,3 +61,13 @@ function GetData(url, parameters) {
     });
     return resp;
 }
+
+function PostData(url, data, success, error) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        success: success,
+        error: error
+    });
+}

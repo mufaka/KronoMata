@@ -37,7 +37,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Host</h3>
                     </div>
-                    <div class="card-body" style="height: 300px;">
+                    <div class="card-body" style="height: 320px;">
                         <div class="form-group">
                             <label for="host-machinename">Machine Name</label>
                             <input type="text" class="form-control" id="host-machinename" disabled>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <input type="button" class="btn btn-secondary" value="Save" />
+                        <input type="button" onclick="saveHost();" class="btn btn-secondary" value="Save" />
                     </div>
                 </div>
             </div>
@@ -161,6 +161,15 @@
             customizeGridLoadParams();
             $("#host-information").hide();
         });
+
+        function saveHost() {
+            _host.isEnabled = $("#host-enabled").is(":checked");
+
+            // TODO: use Toast for fail, reload page if success.
+            var updatedHost = PostData('@Url.Action("SaveHost", "Host")', { host: _host }, success = function () {
+                location.reload();
+            });
+        }
 
         function showHostInfo(hostId) {
             _hostId = hostId;

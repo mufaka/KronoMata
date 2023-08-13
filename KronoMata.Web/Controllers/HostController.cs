@@ -62,5 +62,35 @@ namespace KronoMata.Web.Controllers
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }
+
+        [HttpPost]
+        public ActionResult SaveHost(Model.Host host)
+        {
+            try
+            {
+                var now = DateTime.Now;
+
+                host.UpdateDate = now;
+
+                if (host.Id <= 0)
+                {
+                    host.InsertDate = now;
+                    DataStoreProvider.HostDataStore.Create(host);
+                } 
+                else
+                {
+                    DataStoreProvider.HostDataStore.Update(host);
+                }
+
+                DataStoreProvider.HostDataStore.Update(host);
+
+                return Json(new { host });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Host related data.");
+                return new ObjectResult(ex.Message) { StatusCode = 500 };
+            }
+        }
     }
 }
