@@ -106,7 +106,7 @@ namespace KronoMata.Data.Mock
 
                     var history = new JobHistory();
 
-                    history.HostId = counter % 2 == 0 ? host1.Id : host2.Id;
+                    history.HostId = counter % 2 == 0 ? host2.Id : host1.Id;
                     history.ScheduledJobId = job.Id;
                     history.RunTime = counter % 2 == 0 ? runTime2 : runTime;
                     history.CompletionTime = history.RunTime.AddMilliseconds(random.Next(1, 20000));

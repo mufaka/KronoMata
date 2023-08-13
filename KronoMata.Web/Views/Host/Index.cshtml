@@ -57,17 +57,19 @@
                     <h3 class="card-title">History</h3>
                 </div>
                 <div class="card-body">
+                    <div id="job-history-grid"></div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-4">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Scheduled Jobs</h3>
                 </div>
                 <div class="card-body">
+                    <div id="scheduled-job-grid"></div>
                 </div>
             </div>
         </div>
@@ -75,6 +77,10 @@
 </div>
 
 @section styles {
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid.min.css">
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid-theme.min.css">
+    <link rel="stylesheet" href="~/plugins/jquery-ui/jquery-ui.css" />
+
     <style>
         .host-container {
             padding: 1em;
@@ -143,11 +149,15 @@
 }
 
 @section scripts {
+    <script src="~/plugins/jsgrid/jsgrid.min.js"></script>
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+
     <script type="text/javascript">
-        var _hostId = -1;
+        var _hostId = -2;
         var _host;
 
         $(function () {
+            customizeGridLoadParams();
             $("#host-information").hide();
         });
 
@@ -163,7 +173,140 @@
             _host = db.data.value.host;
 
             $("#host-machinename").val(_host.machineName);
+            $("#host-enabled").prop('checked', _host.isEnabled);
+            populateScheduledJobs(jobs);
+            populateJobHistory(hostId);
         }
 
+        function populateScheduledJobs(jobs) {
+            $("#scheduled-job-grid").jsGrid({
+                height: "200px",
+                width: "100%",
+
+                sorting: false,
+                paging: false,
+
+                data: jobs,
+
+                fields: [
+                    { name: "name", title: "Name", type: "text"},
+                    { name: "isEnabled", title: "Enabled?", type: "checkbox"},
+                    { name: "startTime", title: "Start", type: "text" },
+                    { name: "endTime", title: "End", type: "text" },
+                    { name: "frequency", title: "Frequency", type: "text", 
+                        itemTemplate: function (value, item) {
+                            switch (item.frequency) {
+                                case 0: return 'Minute';
+                                case 1: return 'Hour';
+                                case 2: return 'Day';
+                                case 3: return 'Week';
+                                case 4: return 'Month';
+                                default: return 'Unknown';
+                            }
+                        }
+                    },
+                    { name: "interval", title: "Interval", type: "text"},
+                    { name: "days", title: "Days", type: "text"},
+                    { name: "dayOfWeeks", title: "Days of Week", type: "text"},
+                    { name: "hours", title: "Hours", type: "text"},
+                    { name: "minutes", title: "Minutes", type: "text"},
+                ]
+            });
+        }
+
+        // Will this affect the other grid?
+        function customizeGridLoadParams() {
+            jsGrid.loadStrategies.PageLoadingStrategy.prototype.loadParams = function () {
+                var grid = this._grid;
+                return {
+                    pageIndex: grid.option("pageIndex"),
+                    pageSize: grid.option("pageSize"),
+                    hostId: getSelectedHost()
+                };
+            }
+        }
+
+        function getSelectedHost() {
+            return _hostId;
+        }
+
+        function populateJobHistory(hostId) {
+            var db = GetData('@Url.Action("GetLastJobHistoryRelatedData", "ChartData")')[0];
+            var jobs = db.data.value.jobs;
+            var hosts = db.data.value.hosts;
+
+            $('#job-history-grid').jsGrid({
+                height: "400px",
+                width: "100%",
+                sorting: false,
+                paging: true,
+                pageLoading: true,
+                pageSize: 50,
+                autoload: true,
+                filtering: true,
+
+                rowClick: function (args) {
+                    showDetailsDialog(args.item);
+                },
+
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            cache: false,
+                            type: "GET",
+                            url: "@Url.Action("GetJobHistoryData", "JobHistory")",
+                            data: filter,
+                            dataType: "json"
+                        });
+                    },
+
+                    insertItem: function (item) {
+                    },
+
+                    updateItem: function (item) {
+                    },
+
+                    deleteItem: function (item) {
+                    }
+                },
+                fields: [
+                    {
+                        name: "runTime", title: "Run Time", type: "text", width: 40, filtering: false,
+                        itemTemplate: function (value, item) {
+                            let icon = 'fa-check-circle';
+                            let iconClass = 'status-icon-success';
+
+                            switch (item.status) {
+                                case 1:
+                                    icon = 'fa-pause-circle';
+                                    iconClass = 'status-icon-skip';
+                                    break;
+                                case 2:
+                                    icon = 'fa-exclamation-circle';
+                                    iconClass = 'status-icon-fail';
+                                    break;
+                            }
+
+                            let date = new Date(value).toLocaleString('en-US');
+
+                            return '<i class="fa ' + icon + ' ' + iconClass + '"></i>' + date;
+                        }
+                    },
+                    { name: "duration", title: "Duration", type: "text", width: 40, filtering: false },
+                    {
+                        name: "scheduledJobId", title: "Job", type: "select", items: jobs, valueField: "id", textField: "name", width: 40, headercss: "text-start",
+                        filtering: false
+                    },
+                    {
+                        name: "hostId", title: "Host", type: "select", items: hosts, valueField: "id", textField: "machineName", width: 40,
+                        filtering: false
+                    },
+                    { name: "message", title: "Message", type: "text", filtering: false },
+                    { name: "detail", title: "Detail", type: "text", filtering: false, visible: false }
+                ]
+            });
+        }
     </script>
+
+    <partial name="~/Views/Partials/_JobHistoryDetailDialog.cshtml" />
 }
