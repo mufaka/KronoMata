@@ -30,23 +30,16 @@
 
         function populateSettingsGrid() {
             $("#settings-grid").jsGrid({
-                height: "400px",
+                height: "600px",
                 width: "100%",
 
                 filtering: false,
                 inserting: true,
                 editing: true,
                 sorting: true,
-
-                paging: true,
-
+                paging: false,
                 autoload: true,
-
-                pageSize: 25,
-                pageButtonCount: 5,
                 pageLoading: false,
-
-
 
                 deleteConfirm: "Are you sure you want to delete this configuration?",
 

@@ -43,18 +43,14 @@
                 <div class="card-header">
                     <h3 class="card-title">Plugin Parameters</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive p-0">
                     <div id="detail-panel"><i>Click a Plugin to view it's configuration parameters.</i></div>
                 </div>
             </div>
         </div>
     </div>
     <div id="plugin-detail">
-        <div class="row">
-            <div class="col-12">
-                <div id="configuration-grid"></div>
-            </div>
-        </div>
+        <div id="configuration-grid"></div>
     </div>
 </div>
 
@@ -111,9 +107,8 @@
                 height: "350px",
                 width: "100%",
                 sorting: false,
-                paging: true,
+                paging: false,
                 pageLoading: true,
-                pageSize: 25,
                 autoload: true,
                 filtering: true,
                 editing: false,
