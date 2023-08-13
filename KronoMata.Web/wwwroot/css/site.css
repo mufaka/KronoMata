@@ -14,11 +14,16 @@ html {
 }
 
 body {
+    font-size: .9rem !important;
 }
 
 /* reduce padding */
 .content-header {
-    padding: 7.5px 0.2rem !important;
+    padding: 5.0px 0.2rem !important;
+}
+
+.card-header {
+    padding: .5em .5em .5em .5em !important;
 }
 
 .content-wrapper>.content {
