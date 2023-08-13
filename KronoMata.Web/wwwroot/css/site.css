@@ -26,6 +26,14 @@ body {
     padding: .5em .5em .5em .5em !important;
 }
 
+.card-footer {
+    padding: .5em .5em .5em .5em !important;
+}
+
+.btn {
+    padding: 0.0em 0.5em 0.0em 0.5em !important;
+}
+
 .content-wrapper>.content {
     padding: 0 !important;
 }
