@@ -37,5 +37,30 @@ namespace KronoMata.Web.Controllers
 
             return View(model);
         }
+
+        public ActionResult GetHostRelatedData(int hostId)
+        {
+            try
+            {
+                var host = DataStoreProvider.HostDataStore.GetById(hostId);
+                var jobs = DataStoreProvider.ScheduledJobDataStore.GetByHost(hostId);
+
+                var db = Json(new
+                {
+                    host,
+                    jobs
+                });
+
+                return Json(new
+                {
+                    data = db
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Host related data.");
+                return new ObjectResult(ex.Message) { StatusCode = 500 };
+            }
+        }
     }
 }

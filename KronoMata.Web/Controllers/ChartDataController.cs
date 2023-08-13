@@ -109,8 +109,6 @@ namespace KronoMata.Web.Controllers
         {
             try
             {
-                var now = DateTime.Now;
-
                 var hosts = DataStoreProvider.HostDataStore.GetAll();
                 var plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll();
                 var jobs = DataStoreProvider.ScheduledJobDataStore.GetAll();

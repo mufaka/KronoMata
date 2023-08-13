@@ -31,6 +31,13 @@ namespace KronoMata.Data.Mock
             }
         }
 
+        public Host GetById(int id)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return _hosts.Where(h => h.Id == id).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
         public List<Host> GetAll()
         {
             return _hosts;

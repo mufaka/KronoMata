@@ -10,6 +10,7 @@ namespace KronoMata.Data
         Host Create(Host host);
         void Update(Host host);
         void Delete(int id);
+        Host GetById(int id);
         List<Host> GetAll();
         Host GetByMachineName(string machineName);
     }

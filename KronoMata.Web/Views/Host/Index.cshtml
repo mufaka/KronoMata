@@ -19,11 +19,55 @@
                             <div class="icon">
                                 <i class="fas fa-server"></i>
                             </div>
-                            <a href="@Url.Action("Index", "Plugin")" class="host-item-footer">
+                            <a onclick="showHostInfo(@host.Id);" href="#" class="host-item-footer">
                                 More info <i class="fas fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="host-information">
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Host</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="host-machinename">Machine Name</label>
+                        <input type="text" class="form-control" id="host-machinename" disabled>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="host-enabled">
+                        <label class="form-check-label" for="host-enabled">Enabled?</label>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <input type="button" class="btn btn-secondary" value="Save" />
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">History</h3>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Scheduled Jobs</h3>
+                </div>
+                <div class="card-body">
                 </div>
             </div>
         </div>
@@ -96,4 +140,30 @@
             top: 20px;
         }
     </style>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        var _hostId = -1;
+        var _host;
+
+        $(function () {
+            $("#host-information").hide();
+        });
+
+        function showHostInfo(hostId) {
+            _hostId = hostId;
+            $("#host-information").show();
+            populateHostInfo(hostId);
+        }
+
+        function populateHostInfo(hostId) {
+            var db = GetData('@Url.Action("GetHostRelatedData", "Host")', { hostId: hostId })[0];
+            var jobs = db.data.value.jobs;
+            _host = db.data.value.host;
+
+            $("#host-machinename").val(_host.machineName);
+        }
+
+    </script>
 }

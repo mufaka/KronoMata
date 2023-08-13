@@ -38,8 +38,14 @@ function overrideJSGrid() {
 }
 
 // utility method for geting ajax data
-function GetData(url) {
+function GetData(url, parameters) {
     var resp = [];
+
+    if (typeof parameters === 'object' && parameters != null && Object.keys(parameters).length !== 0) {
+        var queryString = Object.keys(parameters).map(key => key + '=' + parameters[key]).join('&');
+        url += '?' + queryString;
+    }
+
     $.ajax({
         type: "GET",
         url: url,
