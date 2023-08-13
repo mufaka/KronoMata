@@ -14,7 +14,22 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+}
+
+/* reduce padding */
+.content-header {
+    padding: 7.5px 0.2rem !important;
+}
+
+.content-wrapper>.content {
+    padding: 0 !important;
+}
+
+.dropzone {
+    border-radius: 0 !important;
+    padding: 5px !important;
+    margin: 2px !important;
+    border: 0px dashed !important;
 }
 
 /* info box*/

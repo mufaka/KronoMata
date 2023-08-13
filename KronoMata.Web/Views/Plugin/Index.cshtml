@@ -1,57 +1,59 @@
 ﻿@model KronoMata.Web.Models.PluginViewModel 
 
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Plugins</h3>
-            </div>
-            <div class="card-body table-responsive p-0" style="height: 300px;">
-                <table class="table table-head-fixed table-hover text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Version</th>
-                            <th>Assembly</th>
-                            <th>Class</th>
-                            <th>Insert Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var plugin in Model.Plugins)
-                        {
-                            <tr onclick="showPluginDetail(@plugin.Id);">
-                                <td>@plugin.Id</td>
-                                <td>@plugin.Name</td>
-                                <td>@plugin.Version</td>
-                                <td>@plugin.AssemblyName</td>
-                                <td>@plugin.ClassName</td>
-                                <td>@plugin.InsertDate.ToString("O")</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Plugin Parameters</h3>
-            </div>
-            <div class="card-body">
-                <div id="detail-panel"><i>Click a Plugin to view it's configuration parameters.</i></div>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="plugin-detail">
+<div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div id="configuration-grid"></div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Plugins</h3>
+                </div>
+                <div class="card-body table-responsive p-0" style="height: 300px;">
+                    <table class="table table-head-fixed table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Version</th>
+                                <th>Assembly</th>
+                                <th>Class</th>
+                                <th>Insert Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var plugin in Model.Plugins)
+                            {
+                                <tr onclick="showPluginDetail(@plugin.Id);">
+                                    <td>@plugin.Id</td>
+                                    <td>@plugin.Name</td>
+                                    <td>@plugin.Version</td>
+                                    <td>@plugin.AssemblyName</td>
+                                    <td>@plugin.ClassName</td>
+                                    <td>@plugin.InsertDate.ToString("O")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Plugin Parameters</h3>
+                </div>
+                <div class="card-body">
+                    <div id="detail-panel"><i>Click a Plugin to view it's configuration parameters.</i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="plugin-detail">
+        <div class="row">
+            <div class="col-12">
+                <div id="configuration-grid"></div>
+            </div>
         </div>
     </div>
 </div>

@@ -1,54 +1,56 @@
 ﻿@model KronoMata.Web.Models.PackageViewModel
 
-<div class="row">
-    <div class="col-6">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Packages</h3>
-            </div>
-            <div class="card-body table-responsive p-0" style="height: 300px;">
-                <table class="table table-head-fixed table-hover text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Filename</th>
-                            <th>Upload Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach(var package in Model.Packages)
-                        {
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Packages</h3>
+                </div>
+                <div class="card-body table-responsive p-0" style="height: 300px;">
+                    <table class="table table-head-fixed table-hover text-nowrap">
+                        <thead>
                             <tr>
-                                <td>@package.Id</td>
-                                <td>@package.Name</td>
-                                <td>@package.FileName</td>
-                                <td>@package.UploadDate.ToString("O")</td>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Filename</th>
+                                <th>Upload Date</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach(var package in Model.Packages)
+                            {
+                                <tr>
+                                    <td>@package.Id</td>
+                                    <td>@package.Name</td>
+                                    <td>@package.FileName</td>
+                                    <td>@package.UploadDate.ToString("O")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-4">
-        <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Upload Package</h3>
-                </div>
-                <form id="dropzoneform" class="dropzone" action="@Url.Action("Index", "Package")">
-                    <div class="card-body">
-                        <div class="previews"></div>
-
-                        <label for="packageName">Package Name</label>
-                        <input type="text" class="form-control" id="packageName" name="packageName">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Upload Package</h3>
                     </div>
-                </form>
-                <div class="card-footer">
-                    <button id="update-button" type="button" onclick="doUpload();" class="btn btn-secondary">Upload</button>
-                </div>
+                    <form id="dropzoneform" class="dropzone" action="@Url.Action("Index", "Package")">
+                        <div class="card-body">
+                            <div class="previews"></div>
+
+                            <label for="packageName">Package Name</label>
+                            <input type="text" class="form-control" id="packageName" name="packageName">
+                        </div>
+                    </form>
+                    <div class="card-footer">
+                        <button id="update-button" type="button" onclick="doUpload();" class="btn btn-secondary">Upload</button>
+                    </div>
+            </div>
         </div>
     </div>
 </div>
