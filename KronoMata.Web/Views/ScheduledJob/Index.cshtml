@@ -1,0 +1,75 @@
+﻿@model KronoMata.Web.Models.ScheduledJobViewModel 
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Scheduled Jobs</h3>
+                </div>
+                <div class="card-body table-responsive p-0">
+                    <div id="scheduled-job-grid"></div>
+                </div>
+                <div class="card-footer">
+                    <input type="button" onclick="" class="btn btn-secondary" value="Add" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid.min.css">
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid-theme.min.css">
+}
+
+@section scripts {
+    <script src="~/plugins/jsgrid/jsgrid.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            populateScheduledJobs();
+        });
+
+        function populateScheduledJobs() {
+
+            var jobs = GetData('@Url.Action("GetScheduledJobData", "ScheduledJob")')[0];
+
+            $("#scheduled-job-grid").jsGrid({
+                height: "700px",
+                width: "100%",
+
+                sorting: false,
+                paging: false,
+
+                data: jobs,
+
+                fields: [
+                    { name: "name", title: "Name", type: "text" },
+                    { name: "isEnabled", title: "Enabled?", type: "checkbox" },
+                    { name: "startTime", title: "Start", type: "text" },
+                    { name: "endTime", title: "End", type: "text" },
+                    {
+                        name: "frequency", title: "Frequency", type: "text",
+                        itemTemplate: function (value, item) {
+                            switch (item.frequency) {
+                                case 0: return 'Minute';
+                                case 1: return 'Hour';
+                                case 2: return 'Day';
+                                case 3: return 'Week';
+                                case 4: return 'Month';
+                                default: return 'Unknown';
+                            }
+                        }
+                    },
+                    { name: "interval", title: "Interval", type: "text" },
+                    { name: "days", title: "Days", type: "text" },
+                    { name: "dayOfWeeks", title: "Days of Week", type: "text" },
+                    { name: "hours", title: "Hours", type: "text" },
+                    { name: "minutes", title: "Minutes", type: "text" },
+                ]
+            });
+        }
+    </script>
+}

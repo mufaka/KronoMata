@@ -39,7 +39,7 @@ namespace KronoMata.Data.Mock
 
         public List<ScheduledJob> GetByHost(int hostId)
         {
-            return _scheduledJobs.Where(s => s.HostId == hostId).ToList();
+            return _scheduledJobs.Where(s => s.HostId == hostId || s.HostId == null).ToList();
         }
 
         public ScheduledJob GetById(int id)
