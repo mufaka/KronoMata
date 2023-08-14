@@ -11,7 +11,7 @@
                     <div id="scheduled-job-grid"></div>
                 </div>
                 <div class="card-footer">
-                    <input type="button" onclick="" class="btn btn-secondary" value="Add" />
+                    <input type="button" onclick="redirectToCreate();" class="btn btn-secondary" value="Add" />
                 </div>
             </div>
         </div>
@@ -32,6 +32,14 @@
             populateScheduledJobs();
         });
 
+        function redirectToCreate() {
+            location.href = '@Url.Action("Create", "ScheduledJob")';
+        }
+
+        function redirectToUpdate(id) {
+            location.href = '@Url.Action("Update", "ScheduledJob")/' + id;
+        }
+
         function populateScheduledJobs() {
 
             var jobs = GetData('@Url.Action("GetScheduledJobData", "ScheduledJob")')[0];
@@ -44,6 +52,10 @@
                 paging: false,
 
                 data: jobs,
+
+                rowClick: function (args) {
+                    redirectToUpdate(args.item.id);
+                },
 
                 fields: [
                     { name: "name", title: "Name", type: "text" },
