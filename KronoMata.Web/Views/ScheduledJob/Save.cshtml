@@ -8,7 +8,7 @@
                     <h3 class="card-title">Scheduled Job</h3>
                 </div>
                 <div class="card-body">
-                    <form action="@Model.ActionUrl" method="post">
+                    <form action="@Model.ActionUrl" method="post" class="scheduledjob-form">
                         <input type="hidden" name="scheduledjob-id" value="@Model.ScheduledJob.Id" />
 
                         <div class="row">
@@ -25,7 +25,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Host</label>
-                                            <select class="form-control" name="scheduledjob-hostid">
+                                            <select class="form-control" name="scheduledjob-hostId">
                                                 @foreach (var host in Model.Hosts)
                                                 {
                                                     var selected = Model.ScheduledJob.HostId == host.Id;
@@ -39,7 +39,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Plugin</label>
-                                            <select class="form-control" name="scheduledjob-pluginid">
+                                            <select class="form-control" name="scheduledjob-pluginMetaDataId">
                                                 @foreach (var plugin in Model.Plugins)
                                                 {
                                                     var selected = Model.ScheduledJob.PluginMetaDataId == plugin.Id;
@@ -53,7 +53,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Start Date / Time</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.StartTime" name="scheduledjob-starttime">
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.StartTime" name="scheduledjob-startTime">
                                         </div>
                                     </div>
                                 </div>
@@ -61,7 +61,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>End Date / Time</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endtime">
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endTime">
                                         </div>
                                     </div>
                                 </div>
@@ -71,8 +71,8 @@
                                             @{
                                                 var isChecked = Model.ScheduledJob.IsEnabled;
                                             }
-                                            <input type="checkbox" class="form-check-input" id="scheduledjob-enabled" name="scheduledjob-enabled" checked="@isChecked">
-                                            <label class="form-check-label" for="scheduledjob-enabled">Is Enabled?</label>
+                                            <input type="checkbox" class="form-check-input" id="scheduledjob-enabled" name="scheduledjob-isEnabled" checked="@isChecked">
+                                            <label class="form-check-label" for="scheduledjob-isEnabled">Is Enabled?</label>
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +146,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Days of Week</label>
-                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-daysofweek">
+                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-daysOfWeek">
                                                 @{
                                                     var daysOfWeekList = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
                                                 }
@@ -164,7 +164,7 @@
                     </form>
                 </div>
                 <div class="card-footer">
-                    <input type="button" onclick="" class="btn btn-secondary" value="Save" />
+                    <input type="button" onclick="submitForm();" class="btn btn-secondary" value="Save" />
                     <input type="button" onclick="history.back();" class="btn btn-secondary" value="Cancel" />
                 </div>
             </div>
@@ -186,5 +186,29 @@
                 theme: 'bootstrap4'
             })
         });
+
+        function submitForm() {
+            var data = {};
+            $(".scheduledjob-form").serializeArray().map(function (x) {
+                if (x.name.startsWith('scheduledjob-')) {
+                    let dataKey = x.name.substring(x.name.indexOf('-') + 1);
+                    let dataValue = x.value;
+
+                    // checkboxes are fun :/
+                    if (dataKey === 'isEnabled') {
+                        dataValue = dataValue == 'on' ? true : false;
+                    }
+
+                    if (data[dataKey]) {
+                        data[dataKey] += ',' + dataValue;
+                    } else {
+                        data[dataKey] = dataValue;
+                    }
+                }
+            }); 
+            
+            var actionUrl = $(".scheduledjob-form").attr("action");
+            PostData(actionUrl, data);
+        }
     </script>
 }

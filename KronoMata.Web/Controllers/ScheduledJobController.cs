@@ -161,9 +161,10 @@ namespace KronoMata.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Update(ScheduledJobSaveViewModel model)
+        public ActionResult Update(ScheduledJob scheduledJob)
         {
+            var model = new ScheduledJobSaveViewModel();
+
             model.ViewName = "Scheduled Job Update";
 #pragma warning disable CS8601 // Possible null reference assignment.
             model.ActionUrl = Url.Action("Update", "ScheduledJob");
@@ -171,8 +172,23 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                var existing = DataStoreProvider.ScheduledJobDataStore.GetById(scheduledJob.Id);
+
+                if (existing != null)
+                {
+                    scheduledJob.InsertDate = existing.InsertDate;
+                    scheduledJob.UpdateDate = DateTime.Now;
+
+                    DataStoreProvider.ScheduledJobDataStore.Update(scheduledJob);
+                }
+                else
+                {
+                    _logger.LogError("Unable to get ScheduledJob with Id {id}", scheduledJob.Id);
+                    return new ObjectResult($"Unable to get ScheduledJob with Id {scheduledJob.Id}") { StatusCode = 500 };
+                }
+
                 PopulateCommonProperties(model, true);
-                model.ScheduledJob = DataStoreProvider.ScheduledJobDataStore.GetById(model.ScheduledJob.Id);
+                model.ScheduledJob = scheduledJob;
             }
             catch (Exception ex)
             {
