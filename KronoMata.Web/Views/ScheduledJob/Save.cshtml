@@ -194,7 +194,6 @@
                     let dataKey = x.name.substring(x.name.indexOf('-') + 1);
                     let dataValue = x.value;
 
-                    // checkboxes are fun :/
                     if (dataKey === 'isEnabled') {
                         dataValue = dataValue == 'on' ? true : false;
                     }
@@ -208,7 +207,9 @@
             }); 
             
             var actionUrl = $(".scheduledjob-form").attr("action");
-            PostData(actionUrl, data);
+            PostData(actionUrl, data, success = function () {
+                location.href = '@Url.Action("Index", "ScheduledJob")';
+            });
         }
     </script>
 }
