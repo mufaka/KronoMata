@@ -51,9 +51,9 @@ namespace KronoMata.Scheduling
         {
             var validIncrements = new ValidIncrements(scheduledJob);
 
-            if (validIncrements.DayOfWeeks.Count > 0)
+            if (validIncrements.DaysOfWeek.Count > 0)
             {
-                if (!validIncrements.DayOfWeeks.Contains(currentDate.DayOfWeek.ToString())) return false;
+                if (!validIncrements.DaysOfWeek.Contains(currentDate.DayOfWeek.ToString())) return false;
             }
 
             if (!String.IsNullOrEmpty(scheduledJob.Days))
@@ -158,7 +158,7 @@ namespace KronoMata.Scheduling
             public ValidIncrements(ScheduledJob scheduledJob)
             {
                 Days = new List<int> { scheduledJob.StartTime.Day };
-                DayOfWeeks = new List<string>();
+                DaysOfWeek = new List<string>();
                 Hours = new List<int> { scheduledJob.StartTime.Hour };
                 Minutes = new List<int> { scheduledJob.StartTime.Minute };
 
@@ -167,9 +167,9 @@ namespace KronoMata.Scheduling
                     Days = scheduledJob.Days.Split(',').Select(int.Parse).ToList();
                 }
 
-                if (!String.IsNullOrEmpty(scheduledJob.DayOfWeeks))
+                if (!String.IsNullOrEmpty(scheduledJob.DaysOfWeek))
                 {
-                    DayOfWeeks = scheduledJob.DayOfWeeks.Split(',').ToList();
+                    DaysOfWeek = scheduledJob.DaysOfWeek.Split(',').ToList();
 
                     if (String.IsNullOrEmpty(scheduledJob.Days))
                     {
@@ -204,7 +204,7 @@ namespace KronoMata.Scheduling
             }
 
             public List<int> Days { get; set; }
-            public List<string> DayOfWeeks { get; set; }
+            public List<string> DaysOfWeek { get; set; }
             public List<int> Hours { get; set; }
             public List<int> Minutes { get; set; }
         }

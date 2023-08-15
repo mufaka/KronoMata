@@ -1,4 +1,5 @@
 ﻿using KronoMata.Data;
+using KronoMata.Model;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,10 +58,10 @@ namespace KronoMata.Web.Controllers
             }
         }
 
-        private void PopulateCommonProperties(ScheduledJobSaveViewModel model)
+        private void PopulateCommonProperties(ScheduledJobSaveViewModel model, bool updating)
         {
             var hosts = DataStoreProvider.HostDataStore.GetAll()
-                .Where(h => h.IsEnabled)
+                .Where(h => h.IsEnabled || updating)
                 .OrderBy(h => h.MachineName)
                 .ToList();
 
@@ -70,9 +71,24 @@ namespace KronoMata.Web.Controllers
                 MachineName = "<All>"
             };
 
-            model.Plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll().OrderBy(p => p.Name).ToList();
-
             hosts.Insert(0, allHost);
+            model.Hosts = hosts;
+
+            var plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll().OrderBy(p => p.Name).ToList();
+
+            if (!updating)
+            {
+                var choosePlugin = new PluginMetaData()
+                {
+                    Id = 0,
+                    Name = "<Choose>"
+                };
+
+                plugins.Insert(0, choosePlugin);
+            }
+
+
+            model.Plugins = plugins;
         }
 
         public ActionResult Create()
@@ -87,7 +103,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
-                PopulateCommonProperties(model);
+                PopulateCommonProperties(model, false);
             }
             catch (Exception ex)
             {
@@ -109,7 +125,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
-                PopulateCommonProperties(model);
+                PopulateCommonProperties(model, false);
             }
             catch (Exception ex)
             {
@@ -132,7 +148,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
-                PopulateCommonProperties(model);
+                PopulateCommonProperties(model, true);
                 model.ScheduledJob = DataStoreProvider.ScheduledJobDataStore.GetById(id);
             }
             catch (Exception ex)
@@ -155,7 +171,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
-                PopulateCommonProperties(model);
+                PopulateCommonProperties(model, true);
                 model.ScheduledJob = DataStoreProvider.ScheduledJobDataStore.GetById(model.ScheduledJob.Id);
             }
             catch (Exception ex)

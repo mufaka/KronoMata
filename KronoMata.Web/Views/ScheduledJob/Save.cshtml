@@ -7,9 +7,141 @@
                 <div class="card-header">
                     <h3 class="card-title">Scheduled Job</h3>
                 </div>
-                <div class="card-body table-responsive p-0">
+                <div class="card-body">
                     <form action="@Model.ActionUrl" method="post">
+                        <input type="hidden" name="scheduledjob-id" value="@Model.ScheduledJob.Id" />
 
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Name" name="scheduledjob-name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Host</label>
+                                            <select class="form-control" name="scheduledjob-hostid">
+                                                @foreach (var host in Model.Hosts)
+                                                {
+                                                    var selected = Model.ScheduledJob.HostId == host.Id;
+                                                    <option value="@host.Id" selected="@selected">@host.MachineName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Plugin</label>
+                                            <select class="form-control" name="scheduledjob-pluginid">
+                                                @foreach (var plugin in Model.Plugins)
+                                                {
+                                                    var selected = Model.ScheduledJob.PluginMetaDataId == plugin.Id;
+                                                    <option value="@plugin.Id" selected="@selected">@plugin.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Start Date / Time</label>
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.StartTime" name="scheduledjob-starttime">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>End Date / Time</label>
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endtime">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-check">
+                                            @{
+                                                var isChecked = Model.ScheduledJob.IsEnabled;
+                                            }
+                                            <input type="checkbox" class="form-check-input" id="scheduledjob-enabled" name="scheduledjob-enabled" checked="@isChecked">
+                                            <label class="form-check-label" for="scheduledjob-enabled">Is Enabled?</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Frequency</label>
+                                            <select class="form-control" name="scheduledjob-frequency">
+                                                @foreach (var frequency in Model.Frequencies)
+                                                {
+                                                    var selected = (int)Model.ScheduledJob.Frequency == frequency.Value;
+                                                    <option value="@frequency.Value" selected="@selected">@frequency.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Interval</label>
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Interval" name="scheduledjob-interval">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Days</label>
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Days" name="scheduledjob-days">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Hours</label>
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Hours" name="scheduledjob-hours">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Minutes</label>
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Minutes" name="scheduledjob-minutes">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>Days of Week</label>
+                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%">
+                                                <option>Monday</option>
+                                                <option>Tuesday</option>
+                                                <option>Wednesday</option>
+                                                <option>Thursday</option>
+                                                <option>Friday</option>
+                                                <option>Saturday</option>
+                                                <option>Sunday</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="card-footer">
@@ -20,3 +152,20 @@
         </div>
     </div>
 </div>
+
+@section styles {
+    <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+}
+
+@section scripts {
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        });
+    </script>
+}

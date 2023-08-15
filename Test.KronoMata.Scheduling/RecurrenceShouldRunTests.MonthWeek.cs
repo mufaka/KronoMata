@@ -38,7 +38,7 @@ namespace Test.KronoMata.Scheduling
             var currentDate = new DateTime(2023, 8, 4, _now.Hour, _now.Minute, _now.Second); // Friday the 4th
             _job.StartTime = _now;
             _job.Frequency = ScheduleFrequency.Month;
-            _job.DayOfWeeks = "Friday";
+            _job.DaysOfWeek = "Friday";
             _job.Days = "13";
             _job.Interval = 1; 
 
@@ -104,7 +104,7 @@ namespace Test.KronoMata.Scheduling
             _job.Frequency = ScheduleFrequency.Month;
             _job.Interval = 1;
             _job.Days = "";
-            _job.DayOfWeeks = "Monday,Wednesday,Friday";
+            _job.DaysOfWeek = "Monday,Wednesday,Friday";
             _job.Hours = "13";
             _job.Minutes = "15";
 

@@ -53,7 +53,7 @@
         /// A comma separated list of days of week to run on. Only
         /// valid for ScheduleFrequency.Week or ScheduleFrequency.Month
         /// </summary>
-        public string? DayOfWeeks { get; set; }
+        public string? DaysOfWeek { get; set; }
 
         /// <summary>
         /// A comma separated list of hours to run on. Not
