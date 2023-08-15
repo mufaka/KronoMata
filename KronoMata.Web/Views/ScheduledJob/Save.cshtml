@@ -107,7 +107,8 @@
                                             <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-days">
                                                 @for(int x = 1; x < 32; x++)
                                                 {
-                                                    <option value="@(x)">@(x)</option>
+                                                    var selected = String.IsNullOrEmpty(Model.ScheduledJob.Days) ? false : Model.ScheduledJob.Days.Split(",".ToCharArray()).Contains(x.ToString());
+                                                    <option value="@(x)" selected="@selected">@(x)</option>
                                                 }
                                             </select>
                                         </div>
@@ -120,7 +121,8 @@
                                             <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hours">
                                                 @for (int x = 1; x < 24; x++)
                                                 {
-                                                    <option value="@(x)">@(x)</option>
+                                                    var selected = String.IsNullOrEmpty(Model.ScheduledJob.Hours) ? false : Model.ScheduledJob.Hours.Split(",".ToCharArray()).Contains(x.ToString());
+                                                    <option value="@(x)" selected="@selected">@(x)</option>
                                                 }
                                             </select>
                                         </div>
@@ -133,7 +135,8 @@
                                             <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-minutes">
                                                 @for (int x = 1; x < 60; x++)
                                                 {
-                                                    <option value="@(x)">@(x)</option>
+                                                    var selected = String.IsNullOrEmpty(Model.ScheduledJob.Minutes) ? false : Model.ScheduledJob.Minutes.Split(",".ToCharArray()).Contains(x.ToString());
+                                                    <option value="@(x)" selected="@selected">@(x)</option>
                                                 }
                                             </select>
                                         </div>
@@ -144,13 +147,14 @@
                                         <div class="form-group">
                                             <label>Days of Week</label>
                                             <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-daysofweek">
-                                                <option>Monday</option>
-                                                <option>Tuesday</option>
-                                                <option>Wednesday</option>
-                                                <option>Thursday</option>
-                                                <option>Friday</option>
-                                                <option>Saturday</option>
-                                                <option>Sunday</option>
+                                                @{
+                                                    var daysOfWeekList = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+                                                }
+                                                @foreach(string dayOfWeek in daysOfWeekList)
+                                                {
+                                                    var selected = String.IsNullOrEmpty(Model.ScheduledJob.DaysOfWeek) ? false : Model.ScheduledJob.DaysOfWeek.Split(",".ToCharArray()).Contains(dayOfWeek);
+                                                    <option value="@(dayOfWeek)" selected="@selected">@(dayOfWeek)</option>
+                                                }
                                             </select>
                                         </div>
                                     </div>

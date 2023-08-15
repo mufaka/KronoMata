@@ -233,6 +233,7 @@ namespace KronoMata.Data.Mock
                 IsEnabled = true,
                 InsertDate = now,
                 UpdateDate = now,
+                Days = "5,23,28",
                 DaysOfWeek = "Monday,Wednesday,Friday",
                 Hours = "2,12,23",
                 Minutes = "15,30,45"
