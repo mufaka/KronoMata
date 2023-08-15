@@ -1,5 +1,6 @@
-using KronoMata.Data;
+using FluentValidation;
 using KronoMata.Data.Mock;
+using KronoMata.Model.Validation;
 
 namespace KronoMata.Web
 {
@@ -11,7 +12,8 @@ namespace KronoMata.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSingleton<IDataStoreProvider>(MockDatabase.Instance.DataStoreProvider);
+            builder.Services.AddSingleton(MockDatabase.Instance.DataStoreProvider);
+            builder.Services.AddValidatorsFromAssemblyContaining<ScheduledJobValidator>();
 
             var app = builder.Build();
 

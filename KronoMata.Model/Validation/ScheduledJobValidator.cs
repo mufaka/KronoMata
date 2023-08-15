@@ -8,8 +8,7 @@ namespace KronoMata.Model.Validation
         {
             RuleFor(v => v.PluginMetaDataId).GreaterThan(0);
             RuleFor(v => v.Name).NotEmpty();
-            RuleFor(v => v.Description).NotEmpty();
-            RuleFor(v => v.Frequency).NotEmpty();
+            // RuleFor(v => v.Description).NotEmpty(); Allow empty here
             RuleFor(v => v.Interval).GreaterThan(0);
             AddDaysRule();
             AddDaysOfWeekRule();
@@ -50,7 +49,7 @@ namespace KronoMata.Model.Validation
                 }
                 catch (Exception ex)
                 {
-                    context.AddFailure("Unable to parse Days.");
+                    context.AddFailure($"Unable to parse Days. {ex.Message}");
                 }
             });
         }
@@ -86,7 +85,7 @@ namespace KronoMata.Model.Validation
                 }
                 catch (Exception ex)
                 {
-                    context.AddFailure("Unable to parse Hours.");
+                    context.AddFailure($"Unable to parse Hours. {ex.Message}");
                 }
             });
         }
@@ -122,7 +121,7 @@ namespace KronoMata.Model.Validation
                 }
                 catch (Exception ex)
                 {
-                    context.AddFailure("Unable to parse Minutes.");
+                    context.AddFailure($"Unable to parse Minutes. {ex.Message}");
                 }
             });
         }

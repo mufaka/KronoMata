@@ -1,4 +1,5 @@
-﻿using KronoMata.Data;
+﻿using FluentValidation;
+using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,13 +9,15 @@ namespace KronoMata.Web.Controllers
     public class ScheduledJobController : BaseController
     {
         private readonly ILogger<ScheduledJobController> _logger;
+        private readonly IValidator _scheduledJobValidator;
 
         public ScheduledJobController(ILogger<ScheduledJobController> logger, IDataStoreProvider dataStoreProvider,
-            IConfiguration configuration)
+            IConfiguration configuration, IValidator<ScheduledJob> scheduledJobValidator)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;
             Configuration = configuration;
+            _scheduledJobValidator = scheduledJobValidator;
         }
 
         public IActionResult Index()
@@ -163,6 +166,7 @@ namespace KronoMata.Web.Controllers
         [HttpPost]
         public ActionResult Update(ScheduledJob scheduledJob)
         {
+
             var model = new ScheduledJobSaveViewModel()
             {
 
@@ -180,6 +184,8 @@ namespace KronoMata.Web.Controllers
                 {
                     scheduledJob.InsertDate = existing.InsertDate;
                     scheduledJob.UpdateDate = DateTime.Now;
+
+                    var validationResult = _scheduledJobValidator.Validate(new ValidationContext<ScheduledJob>(scheduledJob));
 
                     if (scheduledJob.HostId <= 0)
                     {
