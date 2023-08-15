@@ -179,6 +179,11 @@ namespace KronoMata.Web.Controllers
                     scheduledJob.InsertDate = existing.InsertDate;
                     scheduledJob.UpdateDate = DateTime.Now;
 
+                    if (scheduledJob.HostId <= 0)
+                    {
+                        scheduledJob.HostId = null;
+                    }
+
                     DataStoreProvider.ScheduledJobDataStore.Update(scheduledJob);
                 }
                 else

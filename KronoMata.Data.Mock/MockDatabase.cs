@@ -100,7 +100,9 @@ namespace KronoMata.Data.Mock
                 runTime = runTime.AddMinutes(random.Next(30)).AddSeconds(random.Next(30));
                 var runTime2 = runTime.AddMinutes(random.Next(30)).AddSeconds(random.Next(30));
 
-                foreach (ScheduledJob job in DataStoreProvider.ScheduledJobDataStore.GetAll())
+                var jobs = DataStoreProvider.ScheduledJobDataStore.GetAll();
+
+                foreach (ScheduledJob job in jobs)
                 {
                     counter++;
 
