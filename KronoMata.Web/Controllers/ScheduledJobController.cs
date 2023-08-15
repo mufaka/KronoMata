@@ -163,12 +163,14 @@ namespace KronoMata.Web.Controllers
         [HttpPost]
         public ActionResult Update(ScheduledJob scheduledJob)
         {
-            var model = new ScheduledJobSaveViewModel();
+            var model = new ScheduledJobSaveViewModel()
+            {
 
-            model.ViewName = "Scheduled Job Update";
+                ViewName = "Scheduled Job Update",
 #pragma warning disable CS8601 // Possible null reference assignment.
-            model.ActionUrl = Url.Action("Update", "ScheduledJob");
+                ActionUrl = Url.Action("Update", "ScheduledJob")
 #pragma warning restore CS8601 // Possible null reference assignment.
+            };
 
             try
             {
