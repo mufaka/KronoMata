@@ -24,6 +24,14 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea class="form-control" rows="1" name="scheduledjob-description">@Model.ScheduledJob.Description</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
                                             <label>Host</label>
                                             <select class="form-control" name="scheduledjob-hostId">
                                                 @foreach (var host in Model.Hosts)

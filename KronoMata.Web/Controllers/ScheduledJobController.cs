@@ -100,7 +100,7 @@ namespace KronoMata.Web.Controllers
             {
                 ViewName = "Scheduled Job Create",
 #pragma warning disable CS8601 // Possible null reference assignment.
-                ActionUrl = Url.Action("Create", "ScheduledJob")
+                ActionUrl = Url.Action("CreateJob", "ScheduledJob")
 #pragma warning restore CS8601 // Possible null reference assignment.
             };
 
@@ -118,9 +118,10 @@ namespace KronoMata.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(ScheduledJobSaveViewModel model)
+        public ActionResult CreateJob(ScheduledJob scheduledJob)
         {
+            var model = new ScheduledJobSaveViewModel();
+
             model.ViewName = "Scheduled Job Create";
 #pragma warning disable CS8601 // Possible null reference assignment.
             model.ActionUrl = Url.Action("Create", "ScheduledJob");
@@ -128,6 +129,11 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                scheduledJob.InsertDate = DateTime.Now;
+                scheduledJob.UpdateDate = scheduledJob.InsertDate;
+
+                DataStoreProvider.ScheduledJobDataStore.Create(scheduledJob);
+
                 PopulateCommonProperties(model, false);
             }
             catch (Exception ex)
