@@ -17,6 +17,11 @@ body {
     font-size: .9rem !important;
 }
 
+/* tempusdominus togglePeriod font-size too big */
+.bootstrap-datetimepicker-widget .btn[data-action=togglePeriod] {
+    font-size: .8rem !important;
+}
+
 /* reduce padding */
 .content-header {
     padding: 5.0px 0.2rem !important;

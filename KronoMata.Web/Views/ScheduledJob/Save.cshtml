@@ -61,7 +61,12 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Start Date / Time</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.StartTime" name="scheduledjob-startTime">
+                                            <div class="input-group date" id="schedule-start-time" data-target-input="nearest">
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#schedule-start-time" value="@Model.ScheduledJob.StartTime" name="scheduledjob-startTime">
+                                                <div class="input-group-append" data-target="#schedule-start-time" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -69,7 +74,12 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>End Date / Time</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endTime">
+                                            <div class="input-group date" id="schedule-end-time" data-target-input="nearest">
+                                                <input type="text" class="form-control" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endTime">
+                                                <div class="input-group-append" data-target="#schedule-end-time" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -183,16 +193,28 @@
 @section styles {
     <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="~/plugins/tempusdominus/css/tempusdominus-bootstrap-4.min.css">
 }
 
 @section scripts {
     <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
             $('.select2bs4').select2({
                 theme: 'bootstrap4'
             })
+
+            $('#schedule-start-time').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
+            $('#schedule-end-time').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
+
+            // second datetime picker not automatically closing ...
+            $("body").click(function () {
+                var container = $('.bootstrap-datetimepicker-widget');
+                container.parent().datetimepicker('hide');
+            });
         });
 
         function submitForm() {
