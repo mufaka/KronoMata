@@ -232,7 +232,10 @@ namespace KronoMata.Data.Mock
                 Interval = 1,
                 IsEnabled = true,
                 InsertDate = now,
-                UpdateDate = now
+                UpdateDate = now,
+                DaysOfWeek = "Monday,Wednesday,Friday",
+                Hours = "2,12,23",
+                Minutes = "15,30,45"
             };
 
             _dataProvider.ScheduledJobDataStore.Create(scheduledJob);

@@ -104,7 +104,12 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Days</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Days" name="scheduledjob-days">
+                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-days">
+                                                @for(int x = 1; x < 32; x++)
+                                                {
+                                                    <option value="@(x)">@(x)</option>
+                                                }
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +117,12 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Hours</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Hours" name="scheduledjob-hours">
+                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hours">
+                                                @for (int x = 1; x < 24; x++)
+                                                {
+                                                    <option value="@(x)">@(x)</option>
+                                                }
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -120,7 +130,12 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Minutes</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Minutes" name="scheduledjob-minutes">
+                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-minutes">
+                                                @for (int x = 1; x < 60; x++)
+                                                {
+                                                    <option value="@(x)">@(x)</option>
+                                                }
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -128,7 +143,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Days of Week</label>
-                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%">
+                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-daysofweek">
                                                 <option>Monday</option>
                                                 <option>Tuesday</option>
                                                 <option>Wednesday</option>
