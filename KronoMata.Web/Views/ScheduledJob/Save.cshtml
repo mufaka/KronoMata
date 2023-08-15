@@ -112,7 +112,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Days</label>
-                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-days">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-days">
                                                 @for(int x = 1; x < 32; x++)
                                                 {
                                                     var selected = String.IsNullOrEmpty(Model.ScheduledJob.Days) ? false : Model.ScheduledJob.Days.Split(",".ToCharArray()).Contains(x.ToString());
@@ -126,7 +126,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Hours</label>
-                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hours">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hours">
                                                 @for (int x = 1; x < 24; x++)
                                                 {
                                                     var selected = String.IsNullOrEmpty(Model.ScheduledJob.Hours) ? false : Model.ScheduledJob.Hours.Split(",".ToCharArray()).Contains(x.ToString());
@@ -140,7 +140,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Minutes</label>
-                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-minutes">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-minutes">
                                                 @for (int x = 1; x < 60; x++)
                                                 {
                                                     var selected = String.IsNullOrEmpty(Model.ScheduledJob.Minutes) ? false : Model.ScheduledJob.Minutes.Split(",".ToCharArray()).Contains(x.ToString());
@@ -154,7 +154,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Days of Week</label>
-                                            <select class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-daysOfWeek">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-daysOfWeek">
                                                 @{
                                                     var daysOfWeekList = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
                                                 }
