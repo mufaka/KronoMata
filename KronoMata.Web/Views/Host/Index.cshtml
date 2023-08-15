@@ -188,6 +188,10 @@
             populateJobHistory(hostId);
         }
 
+        function redirectToUpdate(id) {
+            location.href = '@Url.Action("Update", "ScheduledJob")/' + id;
+        }
+
         function populateScheduledJobs(jobs) {
             $("#scheduled-job-grid").jsGrid({
                 height: "200px",
@@ -197,6 +201,10 @@
                 paging: false,
 
                 data: jobs,
+
+                rowClick: function (args) {
+                    redirectToUpdate(args.item.id);
+                },
 
                 fields: [
                     { name: "name", title: "Name", type: "text"},
@@ -217,7 +225,7 @@
                     },
                     { name: "interval", title: "Interval", type: "text"},
                     { name: "days", title: "Days", type: "text"},
-                    { name: "dayOfWeeks", title: "Days of Week", type: "text"},
+                    { name: "daysOfWeek", title: "Days of Week", type: "text"},
                     { name: "hours", title: "Hours", type: "text"},
                     { name: "minutes", title: "Minutes", type: "text"},
                 ]

@@ -43,7 +43,7 @@
                                                 @foreach (var plugin in Model.Plugins)
                                                 {
                                                     var selected = Model.ScheduledJob.PluginMetaDataId == plugin.Id;
-                                                    <option value="@plugin.Id" selected="@selected">@plugin.Name</option>
+                                                    <option value="@plugin.Id" selected="@selected">@plugin.Name @plugin.Version</option>
                                                 }
                                             </select>
                                         </div>
