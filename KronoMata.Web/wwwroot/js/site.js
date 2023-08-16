@@ -71,3 +71,20 @@ function PostData(url, data, success, error) {
         error: error
     });
 }
+
+// errorList is a Json serialized list of NotificationMessage
+function showValidationErrors(errorList, controlPrefix) {
+    for (let i = 0; i < errorList.length; i++) {
+        let validationError = errorList[i];
+        let controlId = '#' + controlPrefix + camelCaseString(validationError.Detail);
+        let element = $(controlId);
+        element.addClass('is-invalid');
+
+        //alert(validationError.Detail + ': ' + validationError.Message);
+    }
+}
+
+function camelCaseString(string) {
+    return string.charAt(0).toLowerCase() + string.slice(1);
+}
+

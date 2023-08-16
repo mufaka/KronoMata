@@ -17,7 +17,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Name</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Name" name="scheduledjob-name">
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Name" name="scheduledjob-name" id="scheduledjob-name">
                                         </div>
                                     </div>
                                 </div>
@@ -25,7 +25,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Description</label>
-                                            <textarea class="form-control" rows="1" name="scheduledjob-description">@Model.ScheduledJob.Description</textarea>
+                                            <textarea class="form-control" rows="1" name="scheduledjob-description" id="scheduledjob-description">@Model.ScheduledJob.Description</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -33,7 +33,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Host</label>
-                                            <select class="form-control" name="scheduledjob-hostId">
+                                            <select class="form-control" name="scheduledjob-hostId" id="scheduledjob-hostId">
                                                 @foreach (var host in Model.Hosts)
                                                 {
                                                     var selected = Model.ScheduledJob.HostId == host.Id;
@@ -47,7 +47,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Plugin</label>
-                                            <select class="form-control" name="scheduledjob-pluginMetaDataId">
+                                            <select class="form-control" name="scheduledjob-pluginMetaDataId" id="scheduledjob-pluginMetaDataId">
                                                 @foreach (var plugin in Model.Plugins)
                                                 {
                                                     var selected = Model.ScheduledJob.PluginMetaDataId == plugin.Id;
@@ -62,7 +62,7 @@
                                         <div class="form-group">
                                             <label>Start Date / Time</label>
                                             <div class="input-group date" id="schedule-start-time" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#schedule-start-time" value="@Model.ScheduledJob.StartTime" name="scheduledjob-startTime">
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#schedule-start-time" value="@Model.ScheduledJob.StartTime" name="scheduledjob-startTime" id="scheduledjob-startTime">
                                                 <div class="input-group-append" data-target="#schedule-start-time" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -75,7 +75,7 @@
                                         <div class="form-group">
                                             <label>End Date / Time</label>
                                             <div class="input-group date" id="schedule-end-time" data-target-input="nearest">
-                                                <input type="text" class="form-control datetimepicker-input" data-target="#schedule-end-time" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endTime">
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#schedule-end-time" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endTime" id="scheduledjob-endTime">
                                                 <div class="input-group-append" data-target="#schedule-end-time" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -89,7 +89,7 @@
                                             @{
                                                 var isChecked = Model.ScheduledJob.IsEnabled;
                                             }
-                                            <input type="checkbox" class="form-check-input" id="scheduledjob-enabled" name="scheduledjob-isEnabled" checked="@isChecked">
+                                            <input type="checkbox" class="form-check-input" id="scheduledjob-enabled" name="scheduledjob-isEnabled" id="scheduledjob-isEnabled" checked="@isChecked">
                                             <label class="form-check-label" for="scheduledjob-isEnabled">Is Enabled?</label>
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Frequency</label>
-                                            <select class="form-control" name="scheduledjob-frequency">
+                                            <select class="form-control" name="scheduledjob-frequency" id="scheduledjob-frequency">
                                                 @foreach (var frequency in Model.Frequencies)
                                                 {
                                                     var selected = (int)Model.ScheduledJob.Frequency == frequency.Value;
@@ -114,7 +114,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Interval</label>
-                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Interval" name="scheduledjob-interval">
+                                            <input type="text" class="form-control" value="@Model.ScheduledJob.Interval" name="scheduledjob-interval" id="scheduledjob-interval">
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Days</label>
-                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-days">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-days" id="scheduledjob-days">
                                                 @for(int x = 1; x < 32; x++)
                                                 {
                                                     var selected = String.IsNullOrEmpty(Model.ScheduledJob.Days) ? false : Model.ScheduledJob.Days.Split(",".ToCharArray()).Contains(x.ToString());
@@ -136,7 +136,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Hours</label>
-                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hours">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hours" id="scheduledjob-hours">
                                                 @for (int x = 1; x < 24; x++)
                                                 {
                                                     var selected = String.IsNullOrEmpty(Model.ScheduledJob.Hours) ? false : Model.ScheduledJob.Hours.Split(",".ToCharArray()).Contains(x.ToString());
@@ -150,7 +150,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Minutes</label>
-                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-minutes">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-minutes" id="scheduledjob-minutes">
                                                 @for (int x = 1; x < 60; x++)
                                                 {
                                                     var selected = String.IsNullOrEmpty(Model.ScheduledJob.Minutes) ? false : Model.ScheduledJob.Minutes.Split(",".ToCharArray()).Contains(x.ToString());
@@ -164,7 +164,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Days of Week</label>
-                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-daysOfWeek">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-daysOfWeek" id="scheduledjob-daysOfWeek">
                                                 @{
                                                     var daysOfWeekList = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
                                                 }
@@ -235,17 +235,11 @@
             // TODO: need error handler that will bubble up validation errors.
             PostData(actionUrl, data, 
                 success = function () {
-                location.href = '@Url.Action("Index", "ScheduledJob")';
+                    location.href = '@Url.Action("Index", "ScheduledJob")';
                 },                
                 error = function (req) {
                     if (req.status == '422') {
-
-                        let errorList = JSON.parse(req.responseText);
-                        
-                        for (let i = 0; i < errorList.length; i++) {
-                            let validationError = errorList[i];
-                            alert(validationError.Detail + ': ' + validationError.Message);
-                        }
+                        showValidationErrors(JSON.parse(req.responseText), 'scheduledjob-');
                     }
                 }
             );
