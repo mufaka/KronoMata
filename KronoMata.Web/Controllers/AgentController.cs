@@ -35,7 +35,32 @@ namespace KronoMata.Web.Controllers
 
                 if (host != null)
                 {
-                    jobs = DataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id).Where(h => h.IsEnabled).ToList();
+                    if (host.IsEnabled)
+                    {
+                        jobs = DataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id).Where(h => h.IsEnabled).ToList();
+                    }
+                    else
+                    {
+                        // host is not enabled, return empty job list.
+                        return jobs;
+                    }
+                } 
+                else
+                {
+                    var now = DateTime.Now;
+
+                    var newHost = new Model.Host()
+                    {
+                        MachineName = name,
+                        IsEnabled = false,
+                        InsertDate = now,
+                        UpdateDate = now
+                    };
+
+                    DataStoreProvider.HostDataStore.Create(newHost);
+
+                    // new host is not enabled, return empty job list.
+                    return jobs;
                 }
             }
             catch (Exception ex)
