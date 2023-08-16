@@ -72,15 +72,30 @@ function PostData(url, data, success, error) {
     });
 }
 
+function clearValidationErrors() {
+    $('[class*=" is-invalid"]').each(function () {
+        $(this).removeClass('is-invalid');
+    });
+
+    $('.invalid-feedback').each(function () {
+        $(this).remove();
+    });
+}
+
 // errorList is a Json serialized list of NotificationMessage
 function showValidationErrors(errorList, controlPrefix) {
+    clearValidationErrors();
+
     for (let i = 0; i < errorList.length; i++) {
         let validationError = errorList[i];
-        let controlId = '#' + controlPrefix + camelCaseString(validationError.Detail);
-        let element = $(controlId);
+        let controlId = controlPrefix + camelCaseString(validationError.Detail);
+        let element = $('#' + controlId);
+
         element.addClass('is-invalid');
 
-        //alert(validationError.Detail + ': ' + validationError.Message);
+        let errorMessageHtml = '<span id="' + controlId + '-error" class="error invalid-feedback">' + validationError.Message + '</span>';
+
+        element.closest('.form-group').append(errorMessageHtml);
     }
 }
 

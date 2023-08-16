@@ -22,6 +22,11 @@ body {
     font-size: .8rem !important;
 }
 
+/* validation messages use subsequent sibling but with datetimepicker, the element is not next to the validation message*/
+.invalid-feedback {
+    display: block !important;
+}
+
 /* reduce padding */
 .content-header {
     padding: 5.0px 0.2rem !important;

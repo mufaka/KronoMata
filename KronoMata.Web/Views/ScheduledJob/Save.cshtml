@@ -232,7 +232,6 @@
             
             var actionUrl = $(".scheduledjob-form").attr("action");
 
-            // TODO: need error handler that will bubble up validation errors.
             PostData(actionUrl, data, 
                 success = function () {
                     location.href = '@Url.Action("Index", "ScheduledJob")';
