@@ -136,14 +136,23 @@ namespace KronoMata.Web.Controllers
                 scheduledJob.InsertDate = DateTime.Now;
                 scheduledJob.UpdateDate = scheduledJob.InsertDate;
 
-                DataStoreProvider.ScheduledJobDataStore.Create(scheduledJob);
+                var validationResult = _scheduledJobValidator.Validate(new ValidationContext<ScheduledJob>(scheduledJob));
 
-                PopulateCommonProperties(model, false);
+                if (!validationResult.IsValid)
+                {
+                    return GetValidationErrorResponse(validationResult);
+                }
+                else
+                {
+                    DataStoreProvider.ScheduledJobDataStore.Create(scheduledJob);
+                }
             }
             catch (Exception ex)
             {
                 LogException(model, ex);
                 _logger.LogError(ex, "Error loading data for View {viewname}", model.ViewName);
+                PopulateCommonProperties(model, false);
+                model.ScheduledJob = scheduledJob;
                 return View("Save", model);
             }
 
@@ -216,14 +225,15 @@ namespace KronoMata.Web.Controllers
                     _logger.LogError("Unable to get ScheduledJob with Id {id}", scheduledJob.Id);
                     return new ObjectResult($"Unable to get ScheduledJob with Id {scheduledJob.Id}") { StatusCode = 500 };
                 }
-
-                PopulateCommonProperties(model, true);
-                model.ScheduledJob = scheduledJob;
             }
             catch (Exception ex)
             {
                 LogException(model, ex);
                 _logger.LogError(ex, "Error loading data for View {viewname}", model.ViewName);
+
+                PopulateCommonProperties(model, true);
+                model.ScheduledJob = scheduledJob;
+
                 return View("Save", model);
             }
 
