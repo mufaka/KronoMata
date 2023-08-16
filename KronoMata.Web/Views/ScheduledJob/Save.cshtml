@@ -239,7 +239,13 @@
                 },                
                 error = function (req) {
                     if (req.status == '422') {
-                        alert('Got validation error. ' + req.responseText);
+
+                        let errorList = JSON.parse(req.responseText);
+                        
+                        for (let i = 0; i < errorList.length; i++) {
+                            let validationError = errorList[i];
+                            alert(validationError.Detail + ': ' + validationError.Message);
+                        }
                     }
                 }
             );

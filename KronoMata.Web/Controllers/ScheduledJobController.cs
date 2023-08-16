@@ -195,27 +195,11 @@ namespace KronoMata.Web.Controllers
                     scheduledJob.InsertDate = existing.InsertDate;
                     scheduledJob.UpdateDate = DateTime.Now;
 
-                    // TODO: need to return an error result with a json package describing the errors ... field name and message
                     var validationResult = _scheduledJobValidator.Validate(new ValidationContext<ScheduledJob>(scheduledJob));
 
-                    // TODO: make this generic and add to base controller
                     if (!validationResult.IsValid)
                     {
-                        foreach (ValidationFailure validationFailure in validationResult.Errors)
-                        {
-                            model.Messages.Add(new NotificationMessage()
-                            {
-                                MessageType = NotificationMessageType.Error,
-                                Message = validationFailure.ErrorMessage,
-                                Detail = validationFailure.PropertyName
-                            });
-                        }
-
-                        var validationJson = JsonSerializer.Serialize(model.Messages);
-
-                        // status code 422 is 'Unprocessable Entity'. Caller should expect response message to be validation errors.
-                        // TODO: Is there a max length for the status code message?
-                        return new ObjectResult(validationJson) { StatusCode = 422 };
+                        return GetValidationErrorResponse(validationResult);
                     }
                     else
                     {
@@ -245,6 +229,5 @@ namespace KronoMata.Web.Controllers
 
             return RedirectToAction("Index");
         }
-
     }
 }

@@ -14,6 +14,7 @@ namespace KronoMata.Model.Validation
             AddDaysOfWeekRule();
             AddHoursRule();
             AddMinutesRule();
+            RuleFor(v => v.StartTime).NotEmpty();
             RuleFor(v => v.InsertDate).NotEmpty();
             RuleFor(v => v.UpdateDate).NotEmpty();
         }
