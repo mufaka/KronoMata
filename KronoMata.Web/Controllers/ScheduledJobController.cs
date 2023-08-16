@@ -1,8 +1,11 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace KronoMata.Web.Controllers
 {
@@ -120,12 +123,13 @@ namespace KronoMata.Web.Controllers
         [HttpPost]
         public ActionResult CreateJob(ScheduledJob scheduledJob)
         {
-            var model = new ScheduledJobSaveViewModel();
-
-            model.ViewName = "Scheduled Job Create";
+            var model = new ScheduledJobSaveViewModel()
+            {
+                ViewName = "Scheduled Job Create",
 #pragma warning disable CS8601 // Possible null reference assignment.
-            model.ActionUrl = Url.Action("Create", "ScheduledJob");
+                ActionUrl = Url.Action("Create", "ScheduledJob")
 #pragma warning restore CS8601 // Possible null reference assignment.
+            };
 
             try
             {
@@ -191,14 +195,37 @@ namespace KronoMata.Web.Controllers
                     scheduledJob.InsertDate = existing.InsertDate;
                     scheduledJob.UpdateDate = DateTime.Now;
 
+                    // TODO: need to return an error result with a json package describing the errors ... field name and message
                     var validationResult = _scheduledJobValidator.Validate(new ValidationContext<ScheduledJob>(scheduledJob));
 
-                    if (scheduledJob.HostId <= 0)
+                    // TODO: make this generic and add to base controller
+                    if (!validationResult.IsValid)
                     {
-                        scheduledJob.HostId = null;
-                    }
+                        foreach (ValidationFailure validationFailure in validationResult.Errors)
+                        {
+                            model.Messages.Add(new NotificationMessage()
+                            {
+                                MessageType = NotificationMessageType.Error,
+                                Message = validationFailure.ErrorMessage,
+                                Detail = validationFailure.PropertyName
+                            });
+                        }
 
-                    DataStoreProvider.ScheduledJobDataStore.Update(scheduledJob);
+                        var validationJson = JsonSerializer.Serialize(model.Messages);
+
+                        // status code 422 is 'Unprocessable Entity'. Caller should expect response message to be validation errors.
+                        // TODO: Is there a max length for the status code message?
+                        return new ObjectResult(validationJson) { StatusCode = 422 };
+                    }
+                    else
+                    {
+                        if (scheduledJob.HostId <= 0)
+                        {
+                            scheduledJob.HostId = null;
+                        }
+
+                        DataStoreProvider.ScheduledJobDataStore.Update(scheduledJob);
+                    }
                 }
                 else
                 {

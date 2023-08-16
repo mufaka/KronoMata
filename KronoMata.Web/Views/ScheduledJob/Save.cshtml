@@ -231,9 +231,18 @@
             }); 
             
             var actionUrl = $(".scheduledjob-form").attr("action");
-            PostData(actionUrl, data, success = function () {
+
+            // TODO: need error handler that will bubble up validation errors.
+            PostData(actionUrl, data, 
+                success = function () {
                 location.href = '@Url.Action("Index", "ScheduledJob")';
-            });
+                },                
+                error = function (req) {
+                    if (req.status == '422') {
+                        alert('Got validation error. ' + req.responseText);
+                    }
+                }
+            );
         }
     </script>
 }
