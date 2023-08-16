@@ -75,7 +75,7 @@
                                         <div class="form-group">
                                             <label>End Date / Time</label>
                                             <div class="input-group date" id="schedule-end-time" data-target-input="nearest">
-                                                <input type="text" class="form-control" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endTime">
+                                                <input type="text" class="form-control datetimepicker-input" data-target="#schedule-end-time" value="@Model.ScheduledJob.EndTime" name="scheduledjob-endTime">
                                                 <div class="input-group-append" data-target="#schedule-end-time" data-toggle="datetimepicker">
                                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                 </div>
@@ -209,12 +209,6 @@
 
             $('#schedule-start-time').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
             $('#schedule-end-time').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
-
-            // second datetime picker not automatically closing ...
-            $("body").click(function () {
-                var container = $('.bootstrap-datetimepicker-widget');
-                container.parent().datetimepicker('hide');
-            });
         });
 
         function submitForm() {
