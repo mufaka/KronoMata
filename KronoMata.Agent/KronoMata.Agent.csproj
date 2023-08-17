@@ -15,6 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KronoMata.Model\KronoMata.Model.csproj" />
+    <ProjectReference Include="..\KronoMata.Public\KronoMata.Public.csproj" />
+    <ProjectReference Include="..\KronoMata.Scheduling\KronoMata.Scheduling.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

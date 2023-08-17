@@ -1,6 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using KronoMata.Model;
+using KronoMata.Public;
+using KronoMata.Scheduling;
+using McMaster.NETCore.Plugins;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.IO.Compression;
+using System.Text.RegularExpressions;
 
 namespace KronoMata.Agent
 {
@@ -8,12 +14,14 @@ namespace KronoMata.Agent
     {
         private readonly ILogger<PluginRunner> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IShouldRun _shouldRun;
         private readonly PeriodicTimer _periodicTimer = new(TimeSpan.FromMinutes(1));
 
-        public PluginRunner(ILogger<PluginRunner> logger, IConfiguration configuration)
+        public PluginRunner(ILogger<PluginRunner> logger, IConfiguration configuration, IShouldRun shouldRun)
         {
             _logger = logger;
             _configuration = configuration;
+            _shouldRun = shouldRun;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -37,14 +45,241 @@ namespace KronoMata.Agent
                 while (await _periodicTimer.WaitForNextTickAsync(cancellationToken)
                 && !cancellationToken.IsCancellationRequested)
                 {
-                    //CheckForJobs();
-                    _logger.LogInformation("{time} Agent checking for jobs.", DateTime.Now.ToString("O"));
+                    _logger.LogDebug("{time} Agent checking for jobs.", DateTime.Now.ToString("O"));
+
+                    try
+                    {
+                        CheckForJobs();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Unexpected error checking for jobs. {ex.Message}", ex.Message);
+                    }
                 }
             }
             catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected errror executing agent. {ex.Message", ex.Message);
+            }
+        }
+
+        private void CheckForJobs()
+        {
+            var apiClient = new ApiClient(_configuration);
+            var machineName = Environment.MachineName;
+
+            _logger.LogDebug("Checking API for scheduled jobs");
+            var scheduledJobs = apiClient.GetScheduledJobs(machineName);
+
+            if (scheduledJobs.Count == 0)
+            {
+                _logger.LogWarning("There are no scheduled jobs defined for {machineName}", machineName);
+            }
+            else
+            {
+                // TODO: The PackageRoot should be configurable.
+                var pluginArchiveRoot = $"PackageRoot{Path.DirectorySeparatorChar}";
+                var host = apiClient.GetHost(machineName);
+
+                _logger.LogDebug("{scheduledJobs.Count} jobs are defined for this Host.", scheduledJobs.Count);
+
+                if (host != null)
+                {
+                    Parallel.ForEach(scheduledJobs, scheduledJob =>
+                    {
+                        if (_shouldRun.ShouldRun(DateTime.Now, scheduledJob))
+                        {
+                            ExecutePlugin(apiClient, pluginArchiveRoot, scheduledJob, host);
+                        }
+                    });
+                }
+                else
+                {
+                    _logger.LogWarning("Unable to get Host for {machineName}. No jobs will be run.", machineName);
+                }
+            }
+        }
+
+        private void ExecutePlugin(ApiClient apiClient, string pluginArchiveRoot, ScheduledJob scheduledJob,
+            Model.Host host)
+        {
+            var pluginMetaData = apiClient.GetPluginMetaData(scheduledJob.PluginMetaDataId);
+            var package = apiClient.GetPackage(pluginMetaData.PackageId);
+            var packageFolder = $"{pluginArchiveRoot}{GetPluginFolderName(pluginMetaData)}";
+            var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
+
+            // create and extract plugin to package folder
+            CreatePackageFolder(packageFolder, packageArchivePath);
+
+            // the work above should result in this folder now being available
+            if (!Directory.Exists(packageFolder))
+            {
+                _logger.LogWarning("Unable to find package folder at {packageFolder}", packageFolder);
+                // TODO: Save a JobHistory with a skipped status.
+            }
+            else
+            {
+                // Map configuration values.
+                var systemConfiguration = GetSystemConfiguration(apiClient);
+                var pluginConfiguration = GetScheduledJobConfiguration(apiClient, scheduledJob, pluginMetaData);
+
+                // Dynamically load plugin. Assembly file must match <AssemblyName>.dll
+                var assemblyPath = Path.GetFullPath($"{packageFolder}{Path.DirectorySeparatorChar}{pluginMetaData.AssemblyName}.dll");
+
+                if (!File.Exists(assemblyPath))
+                {
+                    _logger.LogWarning("Assembly file not found at {assemblyPath}", assemblyPath);
+                    // TODO: Save a JobHistory with a skipped status.
+                }
+                else
+                {
+                    // McMaster.NETCore.Plugins handles sharing of types nicely.
+                    // In .NET Framework you could just do (IPlugin)Assembly.LoadFrom(path).CreateInstance(class name)
+                    // but in .NET Core the created instance wasn't assignable to IPlugin
+                    var pluginLoader = PluginLoader.CreateFromAssemblyFile(
+                        assemblyFile: assemblyPath,
+                        sharedTypes: new[] { typeof(IPlugin) },
+                        isUnloadable: true);
+
+                    _logger.LogDebug("Loading assembly {assemblyPath}", assemblyPath);
+                    var assembly = pluginLoader.LoadDefaultAssembly();
+
+                    if (assembly != null)
+                    {
+                        _logger.LogDebug("Creating an instance of {pluginMetaData.ClassName}", pluginMetaData.ClassName);
+
+                        if (assembly.CreateInstance(pluginMetaData.ClassName) is IPlugin plugin)
+                        {
+                            var runTime = DateTime.Now;
+
+                            _logger.LogDebug("Executing plugin {pluginMetaData.ClassName}", pluginMetaData.ClassName);
+
+                            var results = plugin.Execute(systemConfiguration, pluginConfiguration);
+                            var completionTime = DateTime.Now;
+
+                            foreach (var result in results)
+                            {
+                                var history = new JobHistory()
+                                {
+                                    ScheduledJobId = scheduledJob.Id,
+                                    HostId = host.Id, // scheduledJob.HostId can be null with run everywhere jobs
+                                    Status = result.IsError ? ScheduledJobStatus.Failure : ScheduledJobStatus.Success,
+                                    Message = result.Message,
+                                    Detail = result.Detail,
+                                    RunTime = runTime,
+                                    CompletionTime = completionTime
+                                };
+
+                                apiClient.SaveJobHistory(history);
+                            }
+
+                            if (plugin is IDisposable disposable)
+                            {
+                                disposable.Dispose();
+                            }
+
+                            // should we call Dispose directly? This unloads the loaded assemblies
+                            pluginLoader.Dispose();
+
+                            var now = DateTime.Now;
+
+                            foreach (var result in results)
+                            {
+                                _logger.LogInformation("{now.ToShortDateString()} {now.ToShortTimeString()} IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}",
+                                    now.ToShortDateString(), now.ToShortTimeString(), result.IsError, result.Message, result.Detail);
+                            }
+                        }
+                        else
+                        {
+                            _logger.LogError("Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}", pluginMetaData.ClassName, assemblyPath);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogError("Unable to load assembly from {assemblyPath}", assemblyPath);
+                    }
+                }
+            }
+        }
+
+        private static Dictionary<string, string> GetSystemConfiguration(ApiClient apiClient)
+        {
+            var globalConfigurationList = apiClient.GetGlobalConfigurations();
+            var systemConfiguration = new Dictionary<string, string>();
+
+            foreach (GlobalConfiguration globalConfiguration in globalConfigurationList)
+            {
+                if (globalConfiguration.IsAccessibleToPlugins)
+                {
+                    if (!systemConfiguration.ContainsKey(globalConfiguration.Name))
+                    {
+                        systemConfiguration.Add(globalConfiguration.Name, globalConfiguration.Value);
+                    }
+                }
+            }
+
+            return systemConfiguration;
+        }
+
+        private static Dictionary<string, string> GetScheduledJobConfiguration(ApiClient apiClient,
+            ScheduledJob scheduledJob, PluginMetaData pluginMetaData)
+        {
+            var pluginConfiguration = new Dictionary<string, string>();
+            var pluginConfigurationList = apiClient.GetPluginConfigurations(pluginMetaData.Id);
+            var scheduledJobConfigurationList = apiClient.GetConfigurationValues(scheduledJob.Id);
+
+            foreach (PluginConfiguration configuration in pluginConfigurationList)
+            {
+                if (!pluginConfiguration.ContainsKey(configuration.Name))
+                {
+                    var configurationValue = scheduledJobConfigurationList.Where(c => c.PluginConfigurationId == configuration.Id).FirstOrDefault();
+
+                    if (configurationValue != null)
+                    {
+                        pluginConfiguration.Add(configuration.Name, configurationValue.Value);
+                    }
+                }
+            }
+
+            return pluginConfiguration;
+        }
+
+        private static string GetPluginFolderName(PluginMetaData metaData)
+        {
+            // NOTE: Not too worried about Regex performance here as it
+            // NOTE: isn't in a hot spot.
+
+            // only allow [0-9a-zA-Z-.] characters in the filename as they
+            // are safe on 'all' platforms (Windows, Mac, *nix)
+
+            // replace invalid characters with spaces
+            var folderName = Regex.Replace($"{metaData.Name}_{metaData.Version}", @"[^0-9a-zA-Z-.]", " ");
+
+            // replace multiple spaces with a single space
+            folderName = Regex.Replace(folderName, "[ ]{2,}", " ");
+
+            // replace single spaces with _
+            folderName = Regex.Replace(folderName, "[ ]", "_");
+
+            return folderName;
+        }
+
+        private void CreatePackageFolder(string packageFolder, string packageArchivePath)
+        {
+            if (!Directory.Exists(packageFolder))
+            {
+                if (!File.Exists(packageArchivePath))
+                {
+                    // TODO: attempt to fetch zip file from API.
+                    _logger.LogWarning("Could not find package path at {packageArchivePath}", packageArchivePath);
+                }
+                else
+                {
+                    // need to extract archive to packageFolder
+                    _logger.LogInformation("Found package archive at {packageArchivePath}. Unzipping to {packageFolder}", packageArchivePath, packageFolder);
+                    ZipFile.ExtractToDirectory(packageArchivePath, packageFolder);
+                }
             }
         }
     }

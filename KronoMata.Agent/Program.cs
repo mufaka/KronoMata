@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using KronoMata.Scheduling;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -33,6 +34,7 @@ namespace KronoMata.Agent
                         });
                         services.AddSingleton(configuration);
                         services.AddSingleton<IHostedService, PluginRunner>();
+                        services.AddScoped<IShouldRun, RecurrenceShouldRun>();
                     })
                     .UseConsoleLifetime()
                     .Build();
