@@ -84,7 +84,8 @@ namespace KronoMata.Agent
                     throw new ArgumentNullException("PackageRoot is not defined in appsettings.json [KronoMata:PackageRoot]");
                 }
 
-                var pluginArchiveRoot = $"PackageRoot{Path.DirectorySeparatorChar}";
+                if (!packageRoot.EndsWith(Path.DirectorySeparatorChar.ToString())) packageRoot += Path.DirectorySeparatorChar;
+                
                 var host = apiClient.GetHost(machineName);
 
                 _logger.LogDebug("{scheduledJobs.Count} jobs are defined for this Host.", scheduledJobs.Count);
@@ -99,7 +100,7 @@ namespace KronoMata.Agent
                             var results = new List<PluginResult>();
                             try
                             {
-                                results.AddRange(ExecutePlugin(apiClient, pluginArchiveRoot, scheduledJob));
+                                results.AddRange(ExecutePlugin(apiClient, packageRoot, scheduledJob));
                             } 
                             catch (Exception ex)
                             {
