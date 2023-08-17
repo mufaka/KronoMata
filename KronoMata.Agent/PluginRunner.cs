@@ -90,14 +90,26 @@ namespace KronoMata.Agent
                     {
                         if (_shouldRun.ShouldRun(DateTime.Now, scheduledJob))
                         {
+                            var runTime = DateTime.Now;
+                            var results = new List<PluginResult>();
                             try
                             {
-                                ExecutePlugin(apiClient, pluginArchiveRoot, scheduledJob, host);
+                                results.AddRange(ExecutePlugin(apiClient, pluginArchiveRoot, scheduledJob));
                             } 
                             catch (Exception ex)
                             {
                                 _logger.LogError(ex, "Unexpected error executing plugin. {ex.Message}", ex.Message);
+
+                                results.Add(new PluginResult()
+                                {
+                                    IsError = true,
+                                    Message = ex.Message,
+                                    Detail = ex.ToString()
+                                });
                             }
+
+                            var completionTime = DateTime.Now;
+                            SavePluginResults(apiClient, runTime, completionTime, host, scheduledJob, results);
                         }
                     });
                 }
@@ -108,9 +120,61 @@ namespace KronoMata.Agent
             }
         }
 
-        private void ExecutePlugin(ApiClient apiClient, string pluginArchiveRoot, ScheduledJob scheduledJob,
-            Model.Host host)
+        private void SavePluginResults(ApiClient apiClient, DateTime runTime, DateTime completionTime, 
+            Model.Host host, ScheduledJob scheduledJob, List<PluginResult> results)
         {
+            foreach (var result in results)
+            {
+                try
+                {
+                    var history = new JobHistory()
+                    {
+                        ScheduledJobId = scheduledJob.Id,
+                        HostId = host.Id,
+                        Status = result.IsError ? ScheduledJobStatus.Failure : ScheduledJobStatus.Success,
+                        Message = result.Message,
+                        Detail = result.Detail,
+                        RunTime = runTime,
+                        CompletionTime = completionTime
+                    };
+
+                    apiClient.SaveJobHistory(history);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex, "Unable to save job history. {ex.Message}", ex.Message);
+                }
+            }
+        }
+
+        private void SaveSkippedJobHistory(ApiClient apiClient, DateTime runTime, DateTime completionTime, 
+            int hostId, int scheduledJobId, string message, string detail)
+        {
+            try
+            {
+                var history = new JobHistory()
+                {
+                    ScheduledJobId = scheduledJobId,
+                    HostId = hostId,
+                    Status = ScheduledJobStatus.Skipped,
+                    Message = message,
+                    Detail = detail,
+                    RunTime = runTime,
+                    CompletionTime = completionTime
+                };
+
+                apiClient.SaveJobHistory(history);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Unable to save job history. {ex.Message}", ex.Message);
+            }
+        }
+
+        private List<PluginResult> ExecutePlugin(ApiClient apiClient, string pluginArchiveRoot, ScheduledJob scheduledJob)
+        {
+            var pluginResults = new List<PluginResult>();
+
             var pluginMetaData = apiClient.GetPluginMetaData(scheduledJob.PluginMetaDataId);
             if (pluginMetaData == null)
             {
@@ -134,8 +198,8 @@ namespace KronoMata.Agent
             // the work above should result in this folder now being available
             if (!Directory.Exists(packageFolder))
             {
-                _logger.LogWarning("Unable to find package folder at {packageFolder}", packageFolder);
-                // TODO: Save a JobHistory with a skipped status.
+                _logger.LogCritical("Unable to find package folder at {packageFolder}", packageFolder);
+                throw new ApplicationException("Unable to find package folder.");
             }
             else
             {
@@ -148,8 +212,8 @@ namespace KronoMata.Agent
 
                 if (!File.Exists(assemblyPath))
                 {
-                    _logger.LogWarning("Assembly file not found at {assemblyPath}", assemblyPath);
-                    // TODO: Save a JobHistory with a skipped status.
+                    _logger.LogCritical("Assembly file not found at {assemblyPath}", assemblyPath);
+                    throw new ApplicationException("Assembly file not found.");
                 }
                 else
                 {
@@ -175,23 +239,7 @@ namespace KronoMata.Agent
                             _logger.LogDebug("Executing plugin {pluginMetaData.ClassName}", pluginMetaData.ClassName);
 
                             var results = plugin.Execute(systemConfiguration, pluginConfiguration);
-                            var completionTime = DateTime.Now;
-
-                            foreach (var result in results)
-                            {
-                                var history = new JobHistory()
-                                {
-                                    ScheduledJobId = scheduledJob.Id,
-                                    HostId = host.Id, // scheduledJob.HostId can be null with run everywhere jobs
-                                    Status = result.IsError ? ScheduledJobStatus.Failure : ScheduledJobStatus.Success,
-                                    Message = result.Message,
-                                    Detail = result.Detail,
-                                    RunTime = runTime,
-                                    CompletionTime = completionTime
-                                };
-
-                                apiClient.SaveJobHistory(history);
-                            }
+                            pluginResults.AddRange(results);
 
                             if (plugin is IDisposable disposable)
                             {
@@ -200,26 +248,32 @@ namespace KronoMata.Agent
 
                             // should we call Dispose directly? This unloads the loaded assemblies
                             pluginLoader.Dispose();
-
-                            var now = DateTime.Now;
-
-                            foreach (var result in results)
-                            {
-                                _logger.LogInformation("{now.ToShortDateString()} {now.ToShortTimeString()} IsError: {result.IsError}, Message: {result.Message}, Detail: {result.Detail}",
-                                    now.ToShortDateString(), now.ToShortTimeString(), result.IsError, result.Message, result.Detail);
-                            }
                         }
                         else
                         {
                             _logger.LogError("Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}", pluginMetaData.ClassName, assemblyPath);
+                            pluginResults.Add(new PluginResult()
+                            {
+                                IsError = true,
+                                Message = "Unable to create an instance of Plugin",
+                                Detail = $"Unable to create an instance of {pluginMetaData.ClassName} from {assemblyPath}"
+                            });
                         }
                     }
                     else
                     {
                         _logger.LogError("Unable to load assembly from {assemblyPath}", assemblyPath);
+                        pluginResults.Add(new PluginResult()
+                        {
+                            IsError = true,
+                            Message = "Unable to load plugin assembly.",
+                            Detail = $"Unable to load assembly from {assemblyPath}"
+                        });
                     }
                 }
             }
+
+            return pluginResults;
         }
 
         private static Dictionary<string, string> GetSystemConfiguration(ApiClient apiClient)
