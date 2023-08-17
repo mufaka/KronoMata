@@ -45,8 +45,6 @@ namespace KronoMata.Agent
                 while (await _periodicTimer.WaitForNextTickAsync(cancellationToken)
                 && !cancellationToken.IsCancellationRequested)
                 {
-                    _logger.LogDebug("Agent checking for jobs.");
-
                     try
                     {
                         CheckForJobs();
