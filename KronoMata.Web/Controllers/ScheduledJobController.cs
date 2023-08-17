@@ -239,5 +239,57 @@ namespace KronoMata.Web.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public ActionResult Configure(int id)
+        {
+            var model = new ConfigureScheduledJobViewModel();
+            model.ViewName = "Scheduled Job Configuration";
+
+            try
+            {
+                model.ScheduledJob = DataStoreProvider.ScheduledJobDataStore.GetById(id);
+
+                if (model.ScheduledJob == null)
+                {
+                    model.ScheduledJob = new ScheduledJob() { Name = "Invalid Scheduled Job" };
+                    throw new ArgumentException($"Invalid Scheduled Job ID [{id}] provided.");
+                }
+                else
+                {
+                    model.PluginConfigurations = DataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(model.ScheduledJob.PluginMetaDataId);
+
+                    var existingConfigurationValues = DataStoreProvider.ConfigurationValueDataStore.GetByScheduledJob(id);
+                    var configurationValues = new List<ConfigurationValue>();
+
+                    if (model.PluginConfigurations.Count > 0)
+                    {
+                        foreach (PluginConfiguration pluginConfiguration in model.PluginConfigurations)
+                        {
+                            var existingConfigurationValue = existingConfigurationValues.Where(c => c.PluginConfigurationId == pluginConfiguration.Id).FirstOrDefault();
+
+                            if (existingConfigurationValue == null)
+                            {
+                                existingConfigurationValue = new ConfigurationValue();
+                                existingConfigurationValue.ScheduledJobId = id;
+                                existingConfigurationValue.PluginConfigurationId = pluginConfiguration.Id;
+                                existingConfigurationValue.InsertDate = DateTime.Now;
+                                existingConfigurationValue.UpdateDate = existingConfigurationValue.InsertDate;
+                            }
+
+                            configurationValues.Add(existingConfigurationValue);
+                        }
+                    }
+
+                    model.ConfigurationValues = configurationValues;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(model, ex);
+                _logger.LogError(ex, "Error loading data for View {viewname}", model.ViewName);
+            }
+
+            return View(model);
+        }
     }
 }

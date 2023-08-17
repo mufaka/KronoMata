@@ -183,6 +183,10 @@
                 </div>
                 <div class="card-footer">
                     <input type="button" onclick="submitForm();" class="btn btn-secondary" value="Save" />
+                    @if(Model.ScheduledJob.Id > 0)
+                    {
+                        <input type="button" onclick="redirectToConfigure(@Model.ScheduledJob.Id);" class="btn btn-secondary" value="Configure" />
+                    }
                     <input type="button" onclick="history.back();" class="btn btn-secondary" value="Cancel" />
                 </div>
             </div>
@@ -210,6 +214,10 @@
             $('#schedule-start-time').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
             $('#schedule-end-time').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
         });
+
+        function redirectToConfigure(scheduledJobId) {
+            location.href = '@Url.Action("Configure", "ScheduledJob")/' + scheduledJobId;
+        }
 
         function submitForm() {
             var data = {};
