@@ -1,8 +1,7 @@
 ﻿using KronoMata.Data;
 using KronoMata.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using System.Xml.Linq;
 
 namespace KronoMata.Web.Controllers
 {
@@ -39,11 +38,6 @@ namespace KronoMata.Web.Controllers
                     {
                         jobs = DataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id).Where(h => h.IsEnabled).ToList();
                     }
-                    else
-                    {
-                        // host is not enabled, return empty job list.
-                        return jobs;
-                    }
                 } 
                 else
                 {
@@ -58,14 +52,11 @@ namespace KronoMata.Web.Controllers
                     };
 
                     DataStoreProvider.HostDataStore.Create(newHost);
-
-                    // new host is not enabled, return empty job list.
-                    return jobs;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting host by name {name}", name);
+                _logger.LogError(ex, "Error getting jobs by host name {name}", name);
             }
 
             return jobs;
@@ -84,6 +75,123 @@ namespace KronoMata.Web.Controllers
             }
 
             return history;
+        }
+
+        [HttpGet("host/{name}")]
+        public List<Model.Host> GetHost(string name)
+        {
+            var list = new List<Model.Host>();
+
+            try
+            {
+                var host = DataStoreProvider.HostDataStore.GetByMachineName(name);
+
+                if (host != null)
+                {
+                    list.Add(host);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting host by name {name}", name);
+            }
+
+            return list;
+        }
+
+        [HttpGet("plugin/{id}")]
+        public List<PluginMetaData> GetPluginMetaData(int id)
+        {
+            var list = new List<PluginMetaData>();
+
+            try
+            {
+                var plugin = DataStoreProvider.PluginMetaDataDataStore.GetById(id);
+
+                if (plugin != null)
+                {
+                    list.Add(plugin);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting plugin by id {id}", id);
+            }
+
+            return list;
+        }
+
+        [HttpGet("package/{id}")]
+        public List<Package> GetPackage(int id)
+        {
+            var list = new List<Package>();
+
+            try
+            {
+                var package = DataStoreProvider.PackageDataStore.GetById(id);
+
+                if (package != null)
+                {
+                    list.Add(package);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting package by id {id}", id);
+            }
+
+            return list;
+        }
+
+        [HttpGet("globalconfig")]
+        public List<GlobalConfiguration> GetGlobalConfigurations()
+        {
+            var list = new List<GlobalConfiguration>();
+
+            try
+            {
+                list = DataStoreProvider.GlobalConfigurationDataStore.GetAll().Where(c => c.IsAccessibleToPlugins).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting global configuration");
+            }
+
+            return list;
+        }
+
+        [HttpGet("pluginconfig/{pluginMetaDataId}")]
+        public List<PluginConfiguration> GetPluginConfigurations(int pluginMetaDataId)
+        {
+            var list = new List<PluginConfiguration>();
+
+            try
+            {
+                list = DataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(pluginMetaDataId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting plugin configuration");
+            }
+
+            return list;
+        }
+
+        [HttpGet("configvalue/{scheduledJobId}")]
+        public List<ConfigurationValue> GetConfigurationValues(int scheduledJobId)
+        {
+            var list = new List<ConfigurationValue>();
+
+            try
+            {
+                list = DataStoreProvider.ConfigurationValueDataStore.GetByScheduledJob(scheduledJobId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting configuration values for scheduled job id {scheduledJobId}.", scheduledJobId);
+            }
+
+            return list;
         }
     }
 }

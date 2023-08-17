@@ -90,7 +90,14 @@ namespace KronoMata.Agent
                     {
                         if (_shouldRun.ShouldRun(DateTime.Now, scheduledJob))
                         {
-                            ExecutePlugin(apiClient, pluginArchiveRoot, scheduledJob, host);
+                            try
+                            {
+                                ExecutePlugin(apiClient, pluginArchiveRoot, scheduledJob, host);
+                            } 
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(ex, "Unexpected error executing plugin. {ex.Message}", ex.Message);
+                            }
                         }
                     });
                 }
@@ -105,7 +112,19 @@ namespace KronoMata.Agent
             Model.Host host)
         {
             var pluginMetaData = apiClient.GetPluginMetaData(scheduledJob.PluginMetaDataId);
+            if (pluginMetaData == null)
+            {
+                _logger.LogCritical("Unable to get PluginMetaData with id {scheduledJob.PluginMetaDataID} from API.", scheduledJob.PluginMetaDataId);
+                throw new ApplicationException("Plugin not found.");
+            }
+
             var package = apiClient.GetPackage(pluginMetaData.PackageId);
+            if (package == null)
+            {
+                _logger.LogCritical("Unable to get Package with id {pluginMetaData.PackageId} from API.", pluginMetaData.PackageId);
+                throw new ApplicationException("Package not found.");
+            }
+
             var packageFolder = $"{pluginArchiveRoot}{GetPluginFolderName(pluginMetaData)}";
             var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
 

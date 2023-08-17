@@ -14,39 +14,47 @@ namespace KronoMata.Agent
             _configuration = configuration;
         }
 
-        // TODO: Begin methods that need implemented
-
-        public Model.Host GetHost(string machineName)
+        public Model.Host? GetHost(string machineName)
         {
-            return new Model.Host();
+            var endPoint = $"Agent/host/{machineName}";
+            var hosts = Get<Host>(endPoint);
+
+            return hosts.Count == 0 ? null : hosts[0];
         }
 
-        public PluginMetaData GetPluginMetaData(int id)
+        public PluginMetaData? GetPluginMetaData(int id)
         {
-            return new PluginMetaData();
+            var endPoint = $"Agent/plugin/{id}";
+            var plugins = Get<PluginMetaData>(endPoint);
+
+            return plugins.Count == 0 ? null : plugins[0];
         }
 
-        public Package GetPackage(int id)
+        public Package? GetPackage(int id)
         {
-            return new Package();
+            var endPoint = $"Agent/package/{id}";
+            var packages = Get<Package>(endPoint);
+
+            return packages.Count == 0 ? null : packages[0];
         }
 
         public List<GlobalConfiguration> GetGlobalConfigurations()
         {
-            return new List<GlobalConfiguration>();
+            var endPoint = "Agent/globalconfig";
+            return Get<GlobalConfiguration>(endPoint);
         }
 
         public List<PluginConfiguration> GetPluginConfigurations(int pluginMetaDataId)
         {
-            return new List<PluginConfiguration>();
+            var endPoint = $"Agent/pluginconfig/{pluginMetaDataId}";
+            return Get<PluginConfiguration>(endPoint);
         }
 
         public List<ConfigurationValue> GetConfigurationValues(int scheduledJobId)
         {
-            return new List<ConfigurationValue>();
+            var endPoint = $"Agent/configvalue/{scheduledJobId}";
+            return Get<ConfigurationValue>(endPoint);
         }
-
-        // TODO: End methods that need implemented
 
         public List<ScheduledJob> GetScheduledJobs(string machineName)
         {
