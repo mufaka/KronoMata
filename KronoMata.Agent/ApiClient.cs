@@ -72,22 +72,14 @@ namespace KronoMata.Agent
         {
             get
             {
-                var configurationRoot = _configuration.GetSection("KronoMata");
+                var rootUrl = _configuration["KronoMata:APIRoot"];
 
-                if (configurationRoot != null)
+                if (String.IsNullOrEmpty(rootUrl))
                 {
-                    var apiRoot = configurationRoot.GetSection("APIRoot");
-
-                    if (apiRoot != null)
-                    {
-                        if (!String.IsNullOrEmpty(apiRoot.Value))
-                        {
-                            return apiRoot.Value;
-                        }
-                    }
+                    throw new ArgumentNullException("APIRoot is not defined in appsettings.json [KronoMata:APIRoot]");
                 }
 
-                throw new ArgumentNullException("APIRoot is not defined in appsettings.json [KronoMata:APIRoot]");
+                return rootUrl;
             }
         }
 

@@ -78,7 +78,14 @@ namespace KronoMata.Agent
             }
             else
             {
-                // TODO: The PackageRoot should be configurable.
+
+                var packageRoot = _configuration["KronoMata:PackageRoot"];
+
+                if (String.IsNullOrEmpty(packageRoot))
+                {
+                    throw new ArgumentNullException("PackageRoot is not defined in appsettings.json [KronoMata:PackageRoot]");
+                }
+
                 var pluginArchiveRoot = $"PackageRoot{Path.DirectorySeparatorChar}";
                 var host = apiClient.GetHost(machineName);
 
@@ -110,6 +117,10 @@ namespace KronoMata.Agent
 
                             var completionTime = DateTime.Now;
                             SavePluginResults(apiClient, runTime, completionTime, host, scheduledJob, results);
+                        }
+                        else
+                        {
+                            _logger.LogDebug("Scheduled Job {scheduledJob.Name} shouldn't be run at this time.", scheduledJob.Name);
                         }
                     });
                 }

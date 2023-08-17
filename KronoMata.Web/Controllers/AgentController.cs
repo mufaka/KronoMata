@@ -28,6 +28,8 @@ namespace KronoMata.Web.Controllers
         {
             var jobs = new List<ScheduledJob>();
 
+            _logger.LogDebug("API getting host by name {name}", name);
+
             try
             {
                 var host = DataStoreProvider.HostDataStore.GetByMachineName(name);
@@ -41,6 +43,8 @@ namespace KronoMata.Web.Controllers
                 } 
                 else
                 {
+                    _logger.LogDebug("API creating host by name {name}", name);
+
                     var now = DateTime.Now;
 
                     var newHost = new Model.Host()
@@ -67,6 +71,7 @@ namespace KronoMata.Web.Controllers
         {
             try
             {
+                _logger.LogDebug("API saving Job History");
                 DataStoreProvider.JobHistoryDataStore.Create(history);
             }
             catch (Exception ex)
@@ -84,6 +89,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                _logger.LogDebug("API getting host by name {name}", name);
                 var host = DataStoreProvider.HostDataStore.GetByMachineName(name);
 
                 if (host != null)
@@ -106,6 +112,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                _logger.LogDebug("API getting plugin with id {id}", id);
                 var plugin = DataStoreProvider.PluginMetaDataDataStore.GetById(id);
 
                 if (plugin != null)
@@ -128,6 +135,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                _logger.LogDebug("API getting package with id {id}", id);
                 var package = DataStoreProvider.PackageDataStore.GetById(id);
 
                 if (package != null)
@@ -150,6 +158,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                _logger.LogDebug("API getting global configuration");
                 list = DataStoreProvider.GlobalConfigurationDataStore.GetAll().Where(c => c.IsAccessibleToPlugins).ToList();
             }
             catch (Exception ex)
@@ -167,6 +176,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                _logger.LogDebug("API getting plugin configuration for plugin id {pluginMetaDataId}", pluginMetaDataId);
                 list = DataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(pluginMetaDataId);
             }
             catch (Exception ex)
@@ -184,6 +194,7 @@ namespace KronoMata.Web.Controllers
 
             try
             {
+                _logger.LogDebug("API getting configuration values for scheduled job id {scheduledJobId}", scheduledJobId);
                 list = DataStoreProvider.ConfigurationValueDataStore.GetByScheduledJob(scheduledJobId);
             }
             catch (Exception ex)

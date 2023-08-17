@@ -48,8 +48,13 @@ namespace KronoMata.Web.Controllers
         {
             try
             {
-                var packageRoot = Configuration.GetValue<string>("PackageRoot");
+                var packageRoot = Configuration["KronoMata:PackageRoot"];
                 
+                if (String.IsNullOrEmpty(packageRoot))
+                {
+                    throw new ArgumentNullException("PackageRoot is not defined in appsettings.json [KronoMata:PackageRoot]");
+                }
+
                 if (!Directory.Exists(packageRoot))
                 {
                     Directory.CreateDirectory(packageRoot);
