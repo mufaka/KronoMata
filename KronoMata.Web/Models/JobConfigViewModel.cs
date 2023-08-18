@@ -20,5 +20,20 @@ namespace KronoMata.Web.Models
                 return $"config-{PluginConfiguration.Id}-{ConfigurationValue.Id}";
             }
         }
+
+        public List<string> SelectValues
+        {
+            get
+            {
+                var list = new List<string>();
+
+                if (!string.IsNullOrEmpty(PluginConfiguration.SelectValues))
+                {
+                    list.AddRange(PluginConfiguration.SelectValues.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
+                }
+
+                return list;
+            }
+        }
     }
 }

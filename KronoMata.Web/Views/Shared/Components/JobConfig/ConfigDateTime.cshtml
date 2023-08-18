@@ -14,16 +14,15 @@
                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                 </div>
             </div>
+            <i>@Model.PluginConfiguration.Description</i>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    let initFunction = () => {
-        $('#@groupId').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
-    };
-
     if (initFunctions) {
-        initFunctions.push(initFunction);
+        initFunctions.push(() => {
+            $('#@groupId').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
+        });
     }
 </script>
