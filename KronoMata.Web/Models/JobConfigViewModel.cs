@@ -12,5 +12,13 @@ namespace KronoMata.Web.Models
 
         public PluginConfiguration PluginConfiguration { get; set; }
         public ConfigurationValue ConfigurationValue { get; set; }
+
+        public string ControlId
+        {
+            get
+            {
+                return $"config-{PluginConfiguration.Id}-{ConfigurationValue.Id}";
+            }
+        }
     }
 }

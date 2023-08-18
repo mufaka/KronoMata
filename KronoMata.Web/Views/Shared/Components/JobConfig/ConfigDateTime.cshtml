@@ -1,5 +1,29 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model KronoMata.Web.Models.JobConfigViewModel
+
 @{
+    var groupId = $"datetime-{Model.PluginConfiguration.Id}";
 }
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>@Model.PluginConfiguration.Name</label>
+            <div class="input-group date" id="@groupId" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" data-target="#@groupId" value="@Model.ConfigurationValue.Value" name="@Model.ControlId" id="@Model.ControlId">
+                <div class="input-group-append" data-target="#@groupId" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    let initFunction = () => {
+        $('#@groupId').datetimepicker({ icons: { time: 'far fa-clock' }, sideBySide: true });
+    };
+
+    if (initFunctions) {
+        initFunctions.push(initFunction);
+    }
+</script>

@@ -6,7 +6,7 @@
             @{
                 var isChecked = Model.ConfigurationValue.Value == "True";
             }
-            <input type="checkbox" class="form-check-input" name="config-@Model.ConfigurationValue.Id" id="config-@Model.ConfigurationValue.Id" checked="@isChecked">
+            <input type="checkbox" class="form-check-input" name="@Model.ControlId" id="@Model.ControlId" checked="@isChecked">
             <label for="scheduledjob-isEnabled">@Model.PluginConfiguration.Name</label>
             <br /><i>@Model.PluginConfiguration.Description</i>
         </div>

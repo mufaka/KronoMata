@@ -1,5 +1,9 @@
 ﻿@model KronoMata.Web.Models.ConfigureScheduledJobViewModel
 
+<script type="text/javascript">
+    var initFunctions = [];
+</script>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -35,3 +39,23 @@
         </div>
     </div>
 </div>
+
+@section styles {
+    <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="~/plugins/tempusdominus/css/tempusdominus-bootstrap-4.min.css">
+}
+
+@section scripts {
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            initFunctions.forEach((initFunction) => {
+                initFunction.call();
+            });
+        });
+    </script>
+}
