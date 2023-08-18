@@ -1,0 +1,10 @@
+﻿@model KronoMata.Web.Models.JobConfigViewModel 
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>@Model.PluginConfiguration.Name</label>
+            <input type="text" class="form-control" value="@Model.ConfigurationValue.Value" name="config-@Model.ConfigurationValue.Id" id="config-@Model.ConfigurationValue.Id">
+        </div>
+    </div>
+</div>

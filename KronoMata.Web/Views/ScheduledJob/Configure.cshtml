@@ -8,6 +8,17 @@
                     <h3 class="card-title">@Model.ScheduledJob.Name Configuration</h3>
                 </div>
                 <div class="card-body">
+                    <form action="" method="post" class="scheduledjob-form">
+                        <input type="hidden" name="scheduledjob-id" value="@Model.ScheduledJob.Id" />
+
+                        @for (int x = 0; x < Model.ConfigurationValues.Count; x++)
+                        {
+                            var pluginConfiguration = Model.PluginConfigurations[x];
+                            var configurationValue = Model.ConfigurationValues[x];
+
+                            @await Component.InvokeAsync("JobConfig", new { configurationValue = configurationValue })
+                        }
+                    </form>
                 </div>
                 <div class="card-footer">
                     @if (Model.ScheduledJob.Id > 0)
