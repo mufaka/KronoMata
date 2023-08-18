@@ -25,6 +25,9 @@ namespace KronoMata.Data.Mock
             PluginMetaData plugin = CreatePlugin(now, package);
             PluginConfiguration pluginConfiguration1 = CreatePluginConfiguration1(now, plugin);
             PluginConfiguration pluginConfiguration2 = CreatePluginConfiguration2(now, plugin);
+
+            CreateOptionalPluginConfigurations(now, plugin);
+
             Host host1 = CreateHost(now, Environment.MachineName);
             Host host2 = CreateHost(now, "APP_SERVER_02");
 
@@ -218,6 +221,34 @@ namespace KronoMata.Data.Mock
 
             _dataProvider.PluginConfigurationDataStore.Create(pluginConfiguration2);
             return pluginConfiguration2;
+        }
+
+        private void CreateOptionalPluginConfigurations(DateTime now, PluginMetaData plugin)
+        {
+            // cover all additional data types.
+            foreach (Public.ConfigurationDataType dataType in Enum.GetValues(typeof(Public.ConfigurationDataType)))
+            {
+                var pluginConfiguration = new PluginConfiguration
+                {
+                    PluginMetaDataId = plugin.Id,
+                    DataType = dataType,
+                    Name = $"Sample {dataType}",
+                    Description = $"A sample {dataType} to use for configuration testing.",
+                    IsRequired = false,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                switch (dataType)
+                {
+                    case Public.ConfigurationDataType.Select:
+                    case Public.ConfigurationDataType.SelectMultiple:
+                        pluginConfiguration.SelectValues = "<Choose>,One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten";
+                        break;
+                }
+
+                _dataProvider.PluginConfigurationDataStore.Create(pluginConfiguration);
+            }
         }
 
         private ScheduledJob CreateScheduledJob(DateTime now, PluginMetaData plugin, Host host, string name)

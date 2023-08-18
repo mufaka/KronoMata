@@ -48,10 +48,13 @@ namespace KronoMata.Web.ViewComponents
                 case Public.ConfigurationDataType.Text:
                     view = "ConfigTextArea";
                     break;
+                case Public.ConfigurationDataType.Select:
+                    view = "ConfigSelect";
+                    break;
+                case Public.ConfigurationDataType.SelectMultiple:
+                    view = "ConfigSelectMultiple";
+                    break;
             }
-
-            // TODO: Remove this, just testing.
-            view = "ConfigCheckBox";
 
             return View(view, model);
         }
