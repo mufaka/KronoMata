@@ -241,8 +241,14 @@
             var actionUrl = $(".scheduledjob-form").attr("action");
 
             PostData(actionUrl, data, 
-                success = function () {
-                    location.href = '@Url.Action("Index", "ScheduledJob")';
+                success = function (response) {
+
+                    if (response.redirect === 'configure') {
+                        location.href = '@Url.Action("Configure", "ScheduledJob")/' + response.id;
+                    }
+                    else {
+                        location.href = '@Url.Action("Index", "ScheduledJob")';
+                    }
                 },                
                 error = function (req) {
                     if (req.status == '422') {

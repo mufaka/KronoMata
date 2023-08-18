@@ -145,6 +145,17 @@ namespace KronoMata.Web.Controllers
                 else
                 {
                     DataStoreProvider.ScheduledJobDataStore.Create(scheduledJob);
+
+                    // redirect to configure if the plugin has configuration defined.
+                    var pluginConfigurations = DataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(scheduledJob.PluginMetaDataId);
+
+                    var redirect = pluginConfigurations.Count > 0 ? "configure" : "index";
+                    var response = new
+                    {
+                        redirect,
+                        id = scheduledJob.Id
+                    };
+                    return new ObjectResult(response) { StatusCode = 200 };
                 }
             }
             catch (Exception ex)
@@ -155,8 +166,6 @@ namespace KronoMata.Web.Controllers
                 model.ScheduledJob = scheduledJob;
                 return View("Save", model);
             }
-
-            return RedirectToAction("Index");
         }
 
         public ActionResult Update(int id)
