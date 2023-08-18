@@ -28,5 +28,11 @@
         /// a ScheduledJob.
         /// </summary>
         public bool IsRequired { get; set; }
+
+        /// <summary>
+        /// A comma separated list of allowed values. Used for validation
+        /// and for select lists.
+        /// </summary>
+        public string AllowedValues { get; set; } = String.Empty;
     }
 }

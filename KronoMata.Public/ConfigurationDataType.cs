@@ -17,6 +17,8 @@
         DateTime,
         Password,
         Text,
-        Boolean
+        Boolean,
+        Select,
+        SelectMultiple
     }
 }
