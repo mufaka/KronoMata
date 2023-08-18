@@ -9,7 +9,7 @@ namespace KronoMata.Samples
 
         public string Name { get { return "Echo Plugin"; } }
         public string Version { get { return "1.0";  } }
-        public string Description { get { return "A plugin that echos configured text."; } }
+        public string Description { get { return "A plugin that echoes configured text."; } }
 
         public List<PluginParameter> Parameters
         {

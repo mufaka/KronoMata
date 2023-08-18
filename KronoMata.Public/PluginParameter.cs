@@ -30,9 +30,9 @@
         public bool IsRequired { get; set; }
 
         /// <summary>
-        /// A comma separated list of allowed values. Used for validation
-        /// and for select lists.
+        /// A comma separated list of allowed values. Used to populate
+        /// DataType.Select and DataType.SelectMultiple values
         /// </summary>
-        public string AllowedValues { get; set; } = String.Empty;
+        public string SelectValues { get; set; } = String.Empty;
     }
 }
