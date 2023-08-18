@@ -2,13 +2,17 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <div class="form-check">
+        <div class="form-check m-0">
             @{
                 var isChecked = Model.ConfigurationValue.Value == "True";
             }
             <input type="checkbox" class="form-check-input" name="@Model.ControlId" id="@Model.ControlId" checked="@isChecked">
             <label for="scheduledjob-isEnabled">@Model.PluginConfiguration.Name</label>
-            <br /><i>@Model.PluginConfiguration.Description</i>
         </div>
+    </div>
+</div>
+<div class="row" style="margin-bottom: 1rem !important;">
+    <div class="col-sm-12">
+        <i>@Model.PluginConfiguration.Description</i>
     </div>
 </div>

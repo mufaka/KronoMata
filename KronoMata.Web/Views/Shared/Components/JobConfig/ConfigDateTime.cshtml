@@ -5,8 +5,12 @@
 }
 
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-6">
         <div class="form-group">
+            @if (Model.PluginConfiguration.IsRequired)
+            {
+                <i class="fa fa-asterisk"></i>
+            }
             <label>@Model.PluginConfiguration.Name</label>
             <div class="input-group date" id="@groupId" data-target-input="nearest">
                 <input type="text" class="form-control datetimepicker-input" data-target="#@groupId" value="@Model.ConfigurationValue.Value" name="@Model.ControlId" id="@Model.ControlId">

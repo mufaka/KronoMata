@@ -3,6 +3,10 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="form-group">
+            @if (Model.PluginConfiguration.IsRequired)
+            {
+                <i class="fa fa-asterisk"></i>
+            }
             <label>@Model.PluginConfiguration.Name</label>
             <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="@Model.ControlId" id="@Model.ControlId">
                 @foreach (var selectVal in Model.SelectValues)

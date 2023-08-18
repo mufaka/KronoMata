@@ -234,7 +234,7 @@ namespace KronoMata.Data.Mock
                     DataType = dataType,
                     Name = $"Sample {dataType}",
                     Description = $"A sample {dataType} to use for configuration testing.",
-                    IsRequired = false,
+                    IsRequired = true,
                     InsertDate = now,
                     UpdateDate = now
                 };
