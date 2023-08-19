@@ -8,6 +8,7 @@
                 <i class="fa fa-asterisk"></i>
             }
             <label>@Model.PluginConfiguration.Name</label>
+            <input type="hidden" name="@Model.ControlId" value="_empty_" />
             <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="@Model.ControlId" id="@Model.ControlId">
                 @foreach (var selectVal in Model.SelectValues)
                 {

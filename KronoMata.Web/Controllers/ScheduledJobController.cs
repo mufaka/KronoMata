@@ -311,6 +311,7 @@ namespace KronoMata.Web.Controllers
             {
                 var now = DateTime.Now;
                 var validConfigurationValues = new List<ConfigurationValue>();
+                var scheduledJob = DataStoreProvider.ScheduledJobDataStore.GetById(saveModel.ScheduledJobId);
 
                 foreach (var pluginConfigValue in saveModel.PluginConfigValues)
                 {
@@ -320,6 +321,13 @@ namespace KronoMata.Web.Controllers
                     var existingConfigurationValue = validConfigurationValues
                         .Where(c => c.PluginConfigurationId == pluginConfigValue.PluginConfigurationId)
                         .FirstOrDefault();
+
+                    // ignore "_empty_" values for Multi-Select
+                    if (pluginConfiguration.DataType == Public.ConfigurationDataType.SelectMultiple
+                        && pluginConfigValue.Value == "_empty_")
+                    {
+                        pluginConfigValue.Value = String.Empty;
+                    }
 
                     if (existingConfigurationValue == null)
                     {
@@ -356,6 +364,11 @@ namespace KronoMata.Web.Controllers
                         if (!validConfigurationValues.Exists(c => c.PluginConfigurationId == existingConfigurationValue.PluginConfigurationId))
                         {
                             validConfigurationValues.Add(existingConfigurationValue);
+
+                            // in the case of Multi-Select, _empty_ will always be sent and create a validation message. subsequent form values
+                            // with the same name can make the configuration valid so we need to remove the existing validation message.
+                            var controlId = GetControlId(pluginConfiguration, existingConfigurationValue);
+                            model.Messages.RemoveAll(v => v.Detail == controlId);
                         }
                     }
                 }
