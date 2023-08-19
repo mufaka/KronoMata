@@ -300,5 +300,14 @@ namespace KronoMata.Web.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        public ActionResult SaveConfiguration(JobConfigSaveModel saveModel)
+        {
+
+            _logger.LogInformation("Got Save Model for Scheduled Job ID {saveModel.ScheduledJobId}", saveModel.ScheduledJobId);
+
+            return new ObjectResult("Not Implemented") { StatusCode = 501 };
+        }
     }
 }

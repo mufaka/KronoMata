@@ -17,7 +17,9 @@ namespace KronoMata.Web.Models
         {
             get
             {
-                return $"config-{PluginConfiguration.Id}-{ConfigurationValue.Id}";
+                var prefix = PluginConfiguration.DataType == Public.ConfigurationDataType.Boolean ? "configcheck-" : "config-";
+
+                return $"{prefix}{PluginConfiguration.Id}-{ConfigurationValue.Id}";
             }
         }
 

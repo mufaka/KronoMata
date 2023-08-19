@@ -14,7 +14,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4">
-                            <form action="" method="post" class="scheduledjob-form">
+                            <form action="@Url.Action("SaveConfiguration", "ScheduledJob")" method="post" class="jobconfig-form">
                                 <input type="hidden" name="scheduledjob-id" value="@Model.ScheduledJob.Id" />
 
                                 @for (int x = 0; x < Model.ConfigurationValues.Count; x++)
@@ -31,7 +31,7 @@
                 <div class="card-footer">
                     @if (Model.ScheduledJob.Id > 0)
                     {
-                        <input type="button" onclick="" class="btn btn-secondary" value="Save" />
+                        <input type="button" onclick="submitForm();" class="btn btn-secondary" value="Save" />
                     }
                     <input type="button" onclick="history.back();" class="btn btn-secondary" value="Cancel" />
                 </div>
@@ -57,5 +57,45 @@
                 initFunction.call();
             });
         });
+
+        function submitForm() {
+            var data = {
+                scheduledJobId: @Model.ScheduledJob.Id,
+                pluginConfigValues: []
+            };
+
+            $(".jobconfig-form").serializeArray().map(function (x) {
+                if (x.name.startsWith('config-') || x.name.startsWith('configcheck-')) {
+
+                    let tokenized = x.name.split("-");
+                    let dataValue = x.value;
+
+                    if (x.name.startsWith('configcheck-')) {
+                        dataValue = x.value == 'on' ? 'True' : 'False';
+                    }
+
+                    let configValue = {
+                        pluginConfigurationId: tokenized[1],
+                        configurationValueId: tokenized[2],
+                        value: dataValue
+                    }
+
+                    data.pluginConfigValues.push(configValue);
+                }
+            });
+
+            var actionUrl = $(".jobconfig-form").attr("action");
+
+            PostData(actionUrl, data,
+                success = function (response) {
+                },
+                error = function (req) {
+                    if (req.status == '422') {
+                        //showValidationErrors(JSON.parse(req.responseText), 'scheduledjob-');
+                    }
+                    alert(req.responseText);
+                }
+            );
+        }
     </script>
 }
