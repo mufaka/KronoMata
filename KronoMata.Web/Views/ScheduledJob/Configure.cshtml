@@ -88,12 +88,12 @@
 
             PostData(actionUrl, data,
                 success = function (response) {
+                    location.href = '@Url.Action("Index", "ScheduledJob")';
                 },
                 error = function (req) {
                     if (req.status == '422') {
-                        //showValidationErrors(JSON.parse(req.responseText), 'scheduledjob-');
+                        showValidationErrors(JSON.parse(req.responseText), '');
                     }
-                    alert(req.responseText);
                 }
             );
         }

@@ -304,10 +304,125 @@ namespace KronoMata.Web.Controllers
         [HttpPost]
         public ActionResult SaveConfiguration(JobConfigSaveModel saveModel)
         {
+            var model = new ConfigureScheduledJobViewModel();
+            model.ViewName = "Scheduled Job Configuration";
 
-            _logger.LogInformation("Got Save Model for Scheduled Job ID {saveModel.ScheduledJobId}", saveModel.ScheduledJobId);
+            try
+            {
+                var now = DateTime.Now;
+                var existingConfigurationValues = DataStoreProvider.ConfigurationValueDataStore
+                    .GetByScheduledJob(saveModel.ScheduledJobId);
 
-            return new ObjectResult("Not Implemented") { StatusCode = 501 };
+                var validConfigurationValues = new List<ConfigurationValue>();
+
+                // TODO: Multiple Selects send the same name for each value selected ...
+
+                foreach (var pluginConfigValue in saveModel.PluginConfigValues)
+                {
+                    var pluginConfiguration = DataStoreProvider.PluginConfigurationDataStore
+                        .GetById(pluginConfigValue.PluginConfigurationId);
+                    var existingConfigurationValue = existingConfigurationValues
+                        .Where(c => c.Id == pluginConfigValue.ConfigurationValueId).FirstOrDefault();
+
+                    if (existingConfigurationValue == null)
+                    {
+                        existingConfigurationValue = new ConfigurationValue()
+                        {
+                            InsertDate = now,
+                            PluginConfigurationId = pluginConfigValue.PluginConfigurationId,
+                            ScheduledJobId = saveModel.ScheduledJobId
+                        };
+                    }
+
+                    existingConfigurationValue.UpdateDate = now;
+                    existingConfigurationValue.Value = String.IsNullOrWhiteSpace(pluginConfigValue.Value) 
+                        ? String.Empty 
+                        : pluginConfigValue.Value;
+
+                    var validationMessage = ValidateConfigurationValue(pluginConfiguration, existingConfigurationValue);
+
+                    if (validationMessage.MessageType == NotificationMessageType.Error)
+                    {
+                        model.Messages.Add(validationMessage);
+                    }
+                    else
+                    {
+                        validConfigurationValues.Add(existingConfigurationValue);
+                    }
+                }
+
+                if (model.Messages.Count > 0)
+                {
+                    return GetValidationErrorResponse(model.Messages);
+                }
+
+                foreach (ConfigurationValue configurationValue in validConfigurationValues)
+                {
+                    if (configurationValue.Id == 0)
+                    {
+                        DataStoreProvider.ConfigurationValueDataStore.Create(configurationValue);
+                    }
+                    else
+                    {
+                        DataStoreProvider.ConfigurationValueDataStore.Update(configurationValue);
+                    }
+                }
+            } 
+            catch (Exception ex)
+            {
+                LogException(model, ex);
+                _logger.LogError(ex, "Error loading data for View {viewname}", model.ViewName);
+            }
+
+            return new ObjectResult("Configuration Values saved.") { StatusCode = 200 };
+        }
+
+        private NotificationMessage ValidateConfigurationValue(PluginConfiguration pluginConfiguration, ConfigurationValue configurationValue)
+        {
+            var notificationMessage = new NotificationMessage();
+            var controlId = GetControlId(pluginConfiguration, configurationValue);
+
+            if (pluginConfiguration.IsRequired && String.IsNullOrEmpty(configurationValue.Value))
+            {
+                return new NotificationMessage()
+                {
+                    MessageType = NotificationMessageType.Error,
+                    Message = $"{pluginConfiguration.Name} is required.",
+                    Detail = controlId
+                };
+            }
+
+            switch (pluginConfiguration.DataType)
+            {
+                case Public.ConfigurationDataType.Integer:
+                    if (!int.TryParse(configurationValue.Value, out int valueInt)) { return GetErrorNotification(pluginConfiguration, valueInt.ToString(), controlId); }
+                    break;
+                case Public.ConfigurationDataType.Decimal:
+                    if (!decimal.TryParse(configurationValue.Value, out decimal valueDec)) { return GetErrorNotification(pluginConfiguration, valueDec.ToString(), controlId); }
+                    break;
+                case Public.ConfigurationDataType.DateTime:
+                    if (!DateTime.TryParse(configurationValue.Value, out DateTime valueDate)) { return GetErrorNotification(pluginConfiguration, valueDate.ToString(), controlId); }
+                    break;
+            }
+
+            return notificationMessage;
+        }
+
+        private NotificationMessage GetErrorNotification(PluginConfiguration pluginConfiguration, string value, string controlId)
+        {
+            return new NotificationMessage()
+            {
+                MessageType = NotificationMessageType.Error,
+                Message = $"{pluginConfiguration.Name} value of {value} is not a valid {pluginConfiguration.DataType}.",
+                Detail = controlId
+            };
+        }
+
+        private string GetControlId(PluginConfiguration pluginConfiguration, ConfigurationValue configurationValue)
+        {
+            var prefix = pluginConfiguration.DataType == Public.ConfigurationDataType.Boolean ? "configcheck-" : "config-";
+
+            return $"{prefix}{pluginConfiguration.Id}-{configurationValue.Id}";
         }
     }
 }
