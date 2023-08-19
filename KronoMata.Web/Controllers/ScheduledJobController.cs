@@ -310,34 +310,40 @@ namespace KronoMata.Web.Controllers
             try
             {
                 var now = DateTime.Now;
-                var existingConfigurationValues = DataStoreProvider.ConfigurationValueDataStore
-                    .GetByScheduledJob(saveModel.ScheduledJobId);
-
                 var validConfigurationValues = new List<ConfigurationValue>();
-
-                // TODO: Multiple Selects send the same name for each value selected ...
 
                 foreach (var pluginConfigValue in saveModel.PluginConfigValues)
                 {
                     var pluginConfiguration = DataStoreProvider.PluginConfigurationDataStore
                         .GetById(pluginConfigValue.PluginConfigurationId);
-                    var existingConfigurationValue = existingConfigurationValues
-                        .Where(c => c.Id == pluginConfigValue.ConfigurationValueId).FirstOrDefault();
+
+                    var existingConfigurationValue = validConfigurationValues
+                        .Where(c => c.PluginConfigurationId == pluginConfigValue.PluginConfigurationId)
+                        .FirstOrDefault();
 
                     if (existingConfigurationValue == null)
                     {
                         existingConfigurationValue = new ConfigurationValue()
                         {
-                            InsertDate = now,
+                            Id = pluginConfigValue.ConfigurationValueId,
                             PluginConfigurationId = pluginConfigValue.PluginConfigurationId,
-                            ScheduledJobId = saveModel.ScheduledJobId
+                            ScheduledJobId = saveModel.ScheduledJobId,
+                            InsertDate = now, // TODO: this should maintain original Insert Date
+                            UpdateDate = now,
+                            Value = pluginConfigValue.Value
                         };
                     }
-
-                    existingConfigurationValue.UpdateDate = now;
-                    existingConfigurationValue.Value = String.IsNullOrWhiteSpace(pluginConfigValue.Value) 
-                        ? String.Empty 
-                        : pluginConfigValue.Value;
+                    else
+                    {
+                        // only update if new value is not empty
+                        if (!String.IsNullOrWhiteSpace(pluginConfigValue.Value))
+                        {
+                            // if the existing value is not empty, append to it
+                            existingConfigurationValue.Value = String.IsNullOrWhiteSpace(existingConfigurationValue.Value)
+                                ? pluginConfigValue.Value
+                                : $"{existingConfigurationValue.Value},{pluginConfigValue.Value}";
+                        }
+                    }
 
                     var validationMessage = ValidateConfigurationValue(pluginConfiguration, existingConfigurationValue);
 
@@ -347,7 +353,10 @@ namespace KronoMata.Web.Controllers
                     }
                     else
                     {
-                        validConfigurationValues.Add(existingConfigurationValue);
+                        if (!validConfigurationValues.Exists(c => c.PluginConfigurationId == existingConfigurationValue.PluginConfigurationId))
+                        {
+                            validConfigurationValues.Add(existingConfigurationValue);
+                        }
                     }
                 }
 
@@ -382,7 +391,7 @@ namespace KronoMata.Web.Controllers
             var notificationMessage = new NotificationMessage();
             var controlId = GetControlId(pluginConfiguration, configurationValue);
 
-            if (pluginConfiguration.IsRequired && String.IsNullOrEmpty(configurationValue.Value))
+            if (pluginConfiguration.IsRequired && String.IsNullOrWhiteSpace(configurationValue.Value))
             {
                 return new NotificationMessage()
                 {
