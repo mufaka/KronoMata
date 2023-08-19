@@ -16,13 +16,9 @@
                         <div class="col-4">
                             <form action="@Url.Action("SaveConfiguration", "ScheduledJob")" method="post" class="jobconfig-form">
                                 <input type="hidden" name="scheduledjob-id" value="@Model.ScheduledJob.Id" />
-
                                 @for (int x = 0; x < Model.ConfigurationValues.Count; x++)
                                 {
-                                    var pluginConfiguration = Model.PluginConfigurations[x];
-                                    var configurationValue = Model.ConfigurationValues[x];
-
-                                    @await Component.InvokeAsync("JobConfig", new { configurationValue = configurationValue })
+                                    @await Component.InvokeAsync("JobConfig", new { configurationValue = Model.ConfigurationValues[x] })
                                 }
                             </form>
                         </div>
