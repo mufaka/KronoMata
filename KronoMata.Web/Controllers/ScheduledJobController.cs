@@ -251,8 +251,10 @@ namespace KronoMata.Web.Controllers
 
         public ActionResult Configure(int id)
         {
-            var model = new ConfigureScheduledJobViewModel();
-            model.ViewName = "Scheduled Job Configuration";
+            var model = new ConfigureScheduledJobViewModel()
+            {
+                ViewName = "Scheduled Job Configuration"
+            };
 
             try
             {
@@ -278,10 +280,12 @@ namespace KronoMata.Web.Controllers
 
                             if (existingConfigurationValue == null)
                             {
-                                existingConfigurationValue = new ConfigurationValue();
-                                existingConfigurationValue.ScheduledJobId = id;
-                                existingConfigurationValue.PluginConfigurationId = pluginConfiguration.Id;
-                                existingConfigurationValue.InsertDate = DateTime.Now;
+                                existingConfigurationValue = new ConfigurationValue
+                                {
+                                    ScheduledJobId = id,
+                                    PluginConfigurationId = pluginConfiguration.Id,
+                                    InsertDate = DateTime.Now
+                                };
                                 existingConfigurationValue.UpdateDate = existingConfigurationValue.InsertDate;
                             }
 
@@ -304,8 +308,10 @@ namespace KronoMata.Web.Controllers
         [HttpPost]
         public ActionResult SaveConfiguration(JobConfigSaveModel saveModel)
         {
-            var model = new ConfigureScheduledJobViewModel();
-            model.ViewName = "Scheduled Job Configuration";
+            var model = new ConfigureScheduledJobViewModel
+            {
+                ViewName = "Scheduled Job Configuration"
+            };
 
             try
             {
@@ -399,7 +405,7 @@ namespace KronoMata.Web.Controllers
             return new ObjectResult("Configuration Values saved.") { StatusCode = 200 };
         }
 
-        private NotificationMessage ValidateConfigurationValue(PluginConfiguration pluginConfiguration, ConfigurationValue configurationValue)
+        private static NotificationMessage ValidateConfigurationValue(PluginConfiguration pluginConfiguration, ConfigurationValue configurationValue)
         {
             var notificationMessage = new NotificationMessage();
             var controlId = GetControlId(pluginConfiguration, configurationValue);
@@ -430,7 +436,7 @@ namespace KronoMata.Web.Controllers
             return notificationMessage;
         }
 
-        private NotificationMessage GetErrorNotification(PluginConfiguration pluginConfiguration, string value, string controlId)
+        private static NotificationMessage GetErrorNotification(PluginConfiguration pluginConfiguration, string value, string controlId)
         {
             return new NotificationMessage()
             {
@@ -440,7 +446,7 @@ namespace KronoMata.Web.Controllers
             };
         }
 
-        private string GetControlId(PluginConfiguration pluginConfiguration, ConfigurationValue configurationValue)
+        private static string GetControlId(PluginConfiguration pluginConfiguration, ConfigurationValue configurationValue)
         {
             var prefix = pluginConfiguration.DataType == Public.ConfigurationDataType.Boolean ? "configcheck-" : "config-";
 

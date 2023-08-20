@@ -157,6 +157,7 @@ namespace KronoMata.Agent
             }
         }
 
+        /*
         private void SaveSkippedJobHistory(ApiClient apiClient, DateTime runTime, DateTime completionTime, 
             int hostId, int scheduledJobId, string message, string detail)
         {
@@ -180,6 +181,7 @@ namespace KronoMata.Agent
                 _logger.LogCritical(ex, "Unable to save job history. {ex.Message}", ex.Message);
             }
         }
+        */
 
         private List<PluginResult> ExecutePlugin(ApiClient apiClient, string pluginArchiveRoot, ScheduledJob scheduledJob)
         {
@@ -244,8 +246,6 @@ namespace KronoMata.Agent
 
                         if (assembly.CreateInstance(pluginMetaData.ClassName) is IPlugin plugin)
                         {
-                            var runTime = DateTime.Now;
-
                             _logger.LogDebug("Executing plugin {pluginMetaData.ClassName}", pluginMetaData.ClassName);
 
                             var results = plugin.Execute(systemConfiguration, pluginConfiguration);

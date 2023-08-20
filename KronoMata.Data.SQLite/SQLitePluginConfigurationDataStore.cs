@@ -2,7 +2,7 @@
 
 namespace KronoMata.Data.SQLite
 {
-    public class SQLitePluginConfigurationDataStore : IPluginConfigurationDataStore
+    public class SQLitePluginConfigurationDataStore : SQLiteDataStoreBase, IPluginConfigurationDataStore
     {
         public PluginConfiguration Create(PluginConfiguration pluginConfiguration)
         {

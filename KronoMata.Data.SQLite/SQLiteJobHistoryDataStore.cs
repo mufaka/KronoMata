@@ -2,7 +2,7 @@
 
 namespace KronoMata.Data.SQLite
 {
-    public class SQLiteJobHistoryDataStore : IJobHistoryDataStore
+    public class SQLiteJobHistoryDataStore : SQLiteDataStoreBase, IJobHistoryDataStore
     {
         public JobHistory Create(JobHistory jobHistory)
         {

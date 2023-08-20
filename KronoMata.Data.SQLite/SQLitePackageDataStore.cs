@@ -2,7 +2,7 @@
 
 namespace KronoMata.Data.SQLite
 {
-    public class SQLitePackageDataStore : IPackageDataStore
+    public class SQLitePackageDataStore : SQLiteDataStoreBase, IPackageDataStore
     {
         public Package Create(Package package)
         {

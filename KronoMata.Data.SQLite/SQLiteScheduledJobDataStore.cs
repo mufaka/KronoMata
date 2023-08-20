@@ -2,7 +2,7 @@
 
 namespace KronoMata.Data.SQLite
 {
-    public class SQLiteScheduledJobDataStore : IScheduledJobDataStore
+    public class SQLiteScheduledJobDataStore : SQLiteDataStoreBase, IScheduledJobDataStore
     {
         public ScheduledJob Create(ScheduledJob scheduledJob)
         {

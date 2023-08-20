@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,8 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.151" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\KronoMata.Data\KronoMata.Data.csproj" />
     <ProjectReference Include="..\KronoMata.Model\KronoMata.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Database\KronoMata.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

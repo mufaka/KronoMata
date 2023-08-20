@@ -1,12 +1,21 @@
-﻿using KronoMata.Model;
+﻿using Dapper;
+using KronoMata.Model;
 
 namespace KronoMata.Data.SQLite
 {
-    public class SQLiteGlobalConfigurationDataStore : IGlobalConfigurationDataStore
+    public class SQLiteGlobalConfigurationDataStore : SQLiteDataStoreBase, IGlobalConfigurationDataStore
     {
         public GlobalConfiguration Create(GlobalConfiguration globalConfiguration)
         {
-            throw new NotImplementedException();
+            Execute((connection) =>
+            {
+                var sql = @"insert into GlobalConfiguration () values ()";
+                var id = connection.ExecuteScalar<int>(sql);
+
+                globalConfiguration.Id = id;
+            });
+
+            return globalConfiguration;
         }
 
         public void Delete(int id)

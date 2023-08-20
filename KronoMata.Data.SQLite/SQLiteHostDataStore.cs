@@ -2,7 +2,7 @@
 
 namespace KronoMata.Data.SQLite
 {
-    public class SQLiteHostDataStore : IHostDataStore
+    public class SQLiteHostDataStore : SQLiteDataStoreBase, IHostDataStore
     {
         public Host Create(Host host)
         {
