@@ -207,7 +207,7 @@ namespace KronoMata.Agent
             var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
 
             // create and extract plugin to package folder
-            CreatePackageFolder(packageFolder, packageArchivePath);
+            CreatePackageFolder(package, packageFolder, packageArchivePath);
 
             // the work above should result in this folder now being available
             if (!Directory.Exists(packageFolder))
@@ -356,7 +356,7 @@ namespace KronoMata.Agent
         }
         */
 
-        private void CreatePackageFolder(string packageFolder, string packageArchivePath)
+        private void CreatePackageFolder(Package package, string packageFolder, string packageArchivePath)
         {
             if (!Directory.Exists(packageFolder))
             {

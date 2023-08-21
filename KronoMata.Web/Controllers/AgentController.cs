@@ -204,5 +204,37 @@ namespace KronoMata.Web.Controllers
 
             return list;
         }
+
+        [HttpGet("package/file/{packageId}")]
+        public ActionResult GetPackageFile(int packageId)
+        {
+            try
+            {
+                var package = DataStoreProvider.PackageDataStore.GetById(packageId);
+                var packageRoot = _configuration["KronoMata:PackageRoot"];
+
+                if (String.IsNullOrEmpty(packageRoot))
+                {
+                    throw new ArgumentNullException("PackageRoot is not defined in appsettings.json [KronoMata:PackageRoot]");
+                }
+
+                if (!packageRoot.EndsWith(Path.DirectorySeparatorChar.ToString())) packageRoot += Path.DirectorySeparatorChar;
+                var packageArchivePath = $"{packageRoot}{package.FileName}";
+
+                if (!System.IO.File.Exists(packageArchivePath))
+                {
+                    throw new ApplicationException($"Package file is missing from {packageArchivePath}");
+                }
+
+                var fileStream = System.IO.File.OpenRead(packageArchivePath);
+
+                return File(fileStream, "application/zip", package.FileName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error serving package file for package id {pacakgeId}.", packageId);
+                return new ObjectResult(ex.Message) { StatusCode = 500 };
+            }
+        }
     }
 }

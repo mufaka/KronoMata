@@ -18,7 +18,6 @@ namespace KronoMata.Web
             builder.Services.AddSingleton<IDataStoreProvider>(new SQLiteDataStoreProvider());
             builder.Services.AddValidatorsFromAssemblyContaining<ScheduledJobValidator>();
 
-            // TODO: do this through configuration.
             var databasePath = Path.Combine("Database", "KronoMata.db");
             SQLiteDataStoreBase.ConnectionString = $"Data Source={databasePath};Pooling=True;Cache Size=4000;Page Size=1024;FailIfMissing=True;Journal Mode=Off;";
 
