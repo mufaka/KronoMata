@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using KronoMata.Model;
+using System.Xml.Linq;
 
 namespace KronoMata.Data.SQLite
 {
@@ -9,8 +10,40 @@ namespace KronoMata.Data.SQLite
         {
             Execute((connection) =>
             {
-                var sql = @"insert into GlobalConfiguration () values ()";
-                var id = connection.ExecuteScalar<int>(sql);
+                var sql = @"insert into GlobalConfiguration 
+(
+	Category,
+	Name,
+	Value,
+	IsAccessibleToPlugins,
+	IsMasked,
+	IsSystemConfiguration,
+	InsertDate,
+	UpdateDate
+)
+values 
+(
+	@Category,
+	@Name,
+	@Value,
+	@IsAccessibleToPlugins,
+	@IsMasked,
+	@IsSystemConfiguration,
+	@InsertDate,
+	@UpdateDate
+);
+select last_insert_rowid();";
+                var id = connection.ExecuteScalar<int>(sql, new
+                {
+                    globalConfiguration.Category,
+                    globalConfiguration.Name,
+                    globalConfiguration.Value,
+                    globalConfiguration.IsAccessibleToPlugins,
+                    globalConfiguration.IsMasked,
+                    globalConfiguration.IsSystemConfiguration,
+                    globalConfiguration.InsertDate,
+                    globalConfiguration.UpdateDate
+                });
 
                 globalConfiguration.Id = id;
             });
@@ -20,32 +53,141 @@ namespace KronoMata.Data.SQLite
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var existing = GetById(id);
+
+            if (existing.IsSystemConfiguration)
+            {
+                throw new InvalidOperationException("Deletion of system configuration is not allowed.");
+            }
+
+            Execute(async (connection) =>
+            {
+                var sql = "delete from GlobalConfiguration where Id = @Id";
+                await connection.ExecuteAsync(sql, new
+                {
+                    Id = id
+                });
+            });
         }
 
         public List<GlobalConfiguration> GetAll()
         {
-            throw new NotImplementedException();
+            return Query<GlobalConfiguration>((connection) =>
+            {
+                var sql = @"SELECT Id,
+       Category,
+       Name,
+       Value,
+       IsAccessibleToPlugins,
+       IsMasked,
+       IsSystemConfiguration,
+       InsertDate,
+       UpdateDate
+  FROM GlobalConfiguration;";
+                return connection.Query<GlobalConfiguration>(sql).ToList();
+            });
         }
 
         public List<GlobalConfiguration> GetByCategory(string categoryName)
         {
-            throw new NotImplementedException();
+            return Query<GlobalConfiguration>((connection) =>
+            {
+                var sql = @"SELECT Id,
+       Category,
+       Name,
+       Value,
+       IsAccessibleToPlugins,
+       IsMasked,
+       IsSystemConfiguration,
+       InsertDate,
+       UpdateDate
+  FROM GlobalConfiguration
+  WHERE Category = @Category;";
+                return connection.Query<GlobalConfiguration>(sql, new { Category = categoryName }).ToList();
+            });
         }
 
         public GlobalConfiguration GetByCategoryAndName(string category, string name)
         {
-            throw new NotImplementedException();
+            return QueryOne<GlobalConfiguration>((connection) =>
+            {
+                var sql = @"SELECT Id,
+       Category,
+       Name,
+       Value,
+       IsAccessibleToPlugins,
+       IsMasked,
+       IsSystemConfiguration,
+       InsertDate,
+       UpdateDate
+  FROM GlobalConfiguration
+  WHERE Category = @Category
+  AND Name = @Name;";
+
+#pragma warning disable CS8603 // Possible null reference return.
+                return connection.Query<GlobalConfiguration>(sql, new
+                {
+                    Category = category,
+                    Name = name
+                }).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
+            });
         }
 
         public GlobalConfiguration GetById(int id)
         {
-            throw new NotImplementedException();
+            return QueryOne<GlobalConfiguration>((connection) =>
+            {
+                var sql = @"SELECT Id,
+       Category,
+       Name,
+       Value,
+       IsAccessibleToPlugins,
+       IsMasked,
+       IsSystemConfiguration,
+       InsertDate,
+       UpdateDate
+  FROM GlobalConfiguration
+  WHERE Id = @Id;";
+
+#pragma warning disable CS8603 // Possible null reference return.
+                return connection.Query<GlobalConfiguration>(sql, new
+                {
+                    Id = id
+                }).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
+            });
         }
 
         public void Update(GlobalConfiguration globalConfiguration)
         {
-            throw new NotImplementedException();
+            Execute(async (connection) =>
+            {
+                var sql = @"UPDATE GlobalConfiguration
+   SET 
+       Category = @Category,
+       Name = @Name,
+       Value = @Value,
+       IsAccessibleToPlugins = @IsAccessibleToPlugins,
+       IsMasked = @IsMasked,
+       IsSystemConfiguration = @IsSystemConfiguration,
+       InsertDate = @InsertDate,
+       UpdateDate = @UpdateDate
+ WHERE Id = @Id;";
+
+                await connection.ExecuteAsync(sql, new
+                {
+                    globalConfiguration.Category,
+                    globalConfiguration.Name,
+                    globalConfiguration.Value,
+                    globalConfiguration.IsAccessibleToPlugins,
+                    globalConfiguration.IsMasked,
+                    globalConfiguration.IsSystemConfiguration,
+                    globalConfiguration.InsertDate,
+                    globalConfiguration.UpdateDate,
+                    globalConfiguration.Id
+                });
+            });
         }
     }
 }

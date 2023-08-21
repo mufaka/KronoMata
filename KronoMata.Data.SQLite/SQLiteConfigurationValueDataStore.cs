@@ -7,7 +7,7 @@ namespace KronoMata.Data.SQLite
     {
         public ConfigurationValue Create(ConfigurationValue configurationValue)
         {
-            Execute((connection) =>
+            Execute(async (connection) =>
             {
                 var sql = @"insert into ConfigurationValue 
 (
@@ -17,7 +17,7 @@ namespace KronoMata.Data.SQLite
    InsertDate,
    UpdateDate
 )
-VALUES 
+values 
 (
    @ScheduledJobId,
    @PluginConfigurationId,
@@ -27,7 +27,14 @@ VALUES
 );
 select last_insert_rowid();
 ";
-                var id = connection.ExecuteScalar<int>(sql);
+                var id = await connection.ExecuteScalarAsync<int>(sql, new 
+                {
+                    configurationValue.ScheduledJobId,
+                    configurationValue.PluginConfigurationId,
+                    configurationValue.Value,
+                    configurationValue.InsertDate,
+                    configurationValue.UpdateDate
+                });
 
                 configurationValue.Id = id;
             });
@@ -37,10 +44,10 @@ select last_insert_rowid();
 
         public void Delete(int id)
         {
-            Execute((connection) =>
+            Execute(async (connection) =>
             {
-                var sql = "delete from ConfigurationValue where Id = @Id";
-                connection.Execute(sql, new
+                var sql = "delete from ConfigurationValue where Id = @Id;";
+                await connection.ExecuteAsync(sql, new
                 {
                     Id = id
                 });
@@ -51,22 +58,21 @@ select last_insert_rowid();
         {
             return Query<ConfigurationValue>((connection) =>
             {
-                var sql = "select Id, ScheduledJobId, PluginConfigurationId, Value, InsertDate, UpdateDate from ConfigurationValue where ScheduledJobId = @ScheduledJobId";
+                var sql = "select Id, ScheduledJobId, PluginConfigurationId, Value, InsertDate, UpdateDate from ConfigurationValue where ScheduledJobId = @ScheduledJobId;";
                 return connection.Query<ConfigurationValue>(sql, new
                 {
                     ScheduledJobId = scheduledJobId
                 }).ToList();
-
             });
         }
 
         public void Update(ConfigurationValue configurationValue)
         {
-            Execute((connection) =>
+            Execute(async (connection) =>
             {
                 var sql = @"update ConfigurationValue set ScheduledJobId = @ScheduledJobId, PluginConfigurationId = @PluginConfigurationId, Value = @Value, InsertDate = @InsertDate, UpdateDate = @UpdateDate
-where Id = @Id";
-                connection.Execute(sql, new
+where Id = @Id;";
+                await connection.ExecuteAsync(sql, new
                 {
                     configurationValue.ScheduledJobId,
                     configurationValue.PluginConfigurationId,

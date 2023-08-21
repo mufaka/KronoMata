@@ -1,4 +1,5 @@
-﻿using KronoMata.Model;
+﻿using Dapper;
+using KronoMata.Model;
 
 namespace KronoMata.Data.SQLite
 {
@@ -6,37 +7,245 @@ namespace KronoMata.Data.SQLite
     {
         public ScheduledJob Create(ScheduledJob scheduledJob)
         {
-            throw new NotImplementedException();
+            Execute((connection) =>
+            {
+                var sql = @"INSERT INTO ScheduledJob 
+(
+	PluginMetaDataId,
+	HostId,
+	Name,
+	Description,
+	Frequency,
+	Interval,
+	Days,
+	DaysOfWeek,
+	Hours,
+	Minutes,
+	StartTime,
+	EndTime,
+	IsEnabled,
+	InsertDate,
+	UpdateDate
+)
+VALUES 
+(
+	@PluginMetaDataId,
+	@HostId,
+	@Name,
+	@Description,
+	@Frequency,
+	@Interval,
+	@Days,
+	@DaysOfWeek,
+	@Hours,
+	@Minutes,
+	@StartTime,
+	@EndTime,
+	@IsEnabled,
+	@InsertDate,
+	@UpdateDate
+);
+select last_insert_rowid();";
+                var id = connection.ExecuteScalar<int>(sql, new
+                {
+                    scheduledJob.PluginMetaDataId,
+                    scheduledJob.HostId,
+                    scheduledJob.Name,
+                    scheduledJob.Description,
+                    scheduledJob.Frequency,
+                    scheduledJob.Interval,
+                    scheduledJob.Days,
+                    scheduledJob.DaysOfWeek,
+                    scheduledJob.Hours,
+                    scheduledJob.Minutes,
+                    scheduledJob.StartTime,
+                    scheduledJob.EndTime,
+                    scheduledJob.IsEnabled,
+                    scheduledJob.InsertDate,
+                    scheduledJob.UpdateDate
+                });
+
+                scheduledJob.Id = id;
+            });
+
+            return scheduledJob;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            Execute(async (connection) =>
+            {
+                var sql = "delete from ScheduledJob where Id = @Id;";
+                await connection.ExecuteAsync(sql, new
+                {
+                    Id = id
+                });
+            });
         }
 
         public List<ScheduledJob> GetAll()
         {
-            throw new NotImplementedException();
+            return Query<ScheduledJob>((connection) =>
+            {
+                var sql = @"SELECT 
+	Id,
+	PluginMetaDataId,
+	HostId,
+	Name,
+	Description,
+	Frequency,
+	Interval,
+	Days,
+	DaysOfWeek,
+	Hours,
+	Minutes,
+	StartTime,
+	EndTime,
+	IsEnabled,
+	InsertDate,
+	UpdateDate
+FROM ScheduledJob
+ORDER BY Name asc;";
+
+                return connection.Query<ScheduledJob>(sql).ToList();
+            });
         }
 
         public List<ScheduledJob> GetByHost(int hostId)
         {
-            throw new NotImplementedException();
+            return Query<ScheduledJob>((connection) =>
+            {
+                var sql = @"SELECT 
+	Id,
+	PluginMetaDataId,
+	HostId,
+	Name,
+	Description,
+	Frequency,
+	Interval,
+	Days,
+	DaysOfWeek,
+	Hours,
+	Minutes,
+	StartTime,
+	EndTime,
+	IsEnabled,
+	InsertDate,
+	UpdateDate
+FROM ScheduledJob
+WHERE HostId = @HostId
+ORDER BY Name asc;";
+
+                return connection.Query<ScheduledJob>(sql, new { HostId = hostId }).ToList();
+            });
         }
 
         public ScheduledJob GetById(int id)
         {
-            throw new NotImplementedException();
+            return QueryOne<ScheduledJob>((connection) =>
+            {
+                var sql = @"SELECT 
+	Id,
+	PluginMetaDataId,
+	HostId,
+	Name,
+	Description,
+	Frequency,
+	Interval,
+	Days,
+	DaysOfWeek,
+	Hours,
+	Minutes,
+	StartTime,
+	EndTime,
+	IsEnabled,
+	InsertDate,
+	UpdateDate
+FROM ScheduledJob
+WHERE Id = @Id;";
+
+#pragma warning disable CS8603 // Possible null reference return.
+                return connection.Query<ScheduledJob>(sql, new
+                {
+                    Id = id
+                }).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
+            });
         }
 
         public List<ScheduledJob> GetByPluginMetaData(int pluginMetaDataId)
         {
-            throw new NotImplementedException();
+            return Query<ScheduledJob>((connection) =>
+            {
+                var sql = @"SELECT 
+	Id,
+	PluginMetaDataId,
+	HostId,
+	Name,
+	Description,
+	Frequency,
+	Interval,
+	Days,
+	DaysOfWeek,
+	Hours,
+	Minutes,
+	StartTime,
+	EndTime,
+	IsEnabled,
+	InsertDate,
+	UpdateDate
+FROM ScheduledJob
+WHERE PluginMetaDataId = @PluginMetaDataId
+ORDER BY Name asc;";
+
+                return connection.Query<ScheduledJob>(sql, new { PluginMetaDataId = pluginMetaDataId }).ToList();
+            });
         }
 
         public void Update(ScheduledJob scheduledJob)
         {
-            throw new NotImplementedException();
+            Execute(async (connection) =>
+            {
+                var sql = @"UPDATE ScheduledJob
+SET
+	PluginMetaDataId = @PluginMetaDataId,
+	HostId = @HostId,
+	Name = @Name,
+	Description = @Description,
+	Frequency = @Frequency,
+	Interval = @Interval,
+	Days = @Days,
+	DaysOfWeek = @DaysOfWeek,
+	Hours = @Hours,
+	Minutes = @Minutes,
+	StartTime = @StartTime,
+	EndTime = @EndTime,
+	IsEnabled = @IsEnabled,
+	InsertDate = @InsertDate,
+	UpdateDate = @UpdateDate
+WHERE 
+	Id = @Id";
+
+                await connection.ExecuteAsync(sql, new
+                {
+                    scheduledJob.PluginMetaDataId,
+                    scheduledJob.HostId,
+                    scheduledJob.Name,
+                    scheduledJob.Description,
+                    scheduledJob.Frequency,
+                    scheduledJob.Interval,
+                    scheduledJob.Days,
+                    scheduledJob.DaysOfWeek,
+                    scheduledJob.Hours,
+                    scheduledJob.Minutes,
+                    scheduledJob.StartTime,
+                    scheduledJob.EndTime,
+                    scheduledJob.IsEnabled,
+                    scheduledJob.InsertDate,
+                    scheduledJob.UpdateDate,
+                    scheduledJob.Id
+                });
+            });
         }
     }
 }
