@@ -76,7 +76,8 @@ select last_insert_rowid();";
 	SelectValues,
 	InsertDate,
 	UpdateDate
-FROM PluginConfiguration;";
+FROM PluginConfiguration
+WHERE Id = @Id;";
 
 #pragma warning disable CS8603 // Possible null reference return.
                 return connection.Query<PluginConfiguration>(sql, new
