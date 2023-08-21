@@ -140,15 +140,7 @@ AND (@Status = -1 or Status = @Status)
 AND (@ScheduledJobId = -1 or ScheduledJobId = @ScheduledJobId)
 ORDER BY RunTime desc LIMIT {pageSize};";
 
-            var totalRecordsSql = @"SELECT 
-    Id,
-	ScheduledJobId,
-	HostId,
-	Status,
-	Message,
-	Detail,
-	RunTime,
-	CompletionTime
+            var totalRecordsSql = @"SELECT count(*)
 FROM JobHistory
 WHERE (@HostId = -1 or HostId = @HostId)
 AND (@Status = -1 or Status = @Status)
