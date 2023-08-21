@@ -207,7 +207,7 @@ namespace KronoMata.Agent
             var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
 
             // create and extract plugin to package folder
-            CreatePackageFolder(package, packageFolder, packageArchivePath);
+            CreatePackageFolder(package, pluginArchiveRoot, packageFolder, packageArchivePath);
 
             // the work above should result in this folder now being available
             if (!Directory.Exists(packageFolder))
@@ -356,21 +356,20 @@ namespace KronoMata.Agent
         }
         */
 
-        private void CreatePackageFolder(Package package, string packageFolder, string packageArchivePath)
+        private void CreatePackageFolder(Package package, string packageRoot, string packageFolder, string packageArchivePath)
         {
             if (!Directory.Exists(packageFolder))
             {
                 if (!File.Exists(packageArchivePath))
                 {
-                    // TODO: attempt to fetch zip file from API.
-                    _logger.LogWarning("Could not find package path at {packageArchivePath}", packageArchivePath);
+                    _logger.LogDebug("Could not find package path at {packageArchivePath}. Attempting to get from API.", packageArchivePath);
+                    var apiClient = new ApiClient(_configuration);
+                    apiClient.FetchPackageFile(package, packageRoot);
                 }
-                else
-                {
-                    // need to extract archive to packageFolder
-                    _logger.LogInformation("Found package archive at {packageArchivePath}. Unzipping to {packageFolder}", packageArchivePath, packageFolder);
-                    ZipFile.ExtractToDirectory(packageArchivePath, packageFolder);
-                }
+
+                // need to extract archive to packageFolder
+                _logger.LogInformation("Found package archive at {packageArchivePath}. Unzipping to {packageFolder}", packageArchivePath, packageFolder);
+                ZipFile.ExtractToDirectory(packageArchivePath, packageFolder);
             }
         }
     }

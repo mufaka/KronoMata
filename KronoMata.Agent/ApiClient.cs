@@ -68,6 +68,19 @@ namespace KronoMata.Agent
             Post<JobHistory>(endpoint, jobHistory);
         }
 
+        public void FetchPackageFile(Package package, string packageRootPath)
+        {
+            var endpoint = $"Agent/package/file/{package.Id}";
+            var httpClient = new HttpClient();
+
+            var destinationPath = Path.Combine(packageRootPath, package.FileName);
+
+            var stream = httpClient.GetStreamAsync(BuildUrl(endpoint));
+            var fileStream = new FileStream(destinationPath, FileMode.CreateNew);
+            stream.Result.CopyToAsync(fileStream);
+            fileStream.Close();
+        }
+
         private string RootUrl
         {
             get
