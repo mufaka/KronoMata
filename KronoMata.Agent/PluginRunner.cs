@@ -201,7 +201,9 @@ namespace KronoMata.Agent
                 throw new ApplicationException("Package not found.");
             }
 
-            var packageFolder = $"{pluginArchiveRoot}{GetPluginFolderName(pluginMetaData)}";
+            //var packageFolder = $"{pluginArchiveRoot}{GetPluginFolderName(pluginMetaData)}";
+            //var packageFolder = Path.Combine(pluginArchiveRoot, Path.GetFileNameWithoutExtension(package.FileName), GetPluginFolderName(pluginMetaData));
+            var packageFolder = Path.Combine(pluginArchiveRoot, Path.GetFileNameWithoutExtension(package.FileName));
             var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
 
             // create and extract plugin to package folder
@@ -332,6 +334,7 @@ namespace KronoMata.Agent
             return pluginConfiguration;
         }
 
+        /*
         private static string GetPluginFolderName(PluginMetaData metaData)
         {
             // NOTE: Not too worried about Regex performance here as it
@@ -351,6 +354,7 @@ namespace KronoMata.Agent
 
             return folderName;
         }
+        */
 
         private void CreatePackageFolder(string packageFolder, string packageArchivePath)
         {
