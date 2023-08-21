@@ -27,6 +27,7 @@ namespace KronoMata.Web.Controllers
         public IEnumerable<ScheduledJob> GetByHostName(string name)
         {
             var jobs = new List<ScheduledJob>();
+            var now = DateTime.Now;
 
             _logger.LogDebug("API getting host by name {name}", name);
 
@@ -38,14 +39,24 @@ namespace KronoMata.Web.Controllers
                 {
                     if (host.IsEnabled)
                     {
+                        try
+                        {
+                            // update the Host's UpdateDate so that we can track last accessed
+                            // time without having to use another datetime column.
+                            host.UpdateDate = now;
+                            DataStoreProvider.HostDataStore.Update(host);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning("Unable to update the last accessed time for Host {host.MachineName}. {ex.Message}", host.MachineName, ex.Message);
+                        }
+
                         jobs = DataStoreProvider.ScheduledJobDataStore.GetByHost(host.Id).Where(h => h.IsEnabled).ToList();
                     }
                 } 
                 else
                 {
                     _logger.LogDebug("API creating host by name {name}", name);
-
-                    var now = DateTime.Now;
 
                     var newHost = new Model.Host()
                     {

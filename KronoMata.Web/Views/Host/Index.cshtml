@@ -11,7 +11,7 @@
                     <div class="host-container">
                         @foreach(var host in Model.Hosts)
                         {
-                            var bgClass = host.IsEnabled ? "bg-info" : "bg-gray";
+                            var bgClass = Model.GetHostBgClass(host);
 
                             <div class="host-item @bgClass">
                                 <div class="inner">
@@ -41,6 +41,10 @@
                         <div class="form-group">
                             <label for="host-machinename">Machine Name</label>
                             <input type="text" class="form-control" id="host-machinename" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="host-machinename">Last Update</label>
+                            <input type="text" class="form-control" id="host-lastupdate" disabled>
                         </div>
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="host-enabled">
@@ -183,6 +187,10 @@
             _host = db.data.value.host;
 
             $("#host-machinename").val(_host.machineName);
+
+            let updateDate = new Date(_host.updateDate).toLocaleString('en-US');
+
+            $("#host-lastupdate").val(updateDate);
             $("#host-enabled").prop('checked', _host.isEnabled);
             populateScheduledJobs(jobs);
             populateJobHistory(hostId);

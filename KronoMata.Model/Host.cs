@@ -35,8 +35,8 @@
         public DateTime InsertDate { get; set; }
 
         /// <summary>
-        /// The most recent date the Host
-        /// was saved.
+        /// The most recent date the Host was saved or requested a list of jobs 
+        /// from the API.
         /// </summary>
         public DateTime UpdateDate { get; set; }
     }
