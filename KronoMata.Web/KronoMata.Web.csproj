@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KronoMata.Data.Mock\KronoMata.Data.Mock.csproj" />
+    <ProjectReference Include="..\KronoMata.Data.SQLite\KronoMata.Data.SQLite.csproj" />
     <ProjectReference Include="..\KronoMata.Data\KronoMata.Data.csproj" />
     <ProjectReference Include="..\KronoMata.Model\KronoMata.Model.csproj" />
     <ProjectReference Include="..\KronoMata.Public\KronoMata.Public.csproj" />

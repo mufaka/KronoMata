@@ -225,7 +225,7 @@ ORDER BY RunTime desc LIMIT {pageSize};";
 
             pagedList.List = Query<JobHistory>((connection) =>
             {
-                return connection.Query<JobHistory>(sql).ToList();
+                return connection.Query<JobHistory>(sql, new { StartDate = startDate }).ToList();
             });
 
             return pagedList;

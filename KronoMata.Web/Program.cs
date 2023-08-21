@@ -1,5 +1,7 @@
 using FluentValidation;
+using KronoMata.Data;
 using KronoMata.Data.Mock;
+using KronoMata.Data.SQLite;
 using KronoMata.Model.Validation;
 
 namespace KronoMata.Web
@@ -12,8 +14,13 @@ namespace KronoMata.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSingleton(MockDatabase.Instance.DataStoreProvider);
+            //builder.Services.AddSingleton(MockDatabase.Instance.DataStoreProvider);
+            builder.Services.AddSingleton<IDataStoreProvider>(new SQLiteDataStoreProvider());
             builder.Services.AddValidatorsFromAssemblyContaining<ScheduledJobValidator>();
+
+            // TODO: do this through configuration.
+            var databasePath = Path.Combine("Database", "KronoMata.db");
+            SQLiteDataStoreBase.ConnectionString = $"Data Source={databasePath};Pooling=True;Cache Size=4000;Page Size=1024;FailIfMissing=True;Journal Mode=Off;";
 
             var app = builder.Build();
 
