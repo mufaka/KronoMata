@@ -219,8 +219,11 @@ namespace KronoMata.Agent
                 var systemConfiguration = GetSystemConfiguration(apiClient);
                 var pluginConfiguration = GetScheduledJobConfiguration(apiClient, scheduledJob, pluginMetaData);
 
+                var simpleAssemblyName = pluginMetaData.AssemblyName.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[0].Trim();
+
                 // Dynamically load plugin. Assembly file must match <AssemblyName>.dll
-                var assemblyPath = Path.GetFullPath($"{packageFolder}{Path.DirectorySeparatorChar}{pluginMetaData.AssemblyName}.dll");
+                //var assemblyPath = Path.GetFullPath($"{packageFolder}{Path.DirectorySeparatorChar}{pluginMetaData.AssemblyName}.dll");
+                var assemblyPath = Path.GetFullPath($"{packageFolder}{Path.DirectorySeparatorChar}{simpleAssemblyName}.dll");
 
                 if (!File.Exists(assemblyPath))
                 {
@@ -242,11 +245,12 @@ namespace KronoMata.Agent
 
                     if (assembly != null)
                     {
-                        _logger.LogDebug("Creating an instance of {pluginMetaData.ClassName}", pluginMetaData.ClassName);
+                        var simpleClassName = pluginMetaData.ClassName.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[0].Trim();
+                        _logger.LogDebug("Creating an instance of {simpleClassName}", simpleClassName);
 
-                        if (assembly.CreateInstance(pluginMetaData.ClassName) is IPlugin plugin)
+                        if (assembly.CreateInstance(simpleClassName) is IPlugin plugin)
                         {
-                            _logger.LogDebug("Executing plugin {pluginMetaData.ClassName}", pluginMetaData.ClassName);
+                            _logger.LogDebug("Executing plugin {simpleClassName}", simpleClassName);
 
                             var results = plugin.Execute(systemConfiguration, pluginConfiguration);
                             pluginResults.AddRange(results);
