@@ -54,8 +54,8 @@ namespace KronoMata.Web.Controllers
                         dataSeriesList.Add(dataSeries);
                     }
 
-                    // where does this histories date fall in the bucket?
-                    var span = now - history.RunTime;
+                    // where does this history's date fall in the bucket?
+                    var span = now.Date - history.RunTime.Date;
                     var bucketIndex = (dates.Count - span.Days) - 1;
 
                     // add to the count in the bucket
