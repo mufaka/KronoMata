@@ -134,7 +134,11 @@ ORDER BY RunTime desc LIMIT {pageSize};";
 	RunTime,
 	CompletionTime
 FROM JobHistory
-WHERE Id NOT IN (SELECT Id FROM JobHistory ORDER BY RunTime desc LIMIT {skip})
+WHERE Id NOT IN (SELECT Id FROM JobHistory 
+WHERE (@HostId = -1 or HostId = @HostId)
+AND (@Status = -1 or Status = @Status)
+AND (@ScheduledJobId = -1 or ScheduledJobId = @ScheduledJobId)
+ORDER BY RunTime desc LIMIT {skip})
 AND (@HostId = -1 or HostId = @HostId)
 AND (@Status = -1 or Status = @Status)
 AND (@ScheduledJobId = -1 or ScheduledJobId = @ScheduledJobId)
@@ -144,8 +148,7 @@ ORDER BY RunTime desc LIMIT {pageSize};";
 FROM JobHistory
 WHERE (@HostId = -1 or HostId = @HostId)
 AND (@Status = -1 or Status = @Status)
-AND (@ScheduledJobId = -1 or ScheduledJobId = @ScheduledJobId)
-ORDER BY RunTime desc;";
+AND (@ScheduledJobId = -1 or ScheduledJobId = @ScheduledJobId);";
 
             Execute((connection) =>
             {
