@@ -209,7 +209,7 @@ ORDER BY RunTime desc;";
 	RunTime,
 	CompletionTime
 FROM JobHistory
-WHERE Id NOT IN (SELECT Id FROM JobHistory ORDER BY RunTime desc LIMIT {skip})
+WHERE Id NOT IN (SELECT Id FROM JobHistory where RunTime > @StartDate ORDER BY RunTime desc LIMIT {skip})
 AND RunTime > @StartDate
 ORDER BY RunTime desc LIMIT {pageSize};";
 
