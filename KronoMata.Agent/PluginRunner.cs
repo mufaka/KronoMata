@@ -44,7 +44,7 @@ namespace KronoMata.Agent
             return Task.CompletedTask;
         }
 
-        private DateTime? _firstTick;
+        private DateTime? _lastTick;
 
         private async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -55,24 +55,25 @@ namespace KronoMata.Agent
                 {
                     try
                     {
-                        if (_firstTick == null)
+                        if (_lastTick == null)
                         {
-                            _firstTick = DateTime.Now;
+                            _lastTick = DateTime.Now;
                         }
                         else
                         {
                             // Ubuntu 20.04 test machine PeriodicTimer is erratic on ticks. Could be system, could be
                             // .NET Core version there but major show stopper, especially for jobs that should 
-                            // be run on specific minutes. Seeing 2x run for minutes.
-
+                            // be run on specific minutes. Seeing 2x run for minutes. For now, keep track of last tick
+                            // time and prevent executing more than once a minute. If scheduling to the second is
+                            // introduced, this will need to be revisited.
                             var now = DateTime.Now;
-
-                            if (now.Second != _firstTick.Value.Second)
+                            
+                            if (now.Minute == _lastTick.Value.Minute)
                             {
-                                _logger.LogCritical("Unexpected behavior of the internal timer. Expecting tick at {tickSecond} but happened at {realSecond}", _firstTick.Value.Second, now.Second);
-                                _logger.LogCritical("No jobs will be run.");
-                                return;
+                                continue;
                             }
+
+                            _lastTick = now;
                         }
 
                         CheckForJobs();
