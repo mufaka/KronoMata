@@ -8,10 +8,12 @@ namespace KronoMata.Agent
     internal class ApiClient
     {
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ApiClient(IConfiguration configuration)
+        public ApiClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Model.Host? GetHost(string machineName)
@@ -118,38 +120,33 @@ namespace KronoMata.Agent
 
         public List<T> Get<T>(string endPoint)
         {
-            using (var client = new HttpClient())
-            {
-                // why is there no Get? have to use Async?
-                using (var response = client.GetAsync(BuildUrl(endPoint)))
-                {
-                    // synchronous hackery ... :(
-                    response.Wait();
-                    var content = response.Result.Content.ReadAsStringAsync();
-                    content.Wait();
+            var client = _httpClientFactory.CreateClient();
+
+            // why is there no Get? have to use Async?
+            var response = client.GetAsync(BuildUrl(endPoint));
+
+            // synchronous hackery ... :( ... slow AF on windows but not MAC ...
+            response.Wait();
+            var content = response.Result.Content.ReadAsStringAsync();
+            content.Wait();
 
 #pragma warning disable CS8603 // Possible null reference return.
-                    return JsonConvert.DeserializeObject<List<T>>(content.Result);
+            return JsonConvert.DeserializeObject<List<T>>(content.Result);
 #pragma warning restore CS8603 // Possible null reference return.
-                }
-            }
         }
 
         public T Post<T>(string endPoint, T t)
         {
-            using (var client = new HttpClient())
-            {
-                var content = new StringContent(JsonConvert.SerializeObject(t), Encoding.UTF8, "application/json");
-                var response = client.PostAsync(BuildUrl(endPoint), content);
-                response.Wait();
-                var responseContent = response.Result.Content.ReadAsStringAsync();
-                responseContent.Wait();
+            var client = _httpClientFactory.CreateClient();
+            var content = new StringContent(JsonConvert.SerializeObject(t), Encoding.UTF8, "application/json");
+            var response = client.PostAsync(BuildUrl(endPoint), content);
+            response.Wait();
+            var responseContent = response.Result.Content.ReadAsStringAsync();
+            responseContent.Wait();
 
 #pragma warning disable CS8603 // Possible null reference return.
-                return JsonConvert.DeserializeObject<T>(responseContent.Result);
+            return JsonConvert.DeserializeObject<T>(responseContent.Result);
 #pragma warning restore CS8603 // Possible null reference return.
-            }
         }
-
     }
 }

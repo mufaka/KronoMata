@@ -35,6 +35,8 @@ namespace KronoMata.Agent
                         services.AddSingleton(configuration);
                         services.AddSingleton<IHostedService, PluginRunner>();
                         services.AddScoped<IShouldRun, RecurrenceShouldRun>();
+
+                        services.AddHttpClient();
                     })
                     .UseConsoleLifetime()
                     .Build();

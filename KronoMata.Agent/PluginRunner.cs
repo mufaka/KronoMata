@@ -14,13 +14,16 @@ namespace KronoMata.Agent
     {
         private readonly ILogger<PluginRunner> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IShouldRun _shouldRun;
         private readonly PeriodicTimer _periodicTimer = new(TimeSpan.FromMinutes(1));
 
-        public PluginRunner(ILogger<PluginRunner> logger, IConfiguration configuration, IShouldRun shouldRun)
+        public PluginRunner(ILogger<PluginRunner> logger, IConfiguration configuration, 
+            IHttpClientFactory httpClientFactory, IShouldRun shouldRun)
         {
             _logger = logger;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
             _shouldRun = shouldRun;
         }
 
@@ -64,7 +67,7 @@ namespace KronoMata.Agent
 
         private void CheckForJobs()
         {
-            var apiClient = new ApiClient(_configuration);
+            var apiClient = new ApiClient(_configuration, _httpClientFactory);
             var machineName = Environment.MachineName;
 
             _logger.LogDebug("Checking API for scheduled jobs");
@@ -100,7 +103,9 @@ namespace KronoMata.Agent
                             var results = new List<PluginResult>();
                             try
                             {
+                                _logger.LogDebug("Begin execute plugin");
                                 results.AddRange(ExecutePlugin(apiClient, packageRoot, scheduledJob));
+                                _logger.LogDebug("End execute plugin");
                             } 
                             catch (Exception ex)
                             {
@@ -187,14 +192,18 @@ namespace KronoMata.Agent
         {
             var pluginResults = new List<PluginResult>();
 
+            _logger.LogDebug("Begin GetPluginMetaData");
             var pluginMetaData = apiClient.GetPluginMetaData(scheduledJob.PluginMetaDataId);
+            _logger.LogDebug("End GetPluginMetaData");
+
             if (pluginMetaData == null)
             {
                 _logger.LogCritical("Unable to get PluginMetaData with id {scheduledJob.PluginMetaDataID} from API.", scheduledJob.PluginMetaDataId);
                 throw new ApplicationException("Plugin not found.");
             }
-
+            _logger.LogDebug("Begin GetPackage");
             var package = apiClient.GetPackage(pluginMetaData.PackageId);
+            _logger.LogDebug("End GetPackage");
             if (package == null)
             {
                 _logger.LogCritical("Unable to get Package with id {pluginMetaData.PackageId} from API.", pluginMetaData.PackageId);
@@ -207,7 +216,9 @@ namespace KronoMata.Agent
             var packageArchivePath = $"{pluginArchiveRoot}{package.FileName}";
 
             // create and extract plugin to package folder
+            _logger.LogDebug("Begin CreatePackageFolder");
             CreatePackageFolder(package, pluginArchiveRoot, packageFolder, packageArchivePath);
+            _logger.LogDebug("End CreatePackageFolder");
 
             // the work above should result in this folder now being available
             if (!Directory.Exists(packageFolder))
@@ -218,8 +229,10 @@ namespace KronoMata.Agent
             else
             {
                 // Map configuration values.
+                _logger.LogDebug("Begin Get Configuration");
                 var systemConfiguration = GetSystemConfiguration(apiClient);
                 var pluginConfiguration = GetScheduledJobConfiguration(apiClient, scheduledJob, pluginMetaData);
+                _logger.LogDebug("End Get Configuration");
 
                 var simpleAssemblyName = pluginMetaData.AssemblyName.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[0].Trim();
 
@@ -363,7 +376,7 @@ namespace KronoMata.Agent
                 if (!File.Exists(packageArchivePath))
                 {
                     _logger.LogDebug("Could not find package path at {packageArchivePath}. Attempting to get from API.", packageArchivePath);
-                    var apiClient = new ApiClient(_configuration);
+                    var apiClient = new ApiClient(_configuration, _httpClientFactory);
                     apiClient.FetchPackageFile(package, packageRoot);
                 }
 
