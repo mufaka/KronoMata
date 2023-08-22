@@ -16,7 +16,9 @@ namespace KronoMata.Agent
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IShouldRun _shouldRun;
-        private readonly PeriodicTimer _periodicTimer = new(TimeSpan.FromMinutes(1));
+
+        private readonly PeriodicTimer _periodicTimer;
+        private string _instanceIdentifier = Guid.NewGuid().ToString();
 
         public PluginRunner(ILogger<PluginRunner> logger, IConfiguration configuration, 
             IHttpClientFactory httpClientFactory, IShouldRun shouldRun)
@@ -25,11 +27,12 @@ namespace KronoMata.Agent
             _configuration = configuration;
             _httpClientFactory = httpClientFactory;
             _shouldRun = shouldRun;
+            _periodicTimer = new(TimeSpan.FromMinutes(1));
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("KronoMata Agent started.");
+            _logger.LogInformation("KronoMata Agent starting.");
 
             await ExecuteAsync(cancellationToken);
         }
@@ -41,6 +44,8 @@ namespace KronoMata.Agent
             return Task.CompletedTask;
         }
 
+        private DateTime? _firstTick;
+
         private async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             try
@@ -50,6 +55,26 @@ namespace KronoMata.Agent
                 {
                     try
                     {
+                        if (_firstTick == null)
+                        {
+                            _firstTick = DateTime.Now;
+                        }
+                        else
+                        {
+                            // Ubuntu 20.04 test machine PeriodicTimer is erratic on ticks. Could be system, could be
+                            // .NET Core version there but major show stopper, especially for jobs that should 
+                            // be run on specific minutes. Seeing 2x run for minutes.
+
+                            var now = DateTime.Now;
+
+                            if (now.Second != _firstTick.Value.Second)
+                            {
+                                _logger.LogCritical("Unexpected behavior of the internal timer. Expecting tick at {tickSecond} but happened at {realSecond}", _firstTick.Value.Second, now.Second);
+                                _logger.LogCritical("No jobs will be run.");
+                                return;
+                            }
+                        }
+
                         CheckForJobs();
                     }
                     catch (Exception ex)
@@ -70,7 +95,7 @@ namespace KronoMata.Agent
             var apiClient = new ApiClient(_configuration, _httpClientFactory);
             var machineName = Environment.MachineName;
 
-            _logger.LogDebug("Checking API for scheduled jobs");
+            _logger.LogDebug("Checking API for scheduled jobs with Instance {InstanceID}", _instanceIdentifier);
             var scheduledJobs = apiClient.GetScheduledJobs(machineName);
 
             if (scheduledJobs.Count == 0)
