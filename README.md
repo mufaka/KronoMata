@@ -24,7 +24,7 @@ The agent will poll the web server every minute for scheduled jobs to run. The f
 
 4. Click on the 'More info' link for the host, check the 'Enabled?' checkbox and click the Save button to enable the host.
 
-** You can also run the web agent as systemd service on Linux, there are some notes in the wiki. On Windows you can use the built in Task Scheduler to create a task that runs on startup. 
+** You can also run the agent as systemd service on Linux, there are some notes in the wiki for the web app that can be adapted for the agent as well. On Windows you can use the built in Task Scheduler to create a task that runs on startup. 
 
 ### Packages
 Plugins are implementations of the KronoMata.Public.IPlugin interface. To schedule these plugins you need to upload them to the web server in a zip file. Note that a zip file can contain more than one implementation of IPlugin. The upload process will discover all instances and create the corresponding plugins so that they can be scheduled to run. The release contains a sample plugin that will just echo configured variables to the log.
