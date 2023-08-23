@@ -14,7 +14,7 @@ KronoMata has 3 main components. The web application for managing scheduled jobs
 
 ### Agent
 1. Extract the contents of the KronoMata.Agent-<verson>.zip.
-2. Edit the KronoMata:APIRoot value to point to the web server if you are not running the agent on the same machine as the web server.
+2. Edit the KronoMata:APIRoot value in appsettings.json to point to the web server if you are not running the agent on the same machine as the web server.
 3. Be sure that the PackageRoot folder exists. This is where the agent will attempt to store plugins. By default, there needs to be a PackageRoot subdirectory beneath the agent executable.
 4. In a console, navigate to the agent installation directory and run using 'dotnet KronoMata.Agent.dll'
 
