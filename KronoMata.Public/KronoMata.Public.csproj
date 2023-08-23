@@ -4,6 +4,16 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Title>KronoMata Plugin Interface</Title>
+    <Company>Bill Nickel</Company>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Product>KronoMata</Product>
+    <Description>This is the IPlugin interface for creating plugins to run in KronoMata.</Description>
+    <PackageProjectUrl>https://github.com/mufaka/KronoMata</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mufaka/KronoMata</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>KronoMata</PackageTags>
+    <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>
