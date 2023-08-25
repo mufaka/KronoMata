@@ -36,10 +36,10 @@ select last_insert_rowid();";
 
         public void Delete(int id)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = "delete from Package where Id = @Id;";
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     Id = id
                 });
@@ -84,7 +84,7 @@ FROM Package
 
         public void Update(Package package)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = @"UPDATE Package
 SET
@@ -93,7 +93,7 @@ SET
    UploadDate = @UploadDate
 WHERE Id = @Id;";
 
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     package.Name,
                     package.FileName,

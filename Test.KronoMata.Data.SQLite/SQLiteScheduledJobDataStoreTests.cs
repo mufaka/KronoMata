@@ -50,6 +50,31 @@ namespace Test.KronoMata.Data.SQLite
         }
 
         [Test()]
+        public void Can_Create_With_Null_Host()
+        {
+            var now = DateTime.Now;
+
+            var scheduledJob = new ScheduledJob()
+            {
+                PluginMetaDataId = 1,
+                HostId = null,
+                Name = "Name",
+                Description = "Description",
+                Frequency = ScheduleFrequency.Week,
+                Interval = 2,
+                StartTime = now,
+                EndTime = now,
+                IsEnabled = true,
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            _provider.ScheduledJobDataStore.Create(scheduledJob);
+
+            Assert.That(scheduledJob.Id, Is.EqualTo(1));
+        }
+
+        [Test()]
         public void Can_Delete()
         {
             var now = DateTime.Now;
@@ -241,6 +266,39 @@ namespace Test.KronoMata.Data.SQLite
             {
                 PluginMetaDataId = 1,
                 HostId = 1,
+                Name = "Name",
+                Description = "Description",
+                Frequency = ScheduleFrequency.Week,
+                Interval = 2,
+                StartTime = now,
+                EndTime = now,
+                IsEnabled = true,
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            _provider.ScheduledJobDataStore.Create(scheduledJob);
+
+            Assert.That(scheduledJob.Id, Is.EqualTo(1));
+
+            scheduledJob.Description = "UpdatedDescription";
+
+            _provider.ScheduledJobDataStore.Update(scheduledJob);
+
+            var updated = _provider.ScheduledJobDataStore.GetById(scheduledJob.Id);
+
+            Assert.That(updated.Description, Is.EqualTo("UpdatedDescription"));
+        }
+
+        [Test()]
+        public void Can_Update_With_Null_Host()
+        {
+            var now = DateTime.Now;
+
+            var scheduledJob = new ScheduledJob()
+            {
+                PluginMetaDataId = 1,
+                HostId = null,
                 Name = "Name",
                 Description = "Description",
                 Frequency = ScheduleFrequency.Week,

@@ -73,10 +73,10 @@ select last_insert_rowid();";
 
         public void Delete(int id)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = "delete from ScheduledJob where Id = @Id;";
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     Id = id
                 });
@@ -204,7 +204,7 @@ ORDER BY Name asc;";
 
         public void Update(ScheduledJob scheduledJob)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = @"UPDATE ScheduledJob
 SET
@@ -226,7 +226,7 @@ SET
 WHERE 
 	Id = @Id";
 
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     scheduledJob.PluginMetaDataId,
                     scheduledJob.HostId,

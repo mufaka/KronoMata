@@ -7,7 +7,7 @@ namespace KronoMata.Data.SQLite
     {
         public ConfigurationValue Create(ConfigurationValue configurationValue)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = @"insert into ConfigurationValue 
 (
@@ -27,7 +27,7 @@ values
 );
 select last_insert_rowid();
 ";
-                var id = await connection.ExecuteScalarAsync<int>(sql, new 
+                var id = connection.ExecuteScalar<int>(sql, new 
                 {
                     configurationValue.ScheduledJobId,
                     configurationValue.PluginConfigurationId,
@@ -44,10 +44,10 @@ select last_insert_rowid();
 
         public void Delete(int id)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = "delete from ConfigurationValue where Id = @Id;";
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     Id = id
                 });
@@ -68,11 +68,11 @@ select last_insert_rowid();
 
         public void Update(ConfigurationValue configurationValue)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = @"update ConfigurationValue set ScheduledJobId = @ScheduledJobId, PluginConfigurationId = @PluginConfigurationId, Value = @Value, InsertDate = @InsertDate, UpdateDate = @UpdateDate
 where Id = @Id;";
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     configurationValue.ScheduledJobId,
                     configurationValue.PluginConfigurationId,

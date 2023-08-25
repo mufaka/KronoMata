@@ -40,10 +40,10 @@ select last_insert_rowid();";
 
         public void Delete(int id)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = "delete from Host where Id = @Id;";
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     Id = id
                 });
@@ -112,7 +112,7 @@ FROM Host
 
         public void Update(Host host)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = @"UPDATE Host
 SET
@@ -122,7 +122,7 @@ SET
 	UpdateDate = @UpdateDate
 WHERE Id = @Id;";
 
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     host.MachineName,
                     host.IsEnabled,

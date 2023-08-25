@@ -60,10 +60,10 @@ select last_insert_rowid();";
                 throw new InvalidOperationException("Deletion of system configuration is not allowed.");
             }
 
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = "delete from GlobalConfiguration where Id = @Id";
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     Id = id
                 });
@@ -161,7 +161,7 @@ select last_insert_rowid();";
 
         public void Update(GlobalConfiguration globalConfiguration)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = @"UPDATE GlobalConfiguration
    SET 
@@ -175,7 +175,7 @@ select last_insert_rowid();";
        UpdateDate = @UpdateDate
  WHERE Id = @Id;";
 
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     globalConfiguration.Category,
                     globalConfiguration.Name,

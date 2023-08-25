@@ -53,10 +53,10 @@ select last_insert_rowid();";
 
         public void Delete(int id)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = "delete from PluginMetaData where Id = @Id;";
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     Id = id
                 });
@@ -130,7 +130,7 @@ WHERE PackageId = @PackageId;";
 
         public void Update(PluginMetaData pluginMetaData)
         {
-            Execute(async (connection) =>
+            Execute((connection) =>
             {
                 var sql = @"UPDATE PluginMetaData
 SET
@@ -145,7 +145,7 @@ SET
 WHERE 
 	Id = @Id;";
 
-                await connection.ExecuteAsync(sql, new
+                connection.Execute(sql, new
                 {
                     pluginMetaData.PackageId,
                     pluginMetaData.Name,
