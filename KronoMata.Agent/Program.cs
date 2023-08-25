@@ -9,9 +9,7 @@ namespace KronoMata.Agent
     internal class Program
     {
 #pragma warning disable IDE0060 // Remove unused parameter
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         static async Task Main(string[] args)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 #pragma warning restore IDE0060 // Remove unused parameter
         {
             try
@@ -42,13 +40,10 @@ namespace KronoMata.Agent
                     .Build();
 
                 // suppressing this warning because we wan't the call to be async
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                agentHost.RunAsync();
-
+                await agentHost.RunAsync();
                 Console.ReadLine();
 
                 await agentHost.StopAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
             catch (Exception ex)
             {
