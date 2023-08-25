@@ -105,7 +105,7 @@ namespace KronoMata.Web.Controllers
             // need to ensure path to KronoMata.Public dll
             if (!pluginFiles.Contains("KronoMata.Public.dll"))
             {
-                //paths.Add(typeof(IPlugin).Assembly.Location);
+                paths.Add(typeof(IPlugin).Assembly.Location);
             }
 
             // need to add the packageFiles too
