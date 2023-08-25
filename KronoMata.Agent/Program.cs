@@ -39,10 +39,8 @@ namespace KronoMata.Agent
                     .UseConsoleLifetime()
                     .Build();
 
-                // suppressing this warning because we wan't the call to be async
                 await agentHost.RunAsync();
                 Console.ReadLine();
-
                 await agentHost.StopAsync();
             }
             catch (Exception ex)
