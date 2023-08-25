@@ -1,0 +1,1 @@
+﻿This folder is where Packages will be downloaded and extracted. The location can be changed in appsettings.json.
