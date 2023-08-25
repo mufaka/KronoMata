@@ -181,6 +181,119 @@ namespace Test.KronoMata.Data.SQLite
         }
 
         [Test()]
+        public void Can_GetBy_Null_Host()
+        {
+            var now = DateTime.Now;
+
+            for (int x = 1; x <= 10; x++)
+            {
+                var scheduledJob1 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = null,
+                    Name = "Name",
+                    Description = "Description",
+                    Frequency = ScheduleFrequency.Week,
+                    Interval = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob1);
+
+                var scheduledJob2 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = 2,
+                    Name = "Name",
+                    Description = "Description",
+                    Frequency = ScheduleFrequency.Week,
+                    Interval = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob2);
+            }
+
+            var byHostList = _provider.ScheduledJobDataStore.GetByHost(2);
+
+            // we should get all jobs. 10 for the host specifically, 10 that have a null host id.
+            Assert.That(byHostList, Has.Count.EqualTo(20));
+        }
+
+        [Test()]
+        public void Will_Get_Only_Null_And_Matching_Host()
+        {
+            var now = DateTime.Now;
+
+            for (int x = 1; x <= 10; x++)
+            {
+                var scheduledJob1 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = null,
+                    Name = "Name",
+                    Description = "Description",
+                    Frequency = ScheduleFrequency.Week,
+                    Interval = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob1);
+
+                var scheduledJob2 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = 2,
+                    Name = "Name",
+                    Description = "Description",
+                    Frequency = ScheduleFrequency.Week,
+                    Interval = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob2);
+
+                var scheduledJob3 = new ScheduledJob()
+                {
+                    PluginMetaDataId = 1,
+                    HostId = 3,
+                    Name = "Name",
+                    Description = "Description",
+                    Frequency = ScheduleFrequency.Week,
+                    Interval = 2,
+                    StartTime = now,
+                    EndTime = now,
+                    IsEnabled = true,
+                    InsertDate = now,
+                    UpdateDate = now
+                };
+
+                _provider.ScheduledJobDataStore.Create(scheduledJob3);
+            }
+
+            var byHostList = _provider.ScheduledJobDataStore.GetByHost(2);
+
+            // we should get all jobs. 10 for the host specifically, 10 that have a null host id.
+            Assert.That(byHostList, Has.Count.EqualTo(20));
+        }
+
+        [Test()]
         public void Can_GetById()
         {
             var now = DateTime.Now;

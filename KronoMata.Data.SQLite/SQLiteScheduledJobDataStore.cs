@@ -133,7 +133,7 @@ ORDER BY Name asc;";
 	InsertDate,
 	UpdateDate
 FROM ScheduledJob
-WHERE HostId = @HostId
+WHERE (HostId = @HostId or HostId is null)
 ORDER BY Name asc;";
 
                 return connection.Query<ScheduledJob>(sql, new { HostId = hostId }).ToList();
