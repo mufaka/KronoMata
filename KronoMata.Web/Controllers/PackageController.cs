@@ -208,6 +208,7 @@ namespace KronoMata.Web.Controllers
                         Description = parameter.Description,
                         DataType = parameter.DataType,
                         IsRequired = parameter.IsRequired,
+                        SelectValues = parameter.SelectValues,
                         InsertDate = now,
                         UpdateDate = now
                     };
