@@ -70,7 +70,7 @@ namespace KronoMata.Agent
             Post<JobHistory>(endpoint, jobHistory);
         }
 
-        public async void FetchPackageFile(Package package, string packageRootPath)
+        public async Task FetchPackageFile(Package package, string packageRootPath)
         {
             var endpoint = $"Agent/package/file/{package.Id}";
             var httpClient = new HttpClient();

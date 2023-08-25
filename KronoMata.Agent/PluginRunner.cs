@@ -403,7 +403,10 @@ namespace KronoMata.Agent
                 {
                     _logger.LogDebug("Could not find package path at {packageArchivePath}. Attempting to get from API.", packageArchivePath);
                     var apiClient = new ApiClient(_configuration, _httpClientFactory);
-                    apiClient.FetchPackageFile(package, packageRoot);
+
+                    // need to wait for the zip file to download
+                    var task = Task.Run(async () => { await apiClient.FetchPackageFile(package, packageRoot); });
+                    task.Wait();
                 }
 
                 // need to extract archive to packageFolder
