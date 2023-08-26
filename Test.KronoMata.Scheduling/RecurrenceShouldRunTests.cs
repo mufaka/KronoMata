@@ -88,6 +88,7 @@ namespace Test.KronoMata.Scheduling
         [Test]
         [TestCase("08/25/2023 9:20 PM", "08/25/2023 6:19 PM", null, true, 2, 1, null, "3,6,9,12,15,18,21", "5,10,15,20", null)] // #8
         [TestCase("08/26/2023 3:20 AM", "08/25/2023 6:19 PM", null, true, 2, 1, null, "3,6,9,12,15,18,21", "5,10,15,20", null)] // #8
+        [TestCase("08/26/2023 8:20 AM", "08/25/2023 6:19 PM", null, true, 2, 1, null, "3,6,8,9,12,15,18,21", "5,10,15,20", null)] // #8
         public void ScheduledJobShouldRun(DateTime check, DateTime start, DateTime? end, bool isEnabled, ScheduleFrequency frequency,
             int interval, string days, string hours, string minutes, string daysOfWeek)
         {
