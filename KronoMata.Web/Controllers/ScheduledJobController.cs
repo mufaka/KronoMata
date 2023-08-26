@@ -1,11 +1,8 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace KronoMata.Web.Controllers
 {
@@ -144,6 +141,11 @@ namespace KronoMata.Web.Controllers
                 }
                 else
                 {
+                    if (scheduledJob.HostId == 0)
+                    {
+                        scheduledJob.HostId = null;
+                    }
+
                     DataStoreProvider.ScheduledJobDataStore.Create(scheduledJob);
 
                     // redirect to configure if the plugin has configuration defined.
@@ -222,6 +224,11 @@ namespace KronoMata.Web.Controllers
                     else
                     {
                         if (scheduledJob.HostId <= 0)
+                        {
+                            scheduledJob.HostId = null;
+                        }
+
+                        if (scheduledJob.HostId == 0)
                         {
                             scheduledJob.HostId = null;
                         }
