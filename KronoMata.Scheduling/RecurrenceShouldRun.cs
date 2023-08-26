@@ -151,7 +151,6 @@ namespace KronoMata.Scheduling
 
         /// <summary>
         /// Contains a list of valid values for the defined schedule.
-        /// 
         /// </summary>
         private class ValidIncrements
         {
@@ -187,19 +186,38 @@ namespace KronoMata.Scheduling
                     Minutes = scheduledJob.Minutes.Split(',').Select(int.Parse).ToList();
                 }
 
+                // The Hours, Days, and Minutes lists default to being 
+                // populated with the Hour, Day, and Minute specified in
+                // the ScheduledJob StartTime. Those values need to be
+                // cleared based on the Frequency specified. The following
+                // checks will do that.
+
                 // if frequency is minutes, hours and days don't matter
+                // because every minute is potentially a chance to run.
+                // Only the Interval matters for determining whether or
+                // not the job should run at the current date/time
                 if (scheduledJob.Frequency == ScheduleFrequency.Minute)
                 {
-                    Hours.Clear();
                     Days.Clear();
+                    Hours.Clear();
                     Minutes.Clear();
                 }
 
-                // if frequency is hours, days don't matter
+                // if frequency is hours, days don't matter. Similar to
+                // reasoning for ScheduleFrequence.Minute but keeping the
+                // Minute portion of the start date.
                 if (scheduledJob.Frequency == ScheduleFrequency.Hour)
                 {
                     Days.Clear();
                     Hours.Clear();
+                }
+
+                // if frequency is days, days don't matter. Similar to
+                // the reasoning for the two checks above but keeping
+                // the Minute and Hour portion of the start date.
+                if (scheduledJob.Frequency == ScheduleFrequency.Day)
+                {
+                    Days.Clear();
                 }
             }
 

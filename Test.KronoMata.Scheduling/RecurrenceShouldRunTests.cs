@@ -68,6 +68,48 @@ namespace Test.KronoMata.Scheduling
             Assert.That(shouldRun, Is.False);
         }
 
+        /// <summary>
+        /// This test should always pass but used as an easy way to try
+        /// and reproduce production bugs. TestCases should be defined 
+        /// using the exact parameters of the bug report and use a comment
+        /// specifying the issue # the test case is for so that regressions can
+        /// be easily identified.
+        /// </summary>
+        /// <param name="check">The DateTime that the recurrence check should return true</param>
+        /// <param name="start">The ScheduledJob start time</param>
+        /// <param name="end">The nullable ScheduledJob end time</param>
+        /// <param name="isEnabled">Whether or not the job is enabled. If false, recurrence ShouldRun should return false</param>
+        /// <param name="frequency">The ScheduledJob ScheduledFrequency</param>
+        /// <param name="interval">The ScheduledJob interval</param>
+        /// <param name="days">The nullable comma separated list of days for the ScheduledJob</param>
+        /// <param name="hours">The nullable comma separated list of hours for the ScheduledJob</param>
+        /// <param name="minutes">The nullable comma separated list of minutes for the ScheduledJob</param>
+        /// <param name="daysOfWeek">The nullable comma separated list containing one or more of Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday</param>
+        [Test]
+        [TestCase("08/25/2023 9:20 PM", "08/25/2023 6:19 PM", null, true, 2, 1, null, "3,6,9,12,15,18,21", "5,10,15,20", null)] // #8
+        [TestCase("08/26/2023 3:20 AM", "08/25/2023 6:19 PM", null, true, 2, 1, null, "3,6,9,12,15,18,21", "5,10,15,20", null)] // #8
+        public void ScheduledJobShouldRun(DateTime check, DateTime start, DateTime? end, bool isEnabled, ScheduleFrequency frequency,
+            int interval, string days, string hours, string minutes, string daysOfWeek)
+        {
+            var scheduledJob = new ScheduledJob();
+
+            scheduledJob.StartTime = start;
+            scheduledJob.EndTime = end;
+            scheduledJob.IsEnabled = isEnabled;
+            scheduledJob.Frequency = frequency;
+            scheduledJob.Interval = interval;
+            scheduledJob.Days = days;
+            scheduledJob.Hours = hours;
+            scheduledJob.Minutes = minutes;
+            scheduledJob.DaysOfWeek = daysOfWeek;
+
+            var shouldRun = _recurrence.ShouldRun(check, scheduledJob);
+
+            // If the ScheduledJob is not enabled, shouldRun should always be false. Otherwise
+            // it is assumed that all provided parameters are for a case where the scheduled should run.
+            Assert.That(shouldRun, Is.EqualTo(isEnabled));
+        }
+
         // NOTE: Additional test cases should be grouped into separate files based on parameters. 
     }
 }
