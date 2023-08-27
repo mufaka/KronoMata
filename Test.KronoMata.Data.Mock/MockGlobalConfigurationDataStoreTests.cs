@@ -5,7 +5,7 @@ using Test.KronoMata.Data.Base;
 namespace Test.KronoMata.Data.Mock
 {
     [TestFixture()]
-    public class MockPluginConfigurationDataStoreTests : PluginConfigurationDataStoreTestsBase
+    public class MockGlobalConfigurationDataStoreTests : GlobalConfigurationDataStoreTestsBase 
     {
         private IDataStoreProvider _provider;
 

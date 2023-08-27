@@ -1,11 +1,11 @@
-﻿using KronoMata.Data;
+using KronoMata.Data;
 using KronoMata.Data.Mock;
 using Test.KronoMata.Data.Base;
 
 namespace Test.KronoMata.Data.Mock
 {
     [TestFixture()]
-    public class MockPluginConfigurationDataStoreTests : PluginConfigurationDataStoreTestsBase
+    public class MockConfigurationValueDataStoreTests : ConfigurationValueDataStoreTestsBase
     {
         private IDataStoreProvider _provider;
 

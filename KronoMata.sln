@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Data.SQLite", "Kr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.KronoMata.Data.SQLite", "Test.KronoMata.Data.SQLite\Test.KronoMata.Data.SQLite.csproj", "{B134A5C8-C1F5-4801-AA52-7CA04489F6F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.KronoMata.Data.Base", "Test.KronoMata.Data.Base\Test.KronoMata.Data.Base.csproj", "{87EA61F9-DF8E-4905-8104-16CCBD58282A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{B134A5C8-C1F5-4801-AA52-7CA04489F6F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B134A5C8-C1F5-4801-AA52-7CA04489F6F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B134A5C8-C1F5-4801-AA52-7CA04489F6F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87EA61F9-DF8E-4905-8104-16CCBD58282A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87EA61F9-DF8E-4905-8104-16CCBD58282A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87EA61F9-DF8E-4905-8104-16CCBD58282A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87EA61F9-DF8E-4905-8104-16CCBD58282A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

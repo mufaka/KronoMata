@@ -1,18 +1,38 @@
 ﻿using KronoMata.Data;
-using KronoMata.Data.Mock;
 using KronoMata.Model;
+using NUnit.Framework;
 
-namespace Test.KronoMata.Data.Mock
+namespace Test.KronoMata.Data.Base
 {
-    [TestFixture()]
-    public class GlobalConfigurationDataStoreTests
+    [TestFixture]
+    public abstract class GlobalConfigurationDataStoreTestsBase
     {
-        private IDataStoreProvider _provider;
+        protected abstract IDataStoreProvider DataStoreProvider { get; }
 
-        [SetUp]
-        public void Setup()
+        [Test()]
+        public void Cannot_DeleteSystemConfiguration()
         {
-            _provider = new MockDataStoreProvider();
+            var now = DateTime.Now;
+
+            var globalConfiguration = new GlobalConfiguration()
+            {
+                Category = "System",
+                Name = $"SomeImportantConfig",
+                Value = $"SomeImportantValue",
+                IsAccessibleToPlugins = true,
+                IsSystemConfiguration = true,
+                InsertDate = now,
+                UpdateDate = now
+            };
+
+            DataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration);
+
+            Assert.That(globalConfiguration.Id, Is.EqualTo(1));
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                DataStoreProvider.GlobalConfigurationDataStore.Delete(1);
+            });
         }
 
         [Test]
@@ -30,40 +50,9 @@ namespace Test.KronoMata.Data.Mock
                 UpdateDate = now
             };
 
-            _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
+            DataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration);
 
             Assert.That(globalConfiguration.Id, Is.EqualTo(1));
-        }
-
-        [Test]
-        public void Can_update()
-        {
-            var now = DateTime.Now;
-
-            var globalConfiguration = new GlobalConfiguration()
-            {
-                Category = "TestCategory",
-                Name = "TestName",
-                Value = "TestValue",
-                IsAccessibleToPlugins = true,
-                InsertDate = now,
-                UpdateDate = now
-            };
-
-            _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
-
-            Assert.That(globalConfiguration.Id, Is.EqualTo(1));
-
-            var existing = _provider.GlobalConfigurationDataStore.GetById(1);
-            Assert.That(existing, Is.Not.Null);
-
-            existing.Category = "UpdatedCategory";
-            _provider.GlobalConfigurationDataStore.Update(existing);
-
-            existing = _provider.GlobalConfigurationDataStore.GetById(1);
-            Assert.That(existing, Is.Not.Null);
-
-            Assert.That(existing.Category, Is.EqualTo("UpdatedCategory"));
         }
 
         [Test]
@@ -81,13 +70,13 @@ namespace Test.KronoMata.Data.Mock
                 UpdateDate = now
             };
 
-            _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
+            DataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration);
 
             Assert.That(globalConfiguration.Id, Is.EqualTo(1));
 
-            _provider.GlobalConfigurationDataStore.Delete(globalConfiguration.Id);
+            DataStoreProvider.GlobalConfigurationDataStore.Delete(globalConfiguration.Id);
 
-            var existing = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName");
+            var existing = DataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName");
             Assert.That(existing, Is.Null);
         }
 
@@ -109,10 +98,10 @@ namespace Test.KronoMata.Data.Mock
                     UpdateDate = now
                 };
 
-                _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
+                DataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration);
             }
 
-            var all = _provider.GlobalConfigurationDataStore.GetAll();
+            var all = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
             Assert.That(all, Has.Count.EqualTo(count));
         }
 
@@ -135,7 +124,7 @@ namespace Test.KronoMata.Data.Mock
                     UpdateDate = now
                 };
 
-                _provider.GlobalConfigurationDataStore.Create(globalConfiguration1);
+                DataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration1);
 
                 var globalConfiguration2 = new GlobalConfiguration()
                 {
@@ -146,11 +135,11 @@ namespace Test.KronoMata.Data.Mock
                     InsertDate = now,
                     UpdateDate = now
                 };
-                
-                _provider.GlobalConfigurationDataStore.Create(globalConfiguration2);
+
+                DataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration2);
             }
 
-            var category1 = _provider.GlobalConfigurationDataStore.GetByCategory("TestCategory1");
+            var category1 = DataStoreProvider.GlobalConfigurationDataStore.GetByCategory("TestCategory1");
 
             Assert.That(category1, Has.Count.EqualTo(count));
         }
@@ -173,10 +162,10 @@ namespace Test.KronoMata.Data.Mock
                     UpdateDate = now
                 };
 
-                _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
+                DataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration);
             }
 
-            var one = _provider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName3");
+            var one = DataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName("TestCategory", "TestName3");
 
             Assert.That(one, Is.Not.Null);
             Assert.Multiple(() =>
@@ -186,30 +175,35 @@ namespace Test.KronoMata.Data.Mock
             });
         }
 
-        [Test()]
-        public void Cannot_DeleteSystemConfiguration()
+        [Test]
+        public void Can_update()
         {
             var now = DateTime.Now;
 
             var globalConfiguration = new GlobalConfiguration()
             {
-                Category = "System",
-                Name = $"SomeImportantConfig",
-                Value = $"SomeImportantValue",
+                Category = "TestCategory",
+                Name = "TestName",
+                Value = "TestValue",
                 IsAccessibleToPlugins = true,
-                IsSystemConfiguration = true,
                 InsertDate = now,
                 UpdateDate = now
             };
 
-            _provider.GlobalConfigurationDataStore.Create(globalConfiguration);
+            DataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration);
 
             Assert.That(globalConfiguration.Id, Is.EqualTo(1));
 
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                _provider.GlobalConfigurationDataStore.Delete(1);
-            });
+            var existing = DataStoreProvider.GlobalConfigurationDataStore.GetById(1);
+            Assert.That(existing, Is.Not.Null);
+
+            existing.Category = "UpdatedCategory";
+            DataStoreProvider.GlobalConfigurationDataStore.Update(existing);
+
+            existing = DataStoreProvider.GlobalConfigurationDataStore.GetById(1);
+            Assert.That(existing, Is.Not.Null);
+
+            Assert.That(existing.Category, Is.EqualTo("UpdatedCategory"));
         }
     }
 }

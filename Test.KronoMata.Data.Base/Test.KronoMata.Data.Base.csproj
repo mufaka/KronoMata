@@ -21,11 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KronoMata.Data.SQLite\KronoMata.Data.SQLite.csproj" />
     <ProjectReference Include="..\KronoMata.Data\KronoMata.Data.csproj" />
     <ProjectReference Include="..\KronoMata.Model\KronoMata.Model.csproj" />
     <ProjectReference Include="..\KronoMata.Public\KronoMata.Public.csproj" />
-    <ProjectReference Include="..\Test.KronoMata.Data.Base\Test.KronoMata.Data.Base.csproj" />
   </ItemGroup>
 
 </Project>
