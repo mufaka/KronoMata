@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using KronoMata.Data;
 using KronoMata.Model;
+using KronoMata.Public;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,16 +48,27 @@ namespace KronoMata.Web.Controllers
         {
             try
             {
+                var hosts = DataStoreProvider.HostDataStore.GetAll();
+
                 var jobs = DataStoreProvider.ScheduledJobDataStore.GetAll()
                     .OrderByDescending(s => s.IsEnabled)
                     .ThenBy(s => s.Name)
                     .ToList();
 
-                return Json(jobs);
+                var db = Json(new
+                {
+                    hosts,
+                    jobs
+                });
+
+                return Json(new
+                {
+                    data = db
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Host related data.");
+                _logger.LogError(ex, "Error getting Scheduled Job data.");
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }
