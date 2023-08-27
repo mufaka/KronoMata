@@ -2,7 +2,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-6">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Packages</h3>
@@ -34,17 +34,20 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-12">
             <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Upload Package</h3>
                     </div>
                     <form id="dropzoneform" class="dropzone" action="@Url.Action("Index", "Package")">
                         <div class="card-body">
-                            <div class="previews"></div>
-
-                            <label for="packageName">Package Name</label>
-                            <input type="text" class="form-control" id="packageName" name="packageName">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="previews"></div>
+                                    <label for="packageName">Package Name</label>
+                                    <input type="text" class="form-control" id="packageName" name="packageName">
+                                </div>
+                            </div>
                         </div>
                     </form>
                     <div class="card-footer">
