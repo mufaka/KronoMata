@@ -13,31 +13,46 @@ namespace KronoMata.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
-            
-            //builder.Services.AddSingleton(MockDatabase.Instance.DataStoreProvider);
-            builder.Services.AddSingleton<IDataStoreProvider>(new SQLiteDataStoreProvider());
-            builder.Services.AddValidatorsFromAssemblyContaining<ScheduledJobValidator>();
-
-
+#if DEBUG
+            var config = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.Development.json", optional: false)
+                    .Build();
+#else
             var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false)
                     .Build();
+#endif 
 
-            var workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var databaseRelativePath = Path.Combine(config["KronoMata:SQLite:DatabaseRootPath"], config["KronoMata:SQLite:DatabaseFileName"]);
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+
+            var databaseProvider = config["KronoMata:DataStoreProvider"];
+
+            if (databaseProvider != null && databaseProvider == "MockDataStoreProvider")
+            {
+                builder.Services.AddSingleton(MockDatabase.Instance.DataStoreProvider);
+            }
+            else
+            {
+                // TODO: dynamically load IDataStoreProvider implementation?
+                builder.Services.AddSingleton<IDataStoreProvider>(new SQLiteDataStoreProvider());
+
+                var workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var databaseRelativePath = Path.Combine(config["KronoMata:SQLite:DatabaseRootPath"], config["KronoMata:SQLite:DatabaseFileName"]);
 #pragma warning disable CS8604 // Possible null reference argument.
-            var databasePath = Path.Combine(workingDirectory, databaseRelativePath);
+                var databasePath = Path.Combine(workingDirectory, databaseRelativePath);
 #pragma warning restore CS8604 // Possible null reference argument.
 
-            if (!File.Exists(databasePath))
-            {
-                throw new ArgumentException($"Unable to find database at {databasePath}");
+                if (!File.Exists(databasePath))
+                {
+                    throw new ArgumentException($"Unable to find database at {databasePath}");
+                }
+
+                var connectionString = $"Data Source={databasePath};{config["KronoMata:SQLite:DatabaseOptions"]}";
+                SQLiteDataStoreBase.ConnectionString = connectionString;
             }
 
-            var connectionString = $"Data Source={databasePath};{config["KronoMata:SQLite:DatabaseOptions"]}";
-            SQLiteDataStoreBase.ConnectionString = connectionString;
+            builder.Services.AddValidatorsFromAssemblyContaining<ScheduledJobValidator>();
 
             var app = builder.Build();
 
