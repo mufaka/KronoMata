@@ -3,6 +3,7 @@ using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 
 namespace KronoMata.Web.Controllers
 {
@@ -47,12 +48,14 @@ namespace KronoMata.Web.Controllers
         {
             try
             {
-                var hosts = DataStoreProvider.HostDataStore.GetAll();
+                var allHosts = DataStoreProvider.HostDataStore.GetAll();
 
                 var jobs = DataStoreProvider.ScheduledJobDataStore.GetAll()
                     .OrderByDescending(s => s.IsEnabled)
                     .ThenBy(s => s.Name)
                     .ToList();
+
+                List<MultipleHost> hosts = GetUniqueHostNames(allHosts, jobs);
 
                 var db = Json(new
                 {
@@ -70,6 +73,44 @@ namespace KronoMata.Web.Controllers
                 _logger.LogError(ex, "Error getting Scheduled Job data.");
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
+        }
+
+        // mock what jsGrid is expecting for Host
+        private class MultipleHost
+        {
+            public string Id { get; set; } = String.Empty;
+            public string MachineName { get; set; } = String.Empty;
+        }
+
+        private static List<MultipleHost> GetUniqueHostNames(List<Model.Host> allHosts, List<ScheduledJob> jobs)
+        {
+            var uniqueMultiHosts = new Dictionary<string, MultipleHost>();
+
+            foreach (ScheduledJob scheduledJob in jobs)
+            {
+                if (!uniqueMultiHosts.ContainsKey(scheduledJob.HostIds))
+                {
+                    if (scheduledJob.HostIds == "-1")
+                    {
+                        uniqueMultiHosts.Add("-1", new MultipleHost() { Id = "-1", MachineName = "All" });
+                    }
+                    else
+                    {
+                        // get integer host id's from csv
+                        List<int> hostIds = new List<int>(Array.ConvertAll(scheduledJob.HostIds.Split(','), int.Parse));
+
+                        // get hosts that match those ids
+                        var matchingHosts = allHosts.Where(h => hostIds.Contains(h.Id)).ToList();
+
+                        // get list of names
+                        var names = String.Join(" ", matchingHosts.Select(h => h.MachineName));
+
+                        uniqueMultiHosts.Add(scheduledJob.HostIds, new MultipleHost() { Id = scheduledJob.HostIds, MachineName = names });
+                    }
+                }
+            }
+
+            return uniqueMultiHosts.Values.ToList();
         }
 
         private void PopulateCommonProperties(ScheduledJobSaveViewModel model, bool updating)
