@@ -363,6 +363,7 @@ namespace Test.KronoMata.Data.Base
 
             for (int x = 1; x <= 10; x++)
             {
+                // 10 of these jobs should be returned because of the -1 / All host value
                 var scheduledJob1 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
@@ -380,10 +381,11 @@ namespace Test.KronoMata.Data.Base
 
                 DataStoreProvider.ScheduledJobDataStore.Create(scheduledJob1);
 
+                // 10 of these jobs should be returned because of the 2 value host
                 var scheduledJob2 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostIds = "2",
+                    HostIds = "2,3,4",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -400,7 +402,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob3 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostIds = "3",
+                    HostIds = "3,4,5",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,

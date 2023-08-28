@@ -136,7 +136,7 @@ FROM ScheduledJob
 WHERE ((',' || HostIds || ',' like @HostId) or HostIds = '-1')
 ORDER BY Name asc;";
 
-                return connection.Query<ScheduledJob>(sql, new { HostId = $",{hostId}," }).ToList();
+                return connection.Query<ScheduledJob>(sql, new { HostId = $"%,{hostId},%" }).ToList();
             });
         }
 

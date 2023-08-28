@@ -33,10 +33,10 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label>Host</label>
-                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hours" id="scheduledjob-hostIds">
+                                            <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hostIds" id="scheduledjob-hostIds">
                                                 @foreach (var host in Model.Hosts)
                                                 {
-                                                    var selected = (String.IsNullOrEmpty(Model.ScheduledJob.HostIds) || Model.ScheduledJob.HostIds == "-1") ? false : Model.ScheduledJob.HostIds.Split(",".ToCharArray()).Contains(host.Id.ToString());
+                                                    var selected = Model.ScheduledJob.HostIds.Split(",".ToCharArray()).Contains(host.Id.ToString());
                                                     <option value="@host.Id" selected="@selected">@host.MachineName</option>
                                                 }
                                             </select>

@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using KronoMata.Data;
 using KronoMata.Model;
-using KronoMata.Public;
 using KronoMata.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -82,7 +81,7 @@ namespace KronoMata.Web.Controllers
 
             var allHost = new Model.Host()
             {
-                Id = 0,
+                Id = -1,
                 MachineName = "<All>"
             };
 
@@ -153,7 +152,8 @@ namespace KronoMata.Web.Controllers
                 }
                 else
                 {
-                    if (String.IsNullOrWhiteSpace(scheduledJob.HostIds))
+                    // if the All hosts is one of the selections, default to just All
+                    if (String.IsNullOrWhiteSpace(scheduledJob.HostIds) || scheduledJob.HostIds.Split(",".ToCharArray()).Contains("-1"))
                     {
                         scheduledJob.HostIds = "-1";
                     }
@@ -235,7 +235,7 @@ namespace KronoMata.Web.Controllers
                     }
                     else
                     {
-                        if (String.IsNullOrWhiteSpace(scheduledJob.HostIds))
+                        if (String.IsNullOrWhiteSpace(scheduledJob.HostIds) || scheduledJob.HostIds.Split(",".ToCharArray()).Contains("-1"))
                         {
                             scheduledJob.HostIds = "-1";
                         }
