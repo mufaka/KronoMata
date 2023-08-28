@@ -17,7 +17,7 @@ namespace Test.KronoMata.Data.Base
             var scheduledJob = new ScheduledJob()
             {
                 PluginMetaDataId = 1,
-                HostId = 1,
+                HostIds = "1",
                 Name = "Name",
                 Description = "Description",
                 Frequency = ScheduleFrequency.Week,
@@ -42,7 +42,7 @@ namespace Test.KronoMata.Data.Base
             var scheduledJob = new ScheduledJob()
             {
                 PluginMetaDataId = 1,
-                HostId = null,
+                HostIds = "-1",
                 Name = "Name",
                 Description = "Description",
                 Frequency = ScheduleFrequency.Week,
@@ -67,7 +67,7 @@ namespace Test.KronoMata.Data.Base
             var scheduledJob = new ScheduledJob()
             {
                 PluginMetaDataId = 1,
-                HostId = 1,
+                HostIds = "1",
                 Name = "Name",
                 Description = "Description",
                 Frequency = ScheduleFrequency.Week,
@@ -99,7 +99,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = 1,
+                    HostIds = "1",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -128,7 +128,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob1 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = 1,
+                    HostIds = "1",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -145,7 +145,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob2 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = 2,
+                    HostIds = "2",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -173,7 +173,7 @@ namespace Test.KronoMata.Data.Base
             var scheduledJob = new ScheduledJob()
             {
                 PluginMetaDataId = 1,
-                HostId = 1,
+                HostIds = "1",
                 Name = "Name",
                 Description = "Description",
                 Frequency = ScheduleFrequency.Week,
@@ -205,7 +205,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob1 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = 1,
+                    HostIds = "1",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -222,7 +222,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob2 = new ScheduledJob()
                 {
                     PluginMetaDataId = 2,
-                    HostId = 1,
+                    HostIds = "1",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -252,7 +252,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob1 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = null,
+                    HostIds = "-1",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -269,7 +269,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob2 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = 2,
+                    HostIds = "2",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -298,7 +298,7 @@ namespace Test.KronoMata.Data.Base
             var scheduledJob = new ScheduledJob()
             {
                 PluginMetaDataId = 1,
-                HostId = 1,
+                HostIds = "1",
                 Name = "Name",
                 Description = "Description",
                 Frequency = ScheduleFrequency.Week,
@@ -331,7 +331,7 @@ namespace Test.KronoMata.Data.Base
             var scheduledJob = new ScheduledJob()
             {
                 PluginMetaDataId = 1,
-                HostId = null,
+                HostIds = "-1",
                 Name = "Name",
                 Description = "Description",
                 Frequency = ScheduleFrequency.Week,
@@ -366,7 +366,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob1 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = null,
+                    HostIds = "-1",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -383,7 +383,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob2 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = 2,
+                    HostIds = "2",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,
@@ -400,7 +400,7 @@ namespace Test.KronoMata.Data.Base
                 var scheduledJob3 = new ScheduledJob()
                 {
                     PluginMetaDataId = 1,
-                    HostId = 3,
+                    HostIds = "3",
                     Name = "Name",
                     Description = "Description",
                     Frequency = ScheduleFrequency.Week,

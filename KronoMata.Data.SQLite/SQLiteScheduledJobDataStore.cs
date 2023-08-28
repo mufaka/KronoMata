@@ -12,7 +12,7 @@ namespace KronoMata.Data.SQLite
                 var sql = @"INSERT INTO ScheduledJob 
 (
 	PluginMetaDataId,
-	HostId,
+	HostIds,
 	Name,
 	Description,
 	Frequency,
@@ -30,7 +30,7 @@ namespace KronoMata.Data.SQLite
 VALUES 
 (
 	@PluginMetaDataId,
-	@HostId,
+	@HostIds,
 	@Name,
 	@Description,
 	@Frequency,
@@ -49,7 +49,7 @@ select last_insert_rowid();";
                 var id = connection.ExecuteScalar<int>(sql, new
                 {
                     scheduledJob.PluginMetaDataId,
-                    scheduledJob.HostId,
+                    scheduledJob.HostIds,
                     scheduledJob.Name,
                     scheduledJob.Description,
                     scheduledJob.Frequency,
@@ -90,7 +90,7 @@ select last_insert_rowid();";
                 var sql = @"SELECT 
 	Id,
 	PluginMetaDataId,
-	HostId,
+	HostIds,
 	Name,
 	Description,
 	Frequency,
@@ -118,7 +118,7 @@ ORDER BY Name asc;";
                 var sql = @"SELECT 
 	Id,
 	PluginMetaDataId,
-	HostId,
+	HostIds,
 	Name,
 	Description,
 	Frequency,
@@ -133,10 +133,10 @@ ORDER BY Name asc;";
 	InsertDate,
 	UpdateDate
 FROM ScheduledJob
-WHERE (HostId = @HostId or HostId is null)
+WHERE ((',' || HostIds || ',' like @HostId) or HostIds = '-1')
 ORDER BY Name asc;";
 
-                return connection.Query<ScheduledJob>(sql, new { HostId = hostId }).ToList();
+                return connection.Query<ScheduledJob>(sql, new { HostId = $",{hostId}," }).ToList();
             });
         }
 
@@ -147,7 +147,7 @@ ORDER BY Name asc;";
                 var sql = @"SELECT 
 	Id,
 	PluginMetaDataId,
-	HostId,
+	HostIds,
 	Name,
 	Description,
 	Frequency,
@@ -180,7 +180,7 @@ WHERE Id = @Id;";
                 var sql = @"SELECT 
 	Id,
 	PluginMetaDataId,
-	HostId,
+	HostIds,
 	Name,
 	Description,
 	Frequency,
@@ -209,7 +209,7 @@ ORDER BY Name asc;";
                 var sql = @"UPDATE ScheduledJob
 SET
 	PluginMetaDataId = @PluginMetaDataId,
-	HostId = @HostId,
+	HostIds = @HostIds,
 	Name = @Name,
 	Description = @Description,
 	Frequency = @Frequency,
@@ -229,7 +229,7 @@ WHERE
                 connection.Execute(sql, new
                 {
                     scheduledJob.PluginMetaDataId,
-                    scheduledJob.HostId,
+                    scheduledJob.HostIds,
                     scheduledJob.Name,
                     scheduledJob.Description,
                     scheduledJob.Frequency,

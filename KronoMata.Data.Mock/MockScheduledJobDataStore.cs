@@ -1,4 +1,5 @@
 ﻿using KronoMata.Model;
+using System.Linq;
 
 namespace KronoMata.Data.Mock
 {
@@ -39,7 +40,7 @@ namespace KronoMata.Data.Mock
 
         public List<ScheduledJob> GetByHost(int hostId)
         {
-            return _scheduledJobs.Where(s => s.HostId == hostId || s.HostId == null).ToList();
+            return _scheduledJobs.Where(s => $",{s.HostIds},".Contains($",{hostId}") || s.HostIds == "-1").ToList();
         }
 
         public ScheduledJob GetById(int id)

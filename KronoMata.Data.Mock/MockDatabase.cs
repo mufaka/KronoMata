@@ -256,7 +256,7 @@ namespace KronoMata.Data.Mock
             var scheduledJob = new ScheduledJob
             {
                 PluginMetaDataId = plugin.Id,
-                HostId = host.Id,
+                HostIds = Convert.ToString(host.Id),
                 Name = name,
                 Description = "Testing the plugin architecture.",
                 StartTime = now,

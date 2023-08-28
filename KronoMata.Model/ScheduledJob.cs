@@ -16,11 +16,11 @@
         public int PluginMetaDataId { get; set; }
 
         /// <summary>
-        /// The Id of the Host to run the IPlugin implementation
-        /// on. A Null value means that the IPlugin implementation
+        /// The Ids of the Hosts to run the IPlugin implementation
+        /// on. A -1 value means that the IPlugin implementation
         /// will run on all enabled Agents.
         /// </summary>
-        public int? HostId { get; set; }
+        public string HostIds { get; set; } = "-1";
 
         /// <summary>
         /// The name of the ScheduledJob.

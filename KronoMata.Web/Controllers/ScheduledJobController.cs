@@ -153,9 +153,9 @@ namespace KronoMata.Web.Controllers
                 }
                 else
                 {
-                    if (scheduledJob.HostId == 0)
+                    if (String.IsNullOrWhiteSpace(scheduledJob.HostIds))
                     {
-                        scheduledJob.HostId = null;
+                        scheduledJob.HostIds = "-1";
                     }
 
                     DataStoreProvider.ScheduledJobDataStore.Create(scheduledJob);
@@ -235,14 +235,9 @@ namespace KronoMata.Web.Controllers
                     }
                     else
                     {
-                        if (scheduledJob.HostId <= 0)
+                        if (String.IsNullOrWhiteSpace(scheduledJob.HostIds))
                         {
-                            scheduledJob.HostId = null;
-                        }
-
-                        if (scheduledJob.HostId == 0)
-                        {
-                            scheduledJob.HostId = null;
+                            scheduledJob.HostIds = "-1";
                         }
 
                         DataStoreProvider.ScheduledJobDataStore.Update(scheduledJob);
