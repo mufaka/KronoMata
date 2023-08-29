@@ -6,13 +6,18 @@ namespace KronoMata.Data.Mock
     {
         public MockHostDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
 
-        private readonly List<Host> _hosts = new();
+        private List<Host> _hosts = new();
+
+        public void Initialize(List<Host> hosts) { _hosts = hosts; }
 
         public Host Create(Host host)
         {
-            host.Id = _hosts.Count == 0
-                ? 1
-                : _hosts[^1].Id + 1;
+            if (host.Id <= 0)
+            {
+                host.Id = _hosts.Count == 0
+                    ? 1
+                    : _hosts[^1].Id + 1;
+            }
 
             _hosts.Add(host);
 

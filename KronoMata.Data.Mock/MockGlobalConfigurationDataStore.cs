@@ -6,13 +6,18 @@ namespace KronoMata.Data.Mock
     {
         public MockGlobalConfigurationDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
 
-        private readonly List<GlobalConfiguration> _globalConfigurations = new();
+        private List<GlobalConfiguration> _globalConfigurations = new();
+
+        public void Initialize(List<GlobalConfiguration> globalConfigurations) { _globalConfigurations = globalConfigurations; }
 
         public GlobalConfiguration Create(GlobalConfiguration globalConfiguration)
         {
-            globalConfiguration.Id = _globalConfigurations.Count == 0
-                ? 1
-                : _globalConfigurations[^1].Id + 1;
+            if (globalConfiguration.Id <= 0)
+            {
+                globalConfiguration.Id = _globalConfigurations.Count == 0
+                    ? 1
+                    : _globalConfigurations[^1].Id + 1;
+            }
 
             _globalConfigurations.Add(globalConfiguration);
 

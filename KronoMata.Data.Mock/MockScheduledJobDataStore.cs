@@ -6,13 +6,17 @@ namespace KronoMata.Data.Mock
     {
         public MockScheduledJobDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
 
-        private readonly List<ScheduledJob> _scheduledJobs = new();
+        private List<ScheduledJob> _scheduledJobs = new();
+        public void Initialize(List<ScheduledJob> scheduledJobs) { _scheduledJobs = scheduledJobs; }
 
         public ScheduledJob Create(ScheduledJob scheduledJob)
         {
-            scheduledJob.Id = _scheduledJobs.Count == 0
-                ? 1
-                : _scheduledJobs[^1].Id + 1;
+            if (scheduledJob.Id <= 0)
+            {
+                scheduledJob.Id = _scheduledJobs.Count == 0
+                    ? 1
+                    : _scheduledJobs[^1].Id + 1;
+            }
 
             _scheduledJobs.Add(scheduledJob);
 

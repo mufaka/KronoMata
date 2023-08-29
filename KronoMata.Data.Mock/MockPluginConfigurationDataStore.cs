@@ -6,13 +6,17 @@ namespace KronoMata.Data.Mock
     {
         public MockPluginConfigurationDataStore(MockDataStoreProvider dataProvider) : base(dataProvider) { }
 
-        private readonly List<PluginConfiguration> _pluginConfigurations = new();
+        private List<PluginConfiguration> _pluginConfigurations = new();
 
+        public void Initialize(List<PluginConfiguration> pluginConfigurations) { _pluginConfigurations = pluginConfigurations; }
         public PluginConfiguration Create(PluginConfiguration pluginConfiguration)
         {
-            pluginConfiguration.Id = _pluginConfigurations.Count == 0
-                ? 1
-                : _pluginConfigurations[^1].Id + 1;
+            if (pluginConfiguration.Id <= 0)
+            {
+                pluginConfiguration.Id = _pluginConfigurations.Count == 0
+                    ? 1
+                    : _pluginConfigurations[^1].Id + 1;
+            }
 
             _pluginConfigurations.Add(pluginConfiguration);
 
@@ -41,6 +45,11 @@ namespace KronoMata.Data.Mock
         public List<PluginConfiguration> GetByPluginMetaData(int pluginMetaDataId)
         {
             return _pluginConfigurations.Where(c => c.PluginMetaDataId == pluginMetaDataId).ToList();
+        }
+
+        public List<PluginConfiguration> GetAll()
+        {
+            return _pluginConfigurations;
         }
 
         public void Update(PluginConfiguration pluginConfiguration)

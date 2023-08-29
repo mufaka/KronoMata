@@ -66,6 +66,15 @@ select last_insert_rowid();
             });
         }
 
+        public List<ConfigurationValue> GetAll()
+        {
+            return Query<ConfigurationValue>((connection) =>
+            {
+                var sql = "select Id, ScheduledJobId, PluginConfigurationId, Value, InsertDate, UpdateDate from ConfigurationValue";
+                return connection.Query<ConfigurationValue>(sql).ToList();
+            });
+        }
+
         public void Update(ConfigurationValue configurationValue)
         {
             Execute((connection) =>

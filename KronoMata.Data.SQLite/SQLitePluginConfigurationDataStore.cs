@@ -108,6 +108,26 @@ WHERE PluginMetaDataId = @PluginMetaDataId;";
             });
         }
 
+        public List<PluginConfiguration> GetAll()
+        {
+            return Query<PluginConfiguration>((connection) =>
+            {
+                var sql = @"SELECT 
+	Id,
+	PluginMetaDataId,
+	DataType,
+	Name,
+	Description,
+	IsRequired,
+	SelectValues,
+	InsertDate,
+	UpdateDate
+FROM PluginConfiguration";
+
+                return connection.Query<PluginConfiguration>(sql).ToList();
+            });
+        }
+
         public void Update(PluginConfiguration pluginConfiguration)
         {
             Execute((connection) =>

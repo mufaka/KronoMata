@@ -11,5 +11,6 @@ namespace KronoMata.Data
         void Update(ConfigurationValue configurationValue);
         void Delete(int id);
         List<ConfigurationValue> GetByScheduledJob(int scheduledJobId);
+        List<ConfigurationValue> GetAll();
     }
 }
