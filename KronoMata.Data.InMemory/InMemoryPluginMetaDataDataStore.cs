@@ -6,7 +6,11 @@ namespace KronoMata.Data.InMemory
     public class InMemoryPluginMetaDataDataStore : InMemoryDataStoreBase, IPluginMetaDataDataStore
     {
         public InMemoryPluginMetaDataDataStore(MockDataStoreProvider inMemoryDataStoreProvider, IDataStoreProvider backingDataStoreProvider)
-            : base(inMemoryDataStoreProvider, backingDataStoreProvider) { }
+            : base(inMemoryDataStoreProvider, backingDataStoreProvider) 
+        {
+            ((MockPluginMetaDataDataStore)inMemoryDataStoreProvider.PluginMetaDataDataStore)
+                .Initialize(backingDataStoreProvider.PluginMetaDataDataStore.GetAll());
+        }
 
         public PluginMetaData Create(PluginMetaData pluginMetaData)
         {
