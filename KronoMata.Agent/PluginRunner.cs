@@ -32,7 +32,7 @@ namespace KronoMata.Agent
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("KronoMata Agent starting.");
+            _logger.LogInformation("KronoMata Agent Started.");
 
             await ExecuteAsync(cancellationToken);
         }
@@ -96,7 +96,7 @@ namespace KronoMata.Agent
             var apiClient = new ApiClient(_configuration, _httpClientFactory);
             var machineName = Environment.MachineName;
 
-            _logger.LogDebug("Checking API for scheduled jobs with Instance {InstanceID}", _instanceIdentifier);
+            _logger.LogInformation("Checking API for scheduled jobs with Instance {InstanceID}", _instanceIdentifier);
             var scheduledJobs = apiClient.GetScheduledJobs(machineName);
 
             if (scheduledJobs.Count == 0)
@@ -117,7 +117,7 @@ namespace KronoMata.Agent
                 
                 var host = apiClient.GetHost(machineName);
 
-                _logger.LogDebug("{scheduledJobs.Count} jobs are defined for this Host.", scheduledJobs.Count);
+                _logger.LogInformation("{scheduledJobs.Count} jobs are defined for this Host.", scheduledJobs.Count);
 
                 if (host != null)
                 {
@@ -291,7 +291,7 @@ namespace KronoMata.Agent
 
                         if (assembly.CreateInstance(simpleClassName) is IPlugin plugin)
                         {
-                            _logger.LogDebug("Executing plugin {simpleClassName}", simpleClassName);
+                            _logger.LogInformation("Executing plugin {simpleClassName}", simpleClassName);
 
                             var results = plugin.Execute(systemConfiguration, pluginConfiguration);
                             pluginResults.AddRange(results);
