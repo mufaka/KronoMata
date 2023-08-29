@@ -16,6 +16,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group">
+                                            <i class="fa fa-asterisk"></i>
                                             <label>Name</label>
                                             <input type="text" class="form-control" value="@Model.ScheduledJob.Name" name="scheduledjob-name" id="scheduledjob-name">
                                         </div>
@@ -32,6 +33,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group">
+                                            <i class="fa fa-asterisk"></i>
                                             <label>Host</label>
                                             <select hidden class="form-control select2bs4" multiple="multiple" style="width: 100%" name="scheduledjob-hostIds" id="scheduledjob-hostIds">
                                                 @foreach (var host in Model.Hosts)
@@ -46,6 +48,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group">
+                                            <i class="fa fa-asterisk"></i>
                                             <label>Plugin</label>
                                             <select class="form-control" name="scheduledjob-pluginMetaDataId" id="scheduledjob-pluginMetaDataId">
                                                 @foreach (var plugin in Model.Plugins)
@@ -60,6 +63,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group">
+                                            <i class="fa fa-asterisk"></i>
                                             <label>Start Date / Time</label>
                                             <div class="input-group date" id="schedule-start-time" data-target-input="nearest">
                                                 <input type="text" class="form-control datetimepicker-input" data-target="#schedule-start-time" value="@Model.ScheduledJob.StartTime" name="scheduledjob-startTime" id="scheduledjob-startTime">
@@ -99,6 +103,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group">
+                                            <i class="fa fa-asterisk"></i>
                                             <label>Frequency</label>
                                             <select class="form-control" name="scheduledjob-frequency" id="scheduledjob-frequency">
                                                 @foreach (var frequency in Model.Frequencies)
@@ -113,6 +118,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group">
+                                            <i class="fa fa-asterisk"></i>
                                             <label>Interval</label>
                                             <input type="text" class="form-control" value="@Model.ScheduledJob.Interval" name="scheduledjob-interval" id="scheduledjob-interval">
                                         </div>
