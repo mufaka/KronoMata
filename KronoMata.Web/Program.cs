@@ -1,5 +1,6 @@
 using FluentValidation;
 using KronoMata.Data;
+using KronoMata.Data.InMemory;
 using KronoMata.Data.Mock;
 using KronoMata.Data.SQLite;
 using KronoMata.Model.Validation;
@@ -34,8 +35,9 @@ namespace KronoMata.Web
             }
             else
             {
-                // TODO: dynamically load IDataStoreProvider implementation?
-                builder.Services.AddSingleton<IDataStoreProvider>(new SQLiteDataStoreProvider());
+
+                var mockDataStoreProvider = new MockDataStoreProvider();
+                var sqliteDataStoreProvider = new SQLiteDataStoreProvider();
 
                 var workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 var databaseRelativePath = Path.Combine(config["KronoMata:SQLite:DatabaseRootPath"], config["KronoMata:SQLite:DatabaseFileName"]);
@@ -50,6 +52,8 @@ namespace KronoMata.Web
 
                 var connectionString = $"Data Source={databasePath};{config["KronoMata:SQLite:DatabaseOptions"]}";
                 SQLiteDataStoreBase.ConnectionString = connectionString;
+
+                builder.Services.AddSingleton<IDataStoreProvider>(new InMemoryDataStoreProvider(mockDataStoreProvider, sqliteDataStoreProvider));
             }
 
             builder.Services.AddValidatorsFromAssemblyContaining<ScheduledJobValidator>();
