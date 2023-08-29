@@ -82,6 +82,13 @@ namespace KronoMata.Web.Controllers
 
                 if (existing != null)
                 {
+                    // don't allow changing the names of system configuration
+                    if (existing.IsSystemConfiguration)
+                    {
+                        data.Category = existing.Category;
+                        data.Name = existing.Name;
+                    }
+
                     data.InsertDate = existing.InsertDate;
                     data.UpdateDate = DateTime.Now;
 
