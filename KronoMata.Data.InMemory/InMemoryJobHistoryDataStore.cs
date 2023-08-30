@@ -70,5 +70,11 @@ namespace KronoMata.Data.InMemory
         {
             return InMemoryDataStoreProvider.JobHistoryDataStore.GetTableStat();
         }
+
+        public int Expire(int maxDays, int maxRecords)
+        {
+            BackingDataStoreProvider.JobHistoryDataStore.Expire(maxDays, maxRecords);
+            return InMemoryDataStoreProvider.JobHistoryDataStore.Expire(maxDays, maxRecords);
+        }
     }
 }

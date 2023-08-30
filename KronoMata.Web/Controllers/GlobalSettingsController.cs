@@ -28,18 +28,19 @@ namespace KronoMata.Web.Controllers
             try
             {
                 model.ExpirationDays = int.TryParse(DataStoreProvider.GlobalConfigurationDataStore.
-                    GetByCategoryAndName("JobHistory", "ExpirationDays").Value, out int expiration) 
+                    GetByCategoryAndName("JobHistory", "MaxDays").Value, out int expiration) 
                     ? expiration 
                     : 14;
 
                 model.MaximumHistoryRecords = int.TryParse(DataStoreProvider.GlobalConfigurationDataStore.
-                    GetByCategoryAndName("JobHistory", "MaximumHistoryRecords").Value, out int max) 
+                    GetByCategoryAndName("JobHistory", "MaxRecords").Value, out int max) 
                     ? max 
                     : 10000;
 
                 var jobHistoryTableStat = DataStoreProvider.JobHistoryDataStore.GetTableStat();
                 model.JobHistoryCount = jobHistoryTableStat.RowCount;
-                model.OldestHistoryDate = jobHistoryTableStat.OldestRecord.HasValue ? jobHistoryTableStat.OldestRecord.Value : DateTime.Now;
+                model.OldestHistoryDate = jobHistoryTableStat.OldestRecord.HasValue ? jobHistoryTableStat.OldestRecord.Value : DateTime.MinValue;
+                model.NewestHistoryDate = jobHistoryTableStat.NewestRecord.HasValue ? jobHistoryTableStat.NewestRecord.Value : DateTime.MinValue;
             }
             catch (Exception ex)
             {

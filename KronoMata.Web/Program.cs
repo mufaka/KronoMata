@@ -89,19 +89,24 @@ namespace KronoMata.Web
         private static void EnsureSystemConfigurationExists(IDataStoreProvider dataStoreProvider)
         {
             var now = DateTime.Now;
-            var historyExpirationDays = dataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName("JobHistory", "ExpirationDays");
-            var historyExpirationMax = dataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName("JobHistory", "ExpirationMaxRecords");
+
+            const string categoryName = "JobHistory";
+            const string maxDaysName = "MaxDays";
+            const string maxRecordsName = "MaxRecords";
+
+            var historyExpirationDays = dataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName(categoryName, maxDaysName);
+            var historyExpirationMax = dataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName(categoryName, maxRecordsName);
 
             if (historyExpirationDays == null)
             {
                 // 14 day max default for JobHistory
-                CreateConfigurationValue(dataStoreProvider, "JobHistory", "ExpirationDays", now, "14");
+                CreateConfigurationValue(dataStoreProvider, categoryName, maxDaysName, now, "14");
             }
 
             if (historyExpirationMax == null)
             {
                 // 20,000 record max for JobHistory
-                CreateConfigurationValue(dataStoreProvider, "JobHistory", "MaximumHistoryRecords", now, "10000");
+                CreateConfigurationValue(dataStoreProvider, categoryName, maxRecordsName, now, "10000");
             }
         }
 

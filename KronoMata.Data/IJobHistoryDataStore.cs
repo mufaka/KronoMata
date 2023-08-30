@@ -19,5 +19,6 @@ namespace KronoMata.Data
         List<JobHistory> GetLastByDate(DateTime startDate);
         PagedList<JobHistory> GetLastByDatePaged(DateTime startDate, int pageIndex, int pageSize);
         TableStat GetTableStat();
+        int Expire(int maxDays, int maxRecords);
     }
 }

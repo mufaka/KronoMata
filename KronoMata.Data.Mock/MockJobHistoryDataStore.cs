@@ -107,11 +107,37 @@ namespace KronoMata.Data.Mock
 
             tableStat.TableName = "JobHistory";
 
-            tableStat.RowCount = _jobHistories.Count;
-            tableStat.OldestRecord = _jobHistories.Count == 0 ? null : _jobHistories[0].RunTime;
-            tableStat.NewestRecord = _jobHistories.Count == 0 ? null : _jobHistories[^1].RunTime;
+            // ensure that the order is what we expect it to be
+            var ascendingOrderHistory = _jobHistories.OrderBy(h => h.RunTime).ToList();
+
+            tableStat.RowCount = ascendingOrderHistory.Count;
+            tableStat.OldestRecord = ascendingOrderHistory.Count == 0 ? null : ascendingOrderHistory[0].RunTime;
+            tableStat.NewestRecord = ascendingOrderHistory.Count == 0 ? null : ascendingOrderHistory[^1].RunTime;
 
             return tableStat;
+        }
+
+        public int Expire(int maxDays, int maxRecords)
+        {
+            int affectedRows = 0;
+            int originalCount = _jobHistories.Count;
+            var oldestDate = DateTime.Now.Date.AddDays(-maxDays);
+
+            // ensure that the order is what we expect it to be
+            var ascendingOrderHistory = _jobHistories.OrderBy(h => h.RunTime).ToList();
+
+            // remove all but last maxRecords count
+            var lastXRecords = ascendingOrderHistory.TakeLast(maxRecords).ToList();
+
+            // remove any that are older than the calculated maxdays date
+            lastXRecords.RemoveAll(h => h.RunTime < oldestDate);
+
+            // get the delta between original and new
+            affectedRows = originalCount - lastXRecords.Count;
+
+            _jobHistories = lastXRecords;
+
+            return affectedRows;
         }
     }
 }

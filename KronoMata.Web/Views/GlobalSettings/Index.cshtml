@@ -24,7 +24,9 @@
                     @if (Model.JobHistoryCount != 0)
                     {
                         <span>
-                            The oldest Job History is from <b>@Model.OldestHistoryDate.ToShortDateString()</b>. Click on the <b>'Expire'</b> button below to remove records that are more than
+                            The oldest Job History is from <b>@Model.OldestHistoryDate.ToShortDateString() @Model.OldestHistoryDate.ToShortTimeString()</b>.
+                            The newest Job History is from <b>@Model.NewestHistoryDate.ToShortDateString() @Model.NewestHistoryDate.ToShortTimeString()</b>.
+                            Click on the <b>'Expire'</b> button below to remove records that are more than
                             <b>@Model.ExpirationDays</b> days old or to ensure the total amount of records is not more than <b>@Model.MaximumHistoryRecords</b>.
                         </span>
                     }
@@ -32,7 +34,7 @@
                 @if (Model.JobHistoryCount != 0)
                 {
                     <div class="card-footer">
-                        <input type="button" onclick="" class="btn btn-secondary" value="Expire" />
+                        <input type="button" onclick="expireHistory();" class="btn btn-secondary" value="Expire" />
                     </div>
                 }
             </div>
@@ -52,6 +54,16 @@
         $(function () {
             populateSettingsGrid();
         });
+
+        function expireHistory() {
+            GetUrl('@Url.Action("Expire", "JobHistory")',
+                success = function (response) {
+                    location.href = '@Url.Action("Index", "GlobalSettings")';
+                },
+                error = function (req) {
+                    // TODO: report error
+                });
+        }
 
         function populateSettingsGrid() {
             $("#settings-grid").jsGrid({

@@ -47,5 +47,30 @@ namespace KronoMata.Web.Controllers
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }
+
+        public int Expire()
+        {
+            try
+            {
+                var maxDays = int.TryParse(DataStoreProvider.GlobalConfigurationDataStore.
+                    GetByCategoryAndName("JobHistory", "MaxDays").Value, out int expiration)
+                    ? expiration
+                : 14;
+
+                var maxRecords = int.TryParse(DataStoreProvider.GlobalConfigurationDataStore.
+                    GetByCategoryAndName("JobHistory", "MaxRecords").Value, out int max)
+                    ? max
+                    : 10000;
+
+                return DataStoreProvider.JobHistoryDataStore.Expire(maxDays, maxRecords);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error expiring Job History.");
+            }
+
+            return 0;
+        }
     }
 }

@@ -258,10 +258,34 @@ LIMIT {howMany};";
     MAX(RunTime) as NewestRecord
 FROM 
     JobHistory";
+
 #pragma warning disable CS8603 // Possible null reference return.
                 return connection.Query<TableStat>(sql).FirstOrDefault();
 #pragma warning restore CS8603 // Possible null reference return.
             });
+        }
+
+        public int Expire(int maxDays, int maxRecords)
+        {
+            var tableStat = GetTableStat();
+            int originalRows = tableStat.RowCount;
+
+            Execute((connection) =>
+            {
+                var sql = $"DELETE FROM JobHistory where Id not in (SELECT Id FROM JobHistory order by Id desc LIMIT {maxRecords})";
+                connection.Execute(sql);
+            });
+
+            Execute((connection) =>
+            {
+                var oldestDate = DateTime.Now.Date.AddDays(-maxDays);
+                var sql = $"DELETE FROM JobHistory where RunTime < @OldestDate";
+                connection.Execute(sql, new { OldestDate = oldestDate});
+            });
+
+            tableStat = GetTableStat();
+
+            return originalRows - tableStat.RowCount;
         }
     }
 }
