@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using KronoMata.Model;
+using KronoMata.Model.Stats;
 
 namespace KronoMata.Data.SQLite
 {
@@ -244,6 +245,22 @@ ORDER BY RunTime desc
 LIMIT {howMany};";
 
                 return connection.Query<JobHistory>(sql).ToList();
+            });
+        }
+
+        public TableStat GetTableStat()
+        {
+            return QueryOne<TableStat>((connection) =>
+            {
+                var sql = $@"SELECT 
+    COUNT(*) as RowCount,
+    MIN(RunTime) as OldestRecord,
+    MAX(RunTime) as NewestRecord
+FROM 
+    JobHistory";
+#pragma warning disable CS8603 // Possible null reference return.
+                return connection.Query<TableStat>(sql).FirstOrDefault();
+#pragma warning restore CS8603 // Possible null reference return.
             });
         }
     }

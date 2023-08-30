@@ -1,5 +1,6 @@
 ﻿using KronoMata.Data.Mock;
 using KronoMata.Model;
+using KronoMata.Model.Stats;
 
 namespace KronoMata.Data.InMemory
 {
@@ -63,6 +64,11 @@ namespace KronoMata.Data.InMemory
         public PagedList<JobHistory> GetLastByDatePaged(DateTime startDate, int pageIndex, int pageSize)
         {
             return InMemoryDataStoreProvider.JobHistoryDataStore.GetLastByDatePaged(startDate, pageIndex, pageSize);
+        }
+
+        public TableStat GetTableStat()
+        {
+            return InMemoryDataStoreProvider.JobHistoryDataStore.GetTableStat();
         }
     }
 }

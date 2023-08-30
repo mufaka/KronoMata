@@ -1,4 +1,5 @@
 ﻿using KronoMata.Model;
+using KronoMata.Model.Stats;
 
 namespace KronoMata.Data
 {
@@ -17,5 +18,6 @@ namespace KronoMata.Data
         List<JobHistory> GetTop(int howMany);
         List<JobHistory> GetLastByDate(DateTime startDate);
         PagedList<JobHistory> GetLastByDatePaged(DateTime startDate, int pageIndex, int pageSize);
+        TableStat GetTableStat();
     }
 }

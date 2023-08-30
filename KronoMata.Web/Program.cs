@@ -101,7 +101,7 @@ namespace KronoMata.Web
             if (historyExpirationMax == null)
             {
                 // 20,000 record max for JobHistory
-                CreateConfigurationValue(dataStoreProvider, "JobHistory", "ExpirationDays", now, "20000");
+                CreateConfigurationValue(dataStoreProvider, "JobHistory", "MaximumHistoryRecords", now, "10000");
             }
         }
 

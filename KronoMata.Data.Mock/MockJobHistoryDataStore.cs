@@ -1,4 +1,5 @@
 ﻿using KronoMata.Model;
+using KronoMata.Model.Stats;
 
 namespace KronoMata.Data.Mock
 {
@@ -98,6 +99,19 @@ namespace KronoMata.Data.Mock
                 TotalRecords = all.Count,
                 List = all.Skip(pageIndex * pageSize).Take(pageSize).ToList()
             };
+        }
+
+        public TableStat GetTableStat()
+        {
+            var tableStat = new TableStat();
+
+            tableStat.TableName = "JobHistory";
+
+            tableStat.RowCount = _jobHistories.Count;
+            tableStat.OldestRecord = _jobHistories.Count == 0 ? null : _jobHistories[0].RunTime;
+            tableStat.NewestRecord = _jobHistories.Count == 0 ? null : _jobHistories[^1].RunTime;
+
+            return tableStat;
         }
     }
 }

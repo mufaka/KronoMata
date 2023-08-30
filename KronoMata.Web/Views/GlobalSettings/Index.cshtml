@@ -13,6 +13,31 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Job History Stats</h3>
+                </div>
+                <div class="card-body">
+                    There are <b>@Model.JobHistoryCount</b> rows of history for Scheduled Jobs.
+                    @if (Model.JobHistoryCount != 0)
+                    {
+                        <span>
+                            The oldest Job History is from <b>@Model.OldestHistoryDate.ToShortDateString()</b>. Click on the <b>'Expire'</b> button below to remove records that are more than
+                            <b>@Model.ExpirationDays</b> days old or to ensure the total amount of records is not more than <b>@Model.MaximumHistoryRecords</b>.
+                        </span>
+                    }
+                </div>
+                @if (Model.JobHistoryCount != 0)
+                {
+                    <div class="card-footer">
+                        <input type="button" onclick="" class="btn btn-secondary" value="Expire" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
 @section styles {
@@ -30,7 +55,7 @@
 
         function populateSettingsGrid() {
             $("#settings-grid").jsGrid({
-                height: "600px",
+                height: "300px",
                 width: "100%",
 
                 filtering: false,
