@@ -28,15 +28,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Agent", "KronoMata.Agent\KronoMata.Agent.csproj", "{CD61C434-EC17-4E94-989A-3A89ACAB7A08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KronoMata.Agent", "KronoMata.Agent\KronoMata.Agent.csproj", "{CD61C434-EC17-4E94-989A-3A89ACAB7A08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Data.SQLite", "KronoMata.Data.SQLite\KronoMata.Data.SQLite.csproj", "{10AD8AD1-ECD9-4B97-B555-7877C67C2D35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KronoMata.Data.SQLite", "KronoMata.Data.SQLite\KronoMata.Data.SQLite.csproj", "{10AD8AD1-ECD9-4B97-B555-7877C67C2D35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.KronoMata.Data.SQLite", "Test.KronoMata.Data.SQLite\Test.KronoMata.Data.SQLite.csproj", "{B134A5C8-C1F5-4801-AA52-7CA04489F6F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.KronoMata.Data.SQLite", "Test.KronoMata.Data.SQLite\Test.KronoMata.Data.SQLite.csproj", "{B134A5C8-C1F5-4801-AA52-7CA04489F6F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.KronoMata.Data.Base", "Test.KronoMata.Data.Base\Test.KronoMata.Data.Base.csproj", "{87EA61F9-DF8E-4905-8104-16CCBD58282A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.KronoMata.Data.Base", "Test.KronoMata.Data.Base\Test.KronoMata.Data.Base.csproj", "{87EA61F9-DF8E-4905-8104-16CCBD58282A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Data.InMemory", "KronoMata.Data.InMemory\KronoMata.Data.InMemory.csproj", "{E39FCD28-84B4-4E3D-9E40-CFA954A6CF24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KronoMata.Data.InMemory", "KronoMata.Data.InMemory\KronoMata.Data.InMemory.csproj", "{E39FCD28-84B4-4E3D-9E40-CFA954A6CF24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoMata.Plugins.Admin", "KronoMata.Plugins.Admin\KronoMata.Plugins.Admin.csproj", "{9B86AEBB-FD8F-44AF-8981-70412674436D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +106,10 @@ Global
 		{E39FCD28-84B4-4E3D-9E40-CFA954A6CF24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E39FCD28-84B4-4E3D-9E40-CFA954A6CF24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E39FCD28-84B4-4E3D-9E40-CFA954A6CF24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B86AEBB-FD8F-44AF-8981-70412674436D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B86AEBB-FD8F-44AF-8981-70412674436D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B86AEBB-FD8F-44AF-8981-70412674436D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B86AEBB-FD8F-44AF-8981-70412674436D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
