@@ -90,41 +90,30 @@ namespace KronoMata.Web
         {
             var now = DateTime.Now;
 
-            const string categoryName = "JobHistory";
-            const string maxDaysName = "MaxDays";
-            const string maxRecordsName = "MaxRecords";
-
-            var historyExpirationDays = dataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName(categoryName, maxDaysName);
-            var historyExpirationMax = dataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName(categoryName, maxRecordsName);
-
-            if (historyExpirationDays == null)
-            {
-                // 14 day max default for JobHistory
-                CreateConfigurationValue(dataStoreProvider, categoryName, maxDaysName, now, "14");
-            }
-
-            if (historyExpirationMax == null)
-            {
-                // 20,000 record max for JobHistory
-                CreateConfigurationValue(dataStoreProvider, categoryName, maxRecordsName, now, "10000");
-            }
+            CreateConfigurationValue(dataStoreProvider, now, "JobHistory", "MaxDays", "14");
+            CreateConfigurationValue(dataStoreProvider, now, "JobHistory", "MaxRecords", "10000");
         }
 
-        private static void CreateConfigurationValue(IDataStoreProvider dataStoreProvider, string category, string name, DateTime now, string configValue)
+        private static void CreateConfigurationValue(IDataStoreProvider dataStoreProvider, DateTime now, string category, string name, string configValue)
         {
-            var configuration = new GlobalConfiguration
-            {
-                Category = category,
-                InsertDate = now,
-                IsAccessibleToPlugins = true,
-                IsMasked = false,
-                IsSystemConfiguration = true,
-                Name = name,
-                UpdateDate = now,
-                Value = configValue
-            };
+            var existingConfiguration = dataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName(category, name);
 
-            dataStoreProvider.GlobalConfigurationDataStore.Create(configuration);
+            if (existingConfiguration == null)
+            {
+                var configuration = new GlobalConfiguration
+                {
+                    Category = category,
+                    InsertDate = now,
+                    IsAccessibleToPlugins = true,
+                    IsMasked = false,
+                    IsSystemConfiguration = true,
+                    Name = name,
+                    UpdateDate = now,
+                    Value = configValue
+                };
+
+                dataStoreProvider.GlobalConfigurationDataStore.Create(configuration);
+            }
         }
     }
 }
