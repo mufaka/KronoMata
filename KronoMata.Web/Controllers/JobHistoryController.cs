@@ -62,8 +62,11 @@ namespace KronoMata.Web.Controllers
                     ? max
                     : 10000;
 
-                return DataStoreProvider.JobHistoryDataStore.Expire(maxDays, maxRecords);
+                var expiredRecordCount = DataStoreProvider.JobHistoryDataStore.Expire(maxDays, maxRecords);
 
+                _logger.LogInformation("Expired {expiredRecordCount} Job History records.", expiredRecordCount);
+
+                return expiredRecordCount;
             }
             catch (Exception ex)
             {

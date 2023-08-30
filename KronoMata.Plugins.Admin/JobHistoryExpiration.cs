@@ -91,7 +91,7 @@ namespace KronoMata.Plugins.Admin
                     }
 
                     var client = new HttpClient();
-                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
 
                     var response = client.Send(request);
 
