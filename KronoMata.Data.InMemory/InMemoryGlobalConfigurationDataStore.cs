@@ -15,7 +15,7 @@ namespace KronoMata.Data.InMemory
         public GlobalConfiguration Create(GlobalConfiguration globalConfiguration)
         {
             var createdGlobalConfiguration = BackingDataStoreProvider.GlobalConfigurationDataStore.Create(globalConfiguration);
-            BackingDataStoreProvider.GlobalConfigurationDataStore.Create(createdGlobalConfiguration);
+            InMemoryDataStoreProvider.GlobalConfigurationDataStore.Create(createdGlobalConfiguration);
             return createdGlobalConfiguration;
         }
 
