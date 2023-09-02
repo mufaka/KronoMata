@@ -60,7 +60,25 @@
                 pluginConfigValues: []
             };
 
-            $(".jobconfig-form").serializeArray().map(function (x) {
+            let formArray = $(".jobconfig-form").serializeArray(),
+                names = (function () {
+                    var n = [],
+                        l = formArray.length - 1;
+                    for (; l >= 0; l--) {
+                        n.push(formArray[l].name);
+                    }
+
+                    return n;
+                })();
+
+            // checkboxes are not included in serializeArray ...
+            $('input[type="checkbox"]:not(:checked)').each(function () {
+                if ($.inArray(this.name, names) === -1) {
+                    formArray.push({ name: this.name, value: 'off' });
+                }
+            });
+
+            formArray.map(function (x) {
                 if (x.name.startsWith('config-') || x.name.startsWith('configcheck-')) {
 
                     let tokenized = x.name.split("-");
