@@ -76,7 +76,11 @@ namespace KronoMata.Agent
                             _lastTick = now;
                         }
 
-                        CheckForJobs();
+                        // Suppressing warning because this is the behavior that we want. Executing here should not
+                        // prevent the next tick from firing in 1 minute.
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                        Task.Run(() => CheckForJobs());
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     }
                     catch (Exception ex)
                     {
