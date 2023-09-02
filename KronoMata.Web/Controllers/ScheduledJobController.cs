@@ -282,6 +282,28 @@ namespace KronoMata.Web.Controllers
                         }
 
                         DataStoreProvider.ScheduledJobDataStore.Update(scheduledJob);
+
+                        // redirect to configure if there is no ConfigurationValues defined or the Plugin has changed
+                        var redirect = "index";
+                        var pluginConfigurations = DataStoreProvider.PluginConfigurationDataStore.GetByPluginMetaData(scheduledJob.PluginMetaDataId);
+
+                        if (pluginConfigurations.Count > 0)
+                        {
+                            var configurationValues = DataStoreProvider.ConfigurationValueDataStore.GetByScheduledJob(scheduledJob.Id);
+
+                            if (configurationValues.Count == 0 || existing.PluginMetaDataId != scheduledJob.PluginMetaDataId)
+                            {
+                                redirect = "configure";
+                            }
+                        }
+
+                        var response = new
+                        {
+                            redirect,
+                            id = scheduledJob.Id
+                        };
+
+                        return new ObjectResult(response) { StatusCode = 200 };
                     }
                 }
                 else
@@ -300,8 +322,6 @@ namespace KronoMata.Web.Controllers
 
                 return View("Save", model);
             }
-
-            return RedirectToAction("Index");
         }
 
         public ActionResult Configure(int id)
