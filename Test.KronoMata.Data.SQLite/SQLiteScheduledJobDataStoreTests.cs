@@ -16,14 +16,14 @@ namespace Test.KronoMata.Data.SQLite
         {
             _provider = new SQLiteDataStoreProvider();
             var databasePath = Path.Combine("Database", "KronoMata.db");
-            SQLiteDataStoreBase.ConnectionString = $"Data Source={databasePath};Pooling=True;Cache Size=4000;Page Size=1024;FailIfMissing=True;Journal Mode=Off;";
+            SQLiteDataStoreBase.ConnectionString = $"Data Source={databasePath};Pooling=True;Cache Size=4000;Page Size=1024;FailIfMissing=True;Journal Mode=WAL;";
             ClearTable();
         }
 
         [TearDown]
         public void ClearTable()
         {
-            ((SQLiteDataStoreBase)_provider.ConfigurationValueDataStore).TruncateTable("ScheduledJob");
+            ((SQLiteDataStoreBase)_provider.ScheduledJobDataStore).TruncateTable("ScheduledJob");
         }
     }
 }

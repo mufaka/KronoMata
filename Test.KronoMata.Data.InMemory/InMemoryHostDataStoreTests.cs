@@ -1,11 +1,13 @@
 ﻿using KronoMata.Data;
+using KronoMata.Data.InMemory;
+using KronoMata.Data.Mock;
 using KronoMata.Data.SQLite;
 using Test.KronoMata.Data.Base;
 
-namespace Test.KronoMata.Data.SQLite
+namespace Test.KronoMata.Data.Mock
 {
     [TestFixture()]
-    public class SQLitePluginConfigurationDataStoreTests : PluginConfigurationDataStoreTestsBase
+    public class InMemoryHostDataStoreTests : HostDataStoreTestsBase 
     {
         private IDataStoreProvider _provider;
 
@@ -14,16 +16,22 @@ namespace Test.KronoMata.Data.SQLite
         [SetUp]
         public void Setup()
         {
-            _provider = new SQLiteDataStoreProvider();
+            var mockProvider = new MockDataStoreProvider();
+            var sqliteProvider = new SQLiteDataStoreProvider();
+
             var databasePath = Path.Combine("Database", "KronoMata.db");
             SQLiteDataStoreBase.ConnectionString = $"Data Source={databasePath};Pooling=True;Cache Size=4000;Page Size=1024;FailIfMissing=True;Journal Mode=WAL;";
+
+            _provider = new InMemoryDataStoreProvider(mockProvider, sqliteProvider);
+
             ClearTable();
         }
 
         [TearDown]
         public void ClearTable()
         {
-            ((SQLiteDataStoreBase)_provider.PluginConfigurationDataStore).TruncateTable("PluginConfiguration");
+            var inMemoryDataStore = (InMemoryHostDataStore)_provider.HostDataStore;
+            ((SQLiteDataStoreBase)inMemoryDataStore.BackingDataStoreProvider.HostDataStore).TruncateTable("Host");
         }
     }
 }
