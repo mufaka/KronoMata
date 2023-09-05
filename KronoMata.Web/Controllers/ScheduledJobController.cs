@@ -2,8 +2,8 @@
 using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices;
 
 namespace KronoMata.Web.Controllers
 {
@@ -11,14 +11,16 @@ namespace KronoMata.Web.Controllers
     {
         private readonly ILogger<ScheduledJobController> _logger;
         private readonly IValidator _scheduledJobValidator;
+        private readonly IDataProtector _dataProtector;
 
         public ScheduledJobController(ILogger<ScheduledJobController> logger, IDataStoreProvider dataStoreProvider,
-            IConfiguration configuration, IValidator<ScheduledJob> scheduledJobValidator)
+            IConfiguration configuration, IValidator<ScheduledJob> scheduledJobValidator, IDataProtectionProvider dataProtectionProvider)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;
             Configuration = configuration;
             _scheduledJobValidator = scheduledJobValidator;
+            _dataProtector = dataProtectionProvider.CreateProtector("KronoMata.Web.v1");
         }
 
         public IActionResult Index()
@@ -363,6 +365,21 @@ namespace KronoMata.Web.Controllers
                                 };
                                 existingConfigurationValue.UpdateDate = existingConfigurationValue.InsertDate;
                             }
+                            else
+                            {
+                                try
+                                {
+                                    if (pluginConfiguration.DataType == Public.ConfigurationDataType.Password)
+                                    {
+                                        existingConfigurationValue.Value = _dataProtector.Unprotect(existingConfigurationValue.Value);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogWarning("Unable to decrypt Configuration Value for Name {pluginConfiguration.Name}. {ex.Message}"
+                                        , pluginConfiguration.Name, ex.Message);
+                                }
+                            }
 
                             configurationValues.Add(existingConfigurationValue);
                         }
@@ -435,6 +452,22 @@ namespace KronoMata.Web.Controllers
                     }
 
                     var validationMessage = ValidateConfigurationValue(pluginConfiguration, existingConfigurationValue);
+
+                    if (pluginConfiguration.DataType == Public.ConfigurationDataType.Password)
+                    {
+                        try
+                        {
+                            if (pluginConfiguration.DataType == Public.ConfigurationDataType.Password)
+                            {
+                                existingConfigurationValue.Value = _dataProtector.Protect(existingConfigurationValue.Value);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning("Unable to encrypt Configuration Value for Name {pluginConfiguration.Name}. {ex.Message}"
+                                , pluginConfiguration.Name, ex.Message);
+                        }
+                    }
 
                     if (validationMessage.MessageType == NotificationMessageType.Error)
                     {

@@ -1,7 +1,8 @@
 ﻿using KronoMata.Data;
 using KronoMata.Model;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml.Linq;
+using static Dapper.SqlMapper;
 
 namespace KronoMata.Web.Controllers
 {
@@ -14,13 +15,15 @@ namespace KronoMata.Web.Controllers
         private readonly IConfiguration _configuration;
 #pragma warning restore IDE0052 // Remove unread private members
         private IDataStoreProvider DataStoreProvider { get; set; }
+        private readonly IDataProtector _dataProtector;
 
         public AgentController(ILogger<AgentController> logger, IDataStoreProvider dataStoreProvider,
-            IConfiguration configuration)
+            IConfiguration configuration, IDataProtectionProvider dataProtectionProvider)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;
             _configuration = configuration;
+            _dataProtector = dataProtectionProvider.CreateProtector("KronoMata.Web.v1");
         }
 
         [HttpGet("jobs/{name}")]
@@ -171,6 +174,22 @@ namespace KronoMata.Web.Controllers
             {
                 _logger.LogDebug("API getting global configuration");
                 list = DataStoreProvider.GlobalConfigurationDataStore.GetAll().Where(c => c.IsAccessibleToPlugins).ToList();
+
+                foreach (GlobalConfiguration globalConfiguration in list)
+                {
+                    if (globalConfiguration.IsMasked)
+                    {
+                        try
+                        {
+                            globalConfiguration.Value = _dataProtector.Unprotect(globalConfiguration.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning("Unable to decrypt Global Configuration Value for Category {globalConfiguration.Category}, Name {globalConfiguration.Name}. {ex.Message}"
+                                , globalConfiguration.Category, globalConfiguration.Name, ex.Message);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -202,11 +221,31 @@ namespace KronoMata.Web.Controllers
         public List<ConfigurationValue> GetConfigurationValues(int scheduledJobId)
         {
             var list = new List<ConfigurationValue>();
+            var pluginConfigurationList = DataStoreProvider.PluginConfigurationDataStore.GetAll();
 
             try
             {
                 _logger.LogDebug("API getting configuration values for scheduled job id {scheduledJobId}", scheduledJobId);
                 list = DataStoreProvider.ConfigurationValueDataStore.GetByScheduledJob(scheduledJobId);
+
+                foreach (ConfigurationValue configurationValue in list)
+                {
+                    var pluginConfiguration = pluginConfigurationList.Where(p => p.Id == configurationValue.PluginConfigurationId).FirstOrDefault();
+
+                    if (pluginConfiguration != null && pluginConfiguration.DataType == Public.ConfigurationDataType.Password)
+                    {
+                        try
+                        {
+                            configurationValue.Value = _dataProtector.Unprotect(configurationValue.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning("Unable to decrypt Configuration Value for Name {pluginConfiguration.Name}. {ex.Message}"
+                                , pluginConfiguration.Name, ex.Message);
+                        }
+                    }
+                }
+
             }
             catch (Exception ex)
             {

@@ -1,6 +1,7 @@
 ﻿using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -9,13 +10,15 @@ namespace KronoMata.Web.Controllers
     public class GlobalSettingsController : BaseController
     {
         private readonly ILogger<GlobalSettingsController> _logger;
+        private readonly IDataProtector _dataProtector;
 
         public GlobalSettingsController(ILogger<GlobalSettingsController> logger, IDataStoreProvider dataStoreProvider,
-            IConfiguration configuration)
+            IConfiguration configuration, IDataProtectionProvider dataProtectionProvider)
         {
             _logger = logger;
             DataStoreProvider = dataStoreProvider;
             Configuration = configuration;
+            _dataProtector = dataProtectionProvider.CreateProtector("KronoMata.Web.v1");
         }
 
         public IActionResult Index()
@@ -57,6 +60,24 @@ namespace KronoMata.Web.Controllers
             {
                 var settings = DataStoreProvider.GlobalConfigurationDataStore.GetAll();
 
+                foreach (GlobalConfiguration globalConfiguration in settings)
+                {
+                    if (globalConfiguration.IsMasked)
+                    {
+                        // bootstrapping / existing database compatability. Ignore
+                        // decryption errors but log warnings (without values!)
+                        try
+                        {
+                            globalConfiguration.Value = _dataProtector.Unprotect(globalConfiguration.Value);
+                        }
+                        catch (Exception ex) 
+                        {
+                            _logger.LogWarning("Unable to decrypt Global Configuration Value for Category {globalConfiguration.Category}, Name {globalConfiguration.Name}. {ex.Message}"
+                                , globalConfiguration.Category, globalConfiguration.Name, ex.Message);
+                        }
+                    }
+                }
+
                 var serializerOptions = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
@@ -72,11 +93,28 @@ namespace KronoMata.Web.Controllers
             }
         }
 
+        private void EncryptGlobalConfigurationValue(GlobalConfiguration globalConfiguration)
+        {
+            if (globalConfiguration.IsMasked)
+            {
+                try
+                {
+                    globalConfiguration.Value = _dataProtector.Protect(globalConfiguration.Value);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("Unable to encrypt Global Configuration Value for Category {globalConfiguration.Category}, Name {globalConfiguration.Name}. {ex.Message}"
+                        , globalConfiguration.Category, globalConfiguration.Name, ex.Message);
+                }
+            }
+        }
+
         [HttpPost]
         public void SaveGlobalSettings(GlobalConfiguration data)
         {
             try
             {
+                EncryptGlobalConfigurationValue(data);
                 DataStoreProvider.GlobalConfigurationDataStore.Create(data);
             }
             catch (Exception ex)
@@ -104,6 +142,7 @@ namespace KronoMata.Web.Controllers
                     data.InsertDate = existing.InsertDate;
                     data.UpdateDate = DateTime.Now;
 
+                    EncryptGlobalConfigurationValue(data);
                     DataStoreProvider.GlobalConfigurationDataStore.Update(data);
                 }
             }

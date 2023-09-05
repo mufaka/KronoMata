@@ -5,6 +5,9 @@ using KronoMata.Data.Mock;
 using KronoMata.Data.SQLite;
 using KronoMata.Model;
 using KronoMata.Model.Validation;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using System.Reflection;
 
 namespace KronoMata.Web
@@ -23,7 +26,9 @@ namespace KronoMata.Web
             var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false)
                     .Build();
-#endif 
+#endif
+
+            ConfigureDataProtection(builder, config);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -61,6 +66,31 @@ namespace KronoMata.Web
             app.Run();
         }
 
+        private static void ConfigureDataProtection(WebApplicationBuilder builder, IConfigurationRoot config)
+        {
+            var dataProtectionType = config["KronoMata:KeyStore:StoreType"];
+            var dataProtectionStore = config["KronoMata:KeyStore:StorePath"];
+
+            if (dataProtectionType != null && dataProtectionStore != null)
+            {
+                switch (dataProtectionType)
+                {
+                    case "FileSystem":
+                        if (!Directory.Exists(dataProtectionStore)) Directory.CreateDirectory(dataProtectionStore);
+
+                        builder.Services.AddDataProtection()
+                            .SetDefaultKeyLifetime(TimeSpan.FromDays(183)) // 6 months before key gets cycled. old key files persist and will still work.
+                            .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration
+                            {
+                                EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+                                ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+                            })
+                            .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionStore));
+                        break;
+                }
+            }
+        }
+
         private static void InitializeDatabase(WebApplicationBuilder builder, IConfigurationRoot config)
         {
             var mockDataStoreProvider = new MockDataStoreProvider();
@@ -90,11 +120,18 @@ namespace KronoMata.Web
         {
             var now = DateTime.Now;
 
-            CreateConfigurationValue(dataStoreProvider, now, "JobHistory", "MaxDays", "14");
+            CreateConfigurationValue(dataStoreProvider, now, "Login", "Username", "kronomata", false, false); // not masked, not accessible to plugins
+            CreateConfigurationValue(dataStoreProvider, now, "Login", "Password", "kronomata", true, false); // masked, not accessible to plugins
+            CreateConfigurationValue(dataStoreProvider, now, "JobHistory", "MaxDays", "14"); // default is not masked, accessible to plugins
             CreateConfigurationValue(dataStoreProvider, now, "JobHistory", "MaxRecords", "10000");
         }
 
         private static void CreateConfigurationValue(IDataStoreProvider dataStoreProvider, DateTime now, string category, string name, string configValue)
+        {
+            CreateConfigurationValue(dataStoreProvider, now, category, name, configValue, false, true);
+        }
+
+        private static void CreateConfigurationValue(IDataStoreProvider dataStoreProvider, DateTime now, string category, string name, string configValue, bool isMasked, bool isAccessibleToPlugins)
         {
             var existingConfiguration = dataStoreProvider.GlobalConfigurationDataStore.GetByCategoryAndName(category, name);
 
@@ -104,8 +141,8 @@ namespace KronoMata.Web
                 {
                     Category = category,
                     InsertDate = now,
-                    IsAccessibleToPlugins = true,
-                    IsMasked = false,
+                    IsAccessibleToPlugins = isAccessibleToPlugins,
+                    IsMasked = isMasked,
                     IsSystemConfiguration = true,
                     Name = name,
                     UpdateDate = now,
