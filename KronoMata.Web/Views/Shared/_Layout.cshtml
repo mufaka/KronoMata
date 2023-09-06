@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
     <!-- Local style -->
     <link rel="stylesheet" href="~/css/site.css">
+    <link rel="icon" type="image/png" href="~/favicon.png" />
 
     @RenderSection("styles", required: false)
 </head>
@@ -48,7 +49,8 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="@Url.Action("Index", "Home")" class="brand-link">
-                <span class="brand-text font-weight-light">KronoMata</span>
+                <img src="~/img/kronomata-icon.png" width="32px" />
+                <span class="brand-text ">KRONOMATA</span>
             </a>
 
             <!-- Sidebar -->
