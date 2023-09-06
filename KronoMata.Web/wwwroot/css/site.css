@@ -17,6 +17,10 @@ body {
     font-size: .9rem !important;
 }
 
+.brand-text {
+    font-family: 'Mali', cursive !important;
+}
+
 /* tempusdominus togglePeriod font-size too big */
 .bootstrap-datetimepicker-widget .btn[data-action=togglePeriod] {
     font-size: .8rem !important;
