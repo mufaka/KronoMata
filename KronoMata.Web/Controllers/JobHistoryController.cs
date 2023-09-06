@@ -50,6 +50,7 @@ namespace KronoMata.Web.Controllers
             }
         }
 
+        [AllowAnonymous]
         public int Expire()
         {
             try
