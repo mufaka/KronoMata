@@ -5,6 +5,7 @@ using KronoMata.Data.Mock;
 using KronoMata.Data.SQLite;
 using KronoMata.Model;
 using KronoMata.Model.Validation;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
@@ -32,6 +33,15 @@ namespace KronoMata.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Home/Login";
+                    options.Cookie.Name = ".KronoMata.Cookies";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                    options.SlidingExpiration = true;
+                });
+
 
             var databaseProvider = config["KronoMata:DataStoreProvider"];
 
@@ -58,6 +68,7 @@ namespace KronoMata.Web
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllerRoute(
                 name: "default",

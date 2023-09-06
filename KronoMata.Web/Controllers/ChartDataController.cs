@@ -1,10 +1,12 @@
 ﻿using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KronoMata.Web.Controllers
 {
+    [Authorize]
     public class ChartDataController : BaseController
     {
         private readonly ILogger<ChartDataController> _logger;

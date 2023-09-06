@@ -1,12 +1,14 @@
 ﻿using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace KronoMata.Web.Controllers
 {
+    [Authorize]
     public class GlobalSettingsController : BaseController
     {
         private readonly ILogger<GlobalSettingsController> _logger;

@@ -3,6 +3,7 @@ using KronoMata.Model;
 using KronoMata.Public;
 using KronoMata.Web.Models;
 using McMaster.NETCore.Plugins;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
 using System.Reflection;
@@ -10,6 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace KronoMata.Web.Controllers
 {
+    [Authorize]
     public class PackageController : BaseController
     {
         private readonly ILogger<JobHistoryController> _logger;

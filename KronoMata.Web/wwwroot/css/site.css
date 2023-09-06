@@ -21,6 +21,10 @@ body {
     font-family: 'Mali', cursive !important;
 }
 
+.login-page {
+    background-color: #333537 !important;
+}
+
 /* tempusdominus togglePeriod font-size too big */
 .bootstrap-datetimepicker-widget .btn[data-action=togglePeriod] {
     font-size: .8rem !important;

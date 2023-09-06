@@ -1,9 +1,11 @@
 ﻿using KronoMata.Data;
 using KronoMata.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KronoMata.Web.Controllers
 {
+    [Authorize]
     public class HostController : BaseController
     {
         private readonly ILogger<HostController> _logger;

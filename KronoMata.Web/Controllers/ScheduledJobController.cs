@@ -2,11 +2,13 @@
 using KronoMata.Data;
 using KronoMata.Model;
 using KronoMata.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KronoMata.Web.Controllers
 {
+    [Authorize]
     public class ScheduledJobController : BaseController
     {
         private readonly ILogger<ScheduledJobController> _logger;
