@@ -30,12 +30,21 @@ namespace KronoMata.Agent
 
         private ScheduledJob CreateMockMaintenanceJob()
         {
+            var maintenanceIntervalConfiguration = _configuration["KronoMata:MaintenanceInterval"] ?? "15";
+            int maintenanceInterval;
+
+            if (!Int32.TryParse(maintenanceIntervalConfiguration, out maintenanceInterval))
+            {
+                maintenanceInterval = 15;
+            }
+
             var scheduledJob = new ScheduledJob();
 
-            scheduledJob.StartTime = DateTime.Now.AddMinutes(-14);
+            // kick off 1 minute after starting service (set start time accordingly)
+            scheduledJob.StartTime = DateTime.Now.AddMinutes(-(maintenanceInterval - 1));
             scheduledJob.IsEnabled = true;
             scheduledJob.Frequency = ScheduleFrequency.Minute;
-            scheduledJob.Interval = 15;
+            scheduledJob.Interval = maintenanceInterval;
 
             return scheduledJob;
         }
