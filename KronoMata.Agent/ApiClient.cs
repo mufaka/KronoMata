@@ -75,6 +75,11 @@ namespace KronoMata.Agent
             var endpoint = $"Agent/package/file/{package.Id}";
             var httpClient = new HttpClient();
 
+            if (!Directory.Exists(packageRootPath))
+            {
+                Directory.CreateDirectory(packageRootPath);
+            }
+
             var destinationPath = Path.Combine(packageRootPath, package.FileName);
 
             var stream = await httpClient.GetStreamAsync(BuildUrl(endpoint));
