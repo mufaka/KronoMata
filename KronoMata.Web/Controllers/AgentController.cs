@@ -2,7 +2,6 @@
 using KronoMata.Model;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
-using static Dapper.SqlMapper;
 
 namespace KronoMata.Web.Controllers
 {
@@ -164,6 +163,25 @@ namespace KronoMata.Web.Controllers
 
             return list;
         }
+
+        [HttpGet("package/")]
+        public List<Package> GetAllPackages()
+        {
+            var list = new List<Package>();
+
+            try
+            {
+                _logger.LogDebug("API getting all packages.");
+                list = DataStoreProvider.PackageDataStore.GetAll();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all packages.");
+            }
+
+            return list;
+        }
+
 
         [HttpGet("globalconfig")]
         public List<GlobalConfiguration> GetGlobalConfigurations()

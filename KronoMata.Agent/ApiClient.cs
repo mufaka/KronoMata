@@ -40,6 +40,12 @@ namespace KronoMata.Agent
             return packages.Count == 0 ? null : packages[0];
         }
 
+        public List<Package> GetAllPackages()
+        {
+            var endPoint = $"Agent/package/";
+            return Get<Package>(endPoint);
+        }
+
         public List<GlobalConfiguration> GetGlobalConfigurations()
         {
             var endPoint = "Agent/globalconfig";

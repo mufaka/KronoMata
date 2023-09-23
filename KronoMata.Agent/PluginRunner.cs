@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.IO.Compression;
-using System.Text.RegularExpressions;
 
 namespace KronoMata.Agent
 {
@@ -91,7 +90,7 @@ namespace KronoMata.Agent
             catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected errror executing agent. {ex.Message", ex.Message);
+                _logger.LogError(ex, "Unexpected errror executing agent. {ex.Message}", ex.Message);
             }
         }
 
