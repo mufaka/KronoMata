@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace KronoMata.Agent
 {
-    internal class MaintenanceService : IHostedService
+    internal class MaintenanceService : BackgroundService
     {
         private readonly ILogger<MaintenanceService> _logger;
         private readonly IConfiguration _configuration;
@@ -40,26 +40,14 @@ namespace KronoMata.Agent
             return scheduledJob;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("KronoMata Agent Maintenance Job Started.");
-
-            await ExecuteAsync(cancellationToken);
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("KronoMata Agent Maintenance Job stopped.");
-            _periodicTimer.Dispose();
-            return Task.CompletedTask;
-        }
-
         private DateTime? _lastTick;
 
-        private async Task ExecuteAsync(CancellationToken cancellationToken)
+        protected async override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             try
             {
+                _logger.LogInformation("KronoMata Agent Maintenance Service Started.");
+
                 while (await _periodicTimer.WaitForNextTickAsync(cancellationToken)
                 && !cancellationToken.IsCancellationRequested)
                 {
@@ -94,6 +82,9 @@ namespace KronoMata.Agent
                         _logger.LogError(ex, "Unexpected error checking for packages. {ex.Message}", ex.Message);
                     }
                 }
+
+                _logger.LogInformation("KronoMata Agent Maintenance Job stopped.");
+                _periodicTimer.Dispose();
             }
             catch (OperationCanceledException) { }
             catch (Exception ex)
