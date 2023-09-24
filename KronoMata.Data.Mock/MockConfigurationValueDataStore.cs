@@ -36,6 +36,11 @@ namespace KronoMata.Data.Mock
             }
         }
 
+        internal void DeleteByScheduledJob(int scheduledJobId)
+        {
+            _configurationValues.RemoveAll(c => c.ScheduledJobId == scheduledJobId);
+        }
+
         public List<ConfigurationValue> GetByScheduledJob(int scheduledJobId)
         {
             return _configurationValues.Where(v => v.ScheduledJobId == scheduledJobId).ToList();

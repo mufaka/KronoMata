@@ -4,10 +4,12 @@ using KronoMata.Public;
 using KronoMata.Web.Models;
 using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace KronoMata.Web.Controllers
 {
@@ -34,7 +36,7 @@ namespace KronoMata.Web.Controllers
             try
             {
                 model.Packages = DataStoreProvider.PackageDataStore.GetAll()
-                    .OrderBy(x => x.Name).ToList(); ;
+                    .OrderBy(x => x.Name).ToList();
             }
             catch (Exception ex)
             {
@@ -43,6 +45,39 @@ namespace KronoMata.Web.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult GetPackageData()
+        {
+            try
+            {
+                var settings = DataStoreProvider.PackageDataStore.GetAll().OrderBy(x => x.Name).ToList();
+                var serializerOptions = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var result = Json(settings, serializerOptions);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Package data.");
+                return new ObjectResult(ex.Message) { StatusCode = 500 };
+            }
+        }
+
+        [HttpPost]
+        public void DeletePackage(Package data)
+        {
+            try
+            {
+                DataStoreProvider.PackageDataStore.Delete(data.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting Package data.");
+            }
         }
 
         [HttpPost]

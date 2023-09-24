@@ -37,6 +37,11 @@ namespace KronoMata.Data.Mock
             }
         }
 
+        internal void DeleteByScheduledJob(int scheduledJobId)
+        {
+            _jobHistories.RemoveAll(h => h.ScheduledJobId == scheduledJobId);
+        }
+
         public List<JobHistory> GetAll()
         {
             return _jobHistories.OrderByDescending(h => h.RunTime).ToList();

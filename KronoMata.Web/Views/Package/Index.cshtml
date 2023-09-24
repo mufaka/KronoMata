@@ -2,35 +2,15 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Packages</h3>
                 </div>
-                <div class="card-body table-responsive p-0" style="height: 300px;">
-                    <table class="table table-head-fixed table-hover text-nowrap">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Filename</th>
-                                <th>Upload Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var package in Model.Packages)
-                            {
-                                <tr>
-                                    <td>@package.Id</td>
-                                    <td>@package.Name</td>
-                                    <td>@package.FileName</td>
-                                    <td>@package.UploadDate.ToString("O")</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <div class="card-body table-responsive p-0">
+                    <div id="package-grid"></div>
                 </div>
-            </div>
+           </div>
         </div>
     </div>
     <div class="row">
@@ -60,10 +40,13 @@
 </div>
 
 @section styles {
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid.min.css">
+    <link rel="stylesheet" href="~/plugins/jsgrid/jsgrid-theme.min.css">
     <link href="~/plugins/dropzone/dropzone_6-beta-1.css" rel="stylesheet" type="text/css" />
 }
 
 @section scripts {
+    <script src="~/plugins/jsgrid/jsgrid.min.js"></script>
     <script src="~/plugins/dropzone/dropzone_6-beta-1-min.js"></script>
 
     <script type="text/javascript">
@@ -72,7 +55,76 @@
 
         $(function () {
             initializeDropzone();
+            populatePackages();
         });
+
+        function populatePackages() {
+            $("#package-grid").jsGrid({
+                height: "500px",
+                width: "100%",
+
+                filtering: false,
+                inserting: false,
+                editing: true,
+                sorting: true,
+                paging: false,
+                autoload: true,
+                pageLoading: false,
+
+                deleteConfirm: "This will delete all related data. Are you sure you want to delete this package?",
+
+                controller: {
+                    loadData: function (filter) {
+                        return $.ajax({
+                            cache: false,
+                            type: "GET",
+                            url: "@Url.Action("GetPackageData", "Package")",
+                            data: filter,
+                            dataType: "json"
+                        });
+                    },
+
+                    insertItem: function (item) {
+                    },
+
+                    updateItem: function (item) {
+                    },
+
+                    deleteItem: function (item) {
+                        return $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("DeletePackage", "Package")",
+                            data: item
+                        });
+                    }
+                },
+
+                fields: [
+                    { name: "Id", title: "ID", type: "text", filtering: false, width: 20, editing: false },
+                    { name: "Name", title: "Name", type: "text", filtering: false, editing: false },
+                    { name: "FileName", title: "File Name", type: "text", filtering: false, editing: false },
+                    {
+                        name: "UploadDate", title: "Upload Date", type: "text", width: 40, filtering: false, editing: false,
+                        itemTemplate: function (value, item) {
+                            return new Date(value).toLocaleString('en-US');
+                        }
+                    },
+                    { type: "control", editButton: false }
+                ]
+            });
+
+            jsGrid.setDefaults("control", {
+                _createDeleteButton: function (item) {
+                    if (item.IsSystemConfiguration) return;
+
+                    return this._createGridButton(this.deleteButtonClass, this.deleteButtonTooltip, function (grid, e) {
+                        grid.deleteItem(item);
+                        e.stopPropagation();
+                    });
+                }
+            });
+        }
+
 
         function doUpload() {
 

@@ -35,6 +35,11 @@ namespace KronoMata.Data.Mock
             }
         }
 
+        internal void DeleteByPlugin(int pluginMetaDataId)
+        {
+            _pluginConfigurations.RemoveAll(c => c.PluginMetaDataId == pluginMetaDataId);
+        }
+
         public PluginConfiguration GetById(int id)
         {
 #pragma warning disable CS8603 // Possible null reference return.
