@@ -36,6 +36,101 @@ select last_insert_rowid();";
 
         public void Delete(int id)
         {
+            /*
+                Package
+                    Plugin
+                        PluginConfiguration
+                        ScheduledJob
+                            ConfigurationValue
+                            JobHistory
+
+            */
+
+            // JobHistory
+            Execute((connection) =>
+            {
+                var sql = @"delete from JobHistory where ScheduledJobId in
+(
+    select sj.Id
+    from ScheduledJob sj
+    join PluginMetaData p on p.Id = sj.PluginMetaDataId
+    where p.PackageId = @PackageId 
+)";
+                connection.Execute(sql, new
+                {
+                    PackageId = id
+                });
+            });
+
+            // ConfigurationValue
+            Execute((connection) =>
+            {
+                var sql = @"delete from ConfigurationValue where ScheduledJobId in
+(
+    select sj.Id
+    from ScheduledJob sj
+    join PluginMetaData p on p.Id = sj.PluginMetaDataId
+    where p.PackageId = @PackageId 
+)";
+                connection.Execute(sql, new
+                {
+                    PackageId = id
+                });
+            });
+
+            // ScheduledJob
+            Execute((connection) =>
+            {
+                var sql = @"delete from ScheduledJob where Id in
+(
+    select sj.Id
+    from ScheduledJob sj
+    join PluginMetaData p on p.Id = sj.PluginMetaDataId
+    where p.PackageId = @PackageId 
+)";
+                connection.Execute(sql, new
+                {
+                    PackageId = id
+                });
+            });
+
+            // PluginConfiguration
+            Execute((connection) =>
+            {
+                var sql = @"delete from PluginConfiguration where PluginMetaDataId in
+(
+    select p.Id
+    from PluginMetaData p
+    where p.PackageId = @PackageId
+)";
+                connection.Execute(sql, new
+                {
+                    PackageId = id
+                });
+            });
+
+            // Plugin
+            Execute((connection) =>
+            {
+                var sql = @"delete from PluginMetaData where PackageId = @PackageId";
+
+                connection.Execute(sql, new
+                {
+                    PackageId = id
+                });
+            });
+
+            // Package
+            Execute((connection) =>
+            {
+                var sql = @"delete from Package where Id = @PackageId";
+
+                connection.Execute(sql, new
+                {
+                    PackageId = id
+                });
+            });
+
             Execute((connection) =>
             {
                 var sql = "delete from Package where Id = @Id;";

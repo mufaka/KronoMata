@@ -40,6 +40,17 @@ select last_insert_rowid();";
 
         public void Delete(int id)
         {
+            // job history
+            Execute((connection) =>
+            {
+                var sql = "delete from JobHistory where HostId = @HostId";
+                connection.Execute(sql, new
+                {
+                    HostId = id
+                });
+            });
+
+            // host
             Execute((connection) =>
             {
                 var sql = "delete from Host where Id = @Id;";

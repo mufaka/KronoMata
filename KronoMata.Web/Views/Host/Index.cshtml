@@ -53,6 +53,7 @@
                     </div>
                     <div class="card-footer">
                         <input type="button" onclick="saveHost();" class="btn btn-secondary" value="Save" />
+                        <input type="button" onclick="deleteHost();" class="btn btn-secondary" value="Delete" />
                     </div>
                 </div>
             </div>
@@ -169,8 +170,17 @@
         function saveHost() {
             _host.isEnabled = $("#host-enabled").is(":checked");
 
-            // TODO: use Toast for fail, reload page if success.
             var updatedHost = PostData('@Url.Action("SaveHost", "Host")', { host: _host }, success = function () {
+                location.reload();
+            });
+        }
+
+        function deleteHost() {
+            _host.isEnabled = $("#host-enabled").is(":checked");
+
+            // need confirmation dialog
+
+            PostData('@Url.Action("DeleteHost", "Host")', { host: _host }, success = function () {
                 location.reload();
             });
         }

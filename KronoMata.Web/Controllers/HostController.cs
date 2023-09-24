@@ -94,5 +94,21 @@ namespace KronoMata.Web.Controllers
                 return new ObjectResult(ex.Message) { StatusCode = 500 };
             }
         }
+
+        [HttpPost]
+        public ActionResult DeleteHost(Model.Host host)
+        {
+            try
+            {
+                DataStoreProvider.HostDataStore.Delete(host.Id);
+
+                return Json(new { host });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Host related data.");
+                return new ObjectResult(ex.Message) { StatusCode = 500 };
+            }
+        }
     }
 }

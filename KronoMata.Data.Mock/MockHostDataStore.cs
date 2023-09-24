@@ -27,6 +27,7 @@ namespace KronoMata.Data.Mock
         public void Delete(int id)
         {
             //_hosts.RemoveAll(h => h.Id == id);
+            DataStoreProvider.JobHistoryDataStore.GetAll().RemoveAll(h => h.HostId == id);
 
             var existingIndex = _hosts.FindIndex(g => g.Id == id);
 
