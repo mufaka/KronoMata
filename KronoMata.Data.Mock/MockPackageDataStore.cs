@@ -26,7 +26,22 @@ namespace KronoMata.Data.Mock
 
         public void Delete(int id)
         {
-            //_packages.RemoveAll(p => p.Id == id);
+            var plugins = DataStoreProvider.PluginMetaDataDataStore.GetAll().Where(p => p.PackageId == id);
+
+            foreach (var plugin in plugins)
+            {
+                var scheduledJobs = DataStoreProvider.ScheduledJobDataStore.GetAll().Where(s => s.PluginMetaDataId == plugin.Id);
+
+                foreach (var job in scheduledJobs)
+                {
+                    DataStoreProvider.ConfigurationValueDataStore.GetAll().RemoveAll(c => c.ScheduledJobId == job.Id);
+                    DataStoreProvider.JobHistoryDataStore.GetAll().RemoveAll(j => j.ScheduledJobId == job.Id);
+                    DataStoreProvider.ScheduledJobDataStore.Delete(job.Id);
+                }
+
+                DataStoreProvider.PluginConfigurationDataStore.GetAll().RemoveAll(c => c.PluginMetaDataId == plugin.Id);
+                DataStoreProvider.PluginMetaDataDataStore.Delete(plugin.Id);
+            }
 
             var existingIndex = _packages.FindIndex(g => g.Id == id);
 

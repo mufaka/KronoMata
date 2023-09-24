@@ -123,16 +123,6 @@ select last_insert_rowid();";
             // Package
             Execute((connection) =>
             {
-                var sql = @"delete from Package where Id = @PackageId";
-
-                connection.Execute(sql, new
-                {
-                    PackageId = id
-                });
-            });
-
-            Execute((connection) =>
-            {
                 var sql = "delete from Package where Id = @Id;";
                 connection.Execute(sql, new
                 {
