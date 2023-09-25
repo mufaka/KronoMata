@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: KronoMata.Agent/Dockerfile
     environment:
-      - KronoMata__APIRoot=http://kronomata-kronomata.web-1:5002/api/
+      - KronoMata__APIRoot=http://kronomata.web:5002/api/
 ```
 
 ## Quick Start
