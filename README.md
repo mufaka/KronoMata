@@ -1,6 +1,32 @@
 # KronoMata
 KronoMata is a cross platform scheduled job runner. Scheduled jobs run implementations of IPlugin on configured hosts at configured recurrence intervals. 
 
+## Docker
+Docker images are available for the Web application and Agent. They can be run together with the following Docker compose:
+
+```
+version: '3.4'
+
+services:
+  kronomata.web:
+    image: billnickel/kronomata:web
+    build:
+      context: .
+      dockerfile: KronoMata.Web/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
+    ports:
+      - "5015:5002"	  
+
+  kronomata.agent:
+    image: billnickel/kronomata:agent 
+    build:
+      context: .
+      dockerfile: KronoMata.Agent/Dockerfile
+    environment:
+      - KronoMata__APIRoot=http://kronomata-kronomata.web-1:5002/api/
+```
+
 ## Quick Start
 KronoMata has 3 main components. The web application for managing scheduled jobs, the agent which is responsible for running the scheduled jobs, and plugins that are the actual executables for scheduled jobs. KronoMata can run on Windows, Linux, or Mac OS as long as .NET 6 is installed.
 
