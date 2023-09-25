@@ -10,9 +10,6 @@ version: '3.4'
 services:
   kronomata.web:
     image: billnickel/kronomata:web
-    build:
-      context: .
-      dockerfile: KronoMata.Web/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Release
     ports:
@@ -20,9 +17,6 @@ services:
 
   kronomata.agent:
     image: billnickel/kronomata:agent 
-    build:
-      context: .
-      dockerfile: KronoMata.Agent/Dockerfile
     environment:
       - KronoMata__APIRoot=http://kronomata.web:5002/api/
 ```
