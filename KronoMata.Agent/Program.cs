@@ -17,6 +17,7 @@ namespace KronoMata.Agent
                 IConfiguration configuration = new ConfigurationBuilder()
                       .SetBasePath(Directory.GetCurrentDirectory())
                       .AddJsonFile("appsettings.json", false)
+                      .AddEnvironmentVariables()
                       .Build();
 
                 var agentHost = new HostBuilder()

@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  kronomata.web:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
+    ports:
+      - "5015:5002"
+
+  kronomata.agent:
+    environment:
+      - KronoMata__APIRoot=http://kronomata-kronomata.web-1:5002/api/

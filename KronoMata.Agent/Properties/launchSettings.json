@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "KronoMata.Agent": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

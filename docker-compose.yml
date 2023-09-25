@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  kronomata.web:
+    image: kronomataweb
+    build:
+      context: .
+      dockerfile: KronoMata.Web/Dockerfile
+
+  kronomata.agent:
+    image: kronomataagent
+    build:
+      context: .
+      dockerfile: KronoMata.Agent/Dockerfile

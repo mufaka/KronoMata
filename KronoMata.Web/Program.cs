@@ -22,10 +22,12 @@ namespace KronoMata.Web
 #if DEBUG
             var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.Development.json", optional: false)
+                    .AddEnvironmentVariables()
                     .Build();
 #else
             var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false)
+                    .AddEnvironmentVariables()
                     .Build();
 #endif
 

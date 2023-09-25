@@ -96,71 +96,78 @@ namespace KronoMata.Agent
 
         private void CheckForJobs()
         {
-            var apiClient = new ApiClient(_configuration, _httpClientFactory);
-            var machineName = Environment.MachineName;
-
-            _logger.LogInformation("Checking API for scheduled jobs with Instance {InstanceID}", _instanceIdentifier);
-            var scheduledJobs = apiClient.GetScheduledJobs(machineName);
-
-            if (scheduledJobs.Count == 0)
+            try
             {
-                _logger.LogWarning("There are no scheduled jobs defined for {machineName}", machineName);
-            }
-            else
-            {
+                var apiClient = new ApiClient(_configuration, _httpClientFactory);
+                var machineName = Environment.MachineName;
 
-                var packageRoot = _configuration["KronoMata:PackageRoot"];
+                _logger.LogInformation("Machine {MachineName} Checking API ({APIRoot}) for scheduled jobs with Instance {InstanceID}", machineName, _configuration["KronoMata:APIRoot"], _instanceIdentifier);
+                var scheduledJobs = apiClient.GetScheduledJobs(machineName);
 
-                if (String.IsNullOrEmpty(packageRoot))
+                if (scheduledJobs.Count == 0)
                 {
-                    throw new ArgumentNullException("PackageRoot is not defined in appsettings.json [KronoMata:PackageRoot]");
-                }
-
-                if (!packageRoot.EndsWith(Path.DirectorySeparatorChar.ToString())) packageRoot += Path.DirectorySeparatorChar;
-                
-                var host = apiClient.GetHost(machineName);
-
-                _logger.LogInformation("{scheduledJobs.Count} jobs are defined for this Host.", scheduledJobs.Count);
-
-                if (host != null)
-                {
-                    Parallel.ForEach(scheduledJobs, scheduledJob =>
-                    {
-                        if (_shouldRun.ShouldRun(DateTime.Now, scheduledJob))
-                        {
-                            var runTime = DateTime.Now;
-                            var results = new List<PluginResult>();
-                            try
-                            {
-                                _logger.LogDebug("Begin execute plugin");
-                                results.AddRange(ExecutePlugin(apiClient, packageRoot, scheduledJob));
-                                _logger.LogDebug("End execute plugin");
-                            } 
-                            catch (Exception ex)
-                            {
-                                _logger.LogError(ex, "Unexpected error executing plugin. {ex.Message}", ex.Message);
-
-                                results.Add(new PluginResult()
-                                {
-                                    IsError = true,
-                                    Message = ex.Message,
-                                    Detail = ex.ToString()
-                                });
-                            }
-
-                            var completionTime = DateTime.Now;
-                            SavePluginResults(apiClient, runTime, completionTime, host, scheduledJob, results);
-                        }
-                        else
-                        {
-                            _logger.LogDebug("Scheduled Job {scheduledJob.Name} shouldn't be run at this time.", scheduledJob.Name);
-                        }
-                    });
+                    _logger.LogWarning("There are no scheduled jobs defined for {machineName}", machineName);
                 }
                 else
                 {
-                    _logger.LogWarning("Unable to get Host for {machineName}. No jobs will be run.", machineName);
+
+                    var packageRoot = _configuration["KronoMata:PackageRoot"];
+
+                    if (String.IsNullOrEmpty(packageRoot))
+                    {
+                        throw new ArgumentNullException("PackageRoot is not defined in appsettings.json [KronoMata:PackageRoot]");
+                    }
+
+                    if (!packageRoot.EndsWith(Path.DirectorySeparatorChar.ToString())) packageRoot += Path.DirectorySeparatorChar;
+
+                    var host = apiClient.GetHost(machineName);
+
+                    _logger.LogInformation("{scheduledJobs.Count} jobs are defined for this Host.", scheduledJobs.Count);
+
+                    if (host != null)
+                    {
+                        Parallel.ForEach(scheduledJobs, scheduledJob =>
+                        {
+                            if (_shouldRun.ShouldRun(DateTime.Now, scheduledJob))
+                            {
+                                var runTime = DateTime.Now;
+                                var results = new List<PluginResult>();
+                                try
+                                {
+                                    _logger.LogDebug("Begin execute plugin");
+                                    results.AddRange(ExecutePlugin(apiClient, packageRoot, scheduledJob));
+                                    _logger.LogDebug("End execute plugin");
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError(ex, "Unexpected error executing plugin. {ex.Message}", ex.Message);
+
+                                    results.Add(new PluginResult()
+                                    {
+                                        IsError = true,
+                                        Message = ex.Message,
+                                        Detail = ex.ToString()
+                                    });
+                                }
+
+                                var completionTime = DateTime.Now;
+                                SavePluginResults(apiClient, runTime, completionTime, host, scheduledJob, results);
+                            }
+                            else
+                            {
+                                _logger.LogDebug("Scheduled Job {scheduledJob.Name} shouldn't be run at this time.", scheduledJob.Name);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Unable to get Host for {machineName}. No jobs will be run.", machineName);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error checking for jobs. {ex.Message}", ex.Message);
             }
         }
 
